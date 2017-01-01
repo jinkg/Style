@@ -8,7 +8,8 @@ import com.yalin.style.provider.StyleDatabase.Tables;
 
 public enum StyleUriEnum {
   WALLPAPER(100, "wallpaper", Tables.WALLPAPER),
-  LAST_WALLPAPER(101, "wallpaper/last", null);
+  LAST_WALLPAPER(101, "wallpaper/last", null),
+  WALLPAPER_ID(102, "wallpaper/*", null);
 
   public int code;
   public String path;

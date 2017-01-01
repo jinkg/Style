@@ -32,6 +32,7 @@ public class StyleDatabase extends SQLiteOpenHelper {
   public void onCreate(SQLiteDatabase db) {
     db.execSQL("CREATE TABLE " + Wallpaper.TABLE_NAME + " ("
         + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        + Wallpaper.COLUMN_NAME_WALLPAPER_ID + " TEXT,"
         + Wallpaper.COLUMN_NAME_TITLE + " TEXT,"
         + Wallpaper.COLUMN_NAME_IMAGE_URI + " TEXT,"
         + Wallpaper.COLUMN_NAME_ATTRIBUTION + " TEXT,"

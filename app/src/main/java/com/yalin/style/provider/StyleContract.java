@@ -18,6 +18,10 @@ public class StyleContract {
     /**
      * Type: TEXT
      */
+    String COLUMN_NAME_WALLPAPER_ID = "wallpaper_id";
+    /**
+     * Type: TEXT
+     */
     String COLUMN_NAME_IMAGE_URI = "image_uri";
     /**
      * Type: TEXT
@@ -52,5 +56,14 @@ public class StyleContract {
 
     public static final Uri CONTENT_LAST_WALLPAPER_URI =
         CONTENT_URI.buildUpon().appendPath(PATH_LAST_WALLPAPER).build();
+
+
+    public static Uri buildWallpaperUri(String wallpaperId) {
+      return CONTENT_URI.buildUpon().appendPath(wallpaperId).build();
+    }
+
+    public static String getWallpaperId(Uri uri) {
+      return uri.getPathSegments().get(1);
+    }
   }
 }
