@@ -79,6 +79,8 @@ public class StyleWallpaperService extends GLWallpaperService {
 
       mRenderer = new StyleBlurRenderer(StyleWallpaperService.this, this);
       mRenderer.setIsPreview(isPreview());
+      RenderControllerProvider.setStubRenderController(
+          new DemoRenderController(StyleWallpaperService.this, mRenderer, this, true));
       mRenderController = RenderControllerProvider
           .providerRenderController(StyleWallpaperService.this, mRenderer, this);
 
