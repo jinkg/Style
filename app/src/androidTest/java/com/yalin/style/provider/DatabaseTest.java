@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import com.yalin.style.provider.StyleContract.Wallpaper;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +53,18 @@ public class DatabaseTest {
         int retVal = context.getContentResolver().delete(uri, null, null);
         Assert.assertEquals(retVal, 1);
       }
+    }
+  }
+
+  @Test
+  public void testOpenFile() {
+    Context context = InstrumentationRegistry.getTargetContext();
+    try {
+      InputStream is = context.getContentResolver().openInputStream(Wallpaper.CONTENT_URI);
+      Assert.assertNotNull(is);
+      is.close();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 }

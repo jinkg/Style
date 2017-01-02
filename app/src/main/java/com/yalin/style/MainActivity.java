@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 import com.yalin.style.provider.StyleContract.Wallpaper;
+import com.yalin.style.service.BootstrapService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +18,12 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    BootstrapService.startBootstrapIfNecessary(this);
   }
 
   public void setWallpaper(View view) {

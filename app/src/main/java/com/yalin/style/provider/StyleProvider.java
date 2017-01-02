@@ -6,12 +6,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.yalin.style.provider.StyleContract.Wallpaper;
 import com.yalin.style.provider.StyleDatabase.Tables;
 import com.yalin.style.util.LogUtil;
 import com.yalin.style.util.SelectionBuilder;
+import com.yalin.style.util.WallpaperFileHelper;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 /**
@@ -105,6 +108,14 @@ public class StyleProvider extends ContentProvider {
   public int update(@NonNull Uri uri, ContentValues values, String selection,
       String[] selectionArgs) {
     return 0;
+  }
+
+  @Nullable
+  @Override
+  public ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode)
+      throws FileNotFoundException {
+    LogUtil.d(TAG, "openFile(uri=" + uri + ",mode=" + mode + ")");
+    return WallpaperFileHelper.openFile(getContext(), uri, mode);
   }
 
   private SelectionBuilder buildSimpleSelection(Uri uri) {
