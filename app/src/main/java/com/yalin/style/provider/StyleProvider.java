@@ -1,8 +1,11 @@
 package com.yalin.style.provider;
 
 import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -15,6 +18,7 @@ import com.yalin.style.util.LogUtil;
 import com.yalin.style.util.SelectionBuilder;
 import com.yalin.style.util.WallpaperFileHelper;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -42,6 +46,25 @@ public class StyleProvider extends ContentProvider {
     Context context = getContext();
     StyleDatabase.deleteDatabase(context);
     mOpenHelper = new StyleDatabase(context);
+  }
+
+  @NonNull
+  @Override
+  public ContentProviderResult[] applyBatch(@NonNull ArrayList<ContentProviderOperation> operations)
+      throws OperationApplicationException {
+    final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+    db.beginTransaction();
+    try {
+      final int numOperations = operations.size();
+      final ContentProviderResult[] results = new ContentProviderResult[numOperations];
+      for (int i = 0; i < numOperations; i++) {
+        results[i] = operations.get(i).apply(this, results, i);
+      }
+      db.setTransactionSuccessful();
+      return results;
+    } finally {
+      db.endTransaction();
+    }
   }
 
   @Nullable
