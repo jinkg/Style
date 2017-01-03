@@ -11,12 +11,14 @@ import android.view.View;
 import android.widget.Toast;
 import com.yalin.style.provider.StyleContract.Wallpaper;
 import com.yalin.style.service.BootstrapService;
+import com.yalin.style.sync.account.Account;
 
 public class MainActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
     setContentView(R.layout.activity_main);
   }
 

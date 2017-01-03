@@ -3,6 +3,7 @@ package com.yalin.style.util;
 import android.content.Context;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import com.yalin.style.provider.StyleContract.Wallpaper;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -16,12 +17,33 @@ public class WallpaperFileHelper {
 
   public static final String BOOTSTRAP_FILE_NAME = "starrynight.jpg";
 
-  public static ParcelFileDescriptor openFile(Context context, Uri uri, String mode) {
+  public static final String CURRENT_FILE_NAME = "current";
+
+  public static ParcelFileDescriptor openReadFile(Context context, Uri uri, String mode) {
+    String wallpaperId = uri == null ? BOOTSTRAP_FILE_NAME : Wallpaper.getWallpaperId(uri);
     File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
     if (!directory.exists() && !directory.mkdir()) {
       return null;
     }
-    File file = new File(directory, BOOTSTRAP_FILE_NAME);
+    File file = new File(directory, wallpaperId);
+    if (!file.exists()) {
+      file = new File(directory, BOOTSTRAP_FILE_NAME);
+    }
+
+    try {
+      return ParcelFileDescriptor.open(file, parseMode(mode));
+    } catch (FileNotFoundException e) {
+      return null;
+    }
+  }
+
+  public static ParcelFileDescriptor openWriteFile(Context context, Uri uri, String mode) {
+    String wallpaperId = Wallpaper.getWallpaperId(uri);
+    File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
+    if (!directory.exists() && !directory.mkdir()) {
+      return null;
+    }
+    File file = new File(directory, wallpaperId);
     try {
       return ParcelFileDescriptor.open(file, parseMode(mode));
     } catch (FileNotFoundException e) {

@@ -16,8 +16,13 @@ android {
         buildConfigField("String", "PREF_BOOTSTRAP_DONE", "\"pref_bootstrap_done_${CONF_VERSION}\"")
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            buildConfigField("String", "SERVER_WALLPAPER_ENDPOINT", "\"${STAGOMG_API_WALLPAPER_ENDPOINT}\"")
+        }
         release {
             minifyEnabled false
+            buildConfigField("String", "SERVER_WALLPAPER_ENDPOINT", "\"${PRODUCTION_API_WALLPAPER_ENDPOINT}\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -26,9 +31,12 @@ android {
 dependencies {
     compile "com.android.support:appcompat-v7:${SUPPORT_LIBRARY_VERSION}"
     compile 'com.android.support:exifinterface:25.1.0'
+    compile "com.google.code.gson:gson:${GSON_VERSION}"
+    compile "com.squareup.okhttp3:okhttp:${OK_HTTP_VERSION}"
+
+    compile files('../third_party/volley/libs/volley.jar')
 
     testCompile 'junit:junit:4.12'
-
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

@@ -27,6 +27,14 @@ public class LogUtil {
     return BuildConfig.ENABLE_EXTERNAL_LOG;
   }
 
+  public static void f(String tag, String msg, Throwable throwable) {
+    String stackTraces = Log.getStackTraceString(throwable);
+    if (msg == null) {
+      msg = "";
+    }
+    f(tag, msg + " :\n " + stackTraces);
+  }
+
   public static void f(String tag, String msg) {
     String procInfo = getProcessInfo();
 

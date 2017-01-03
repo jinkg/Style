@@ -45,6 +45,10 @@ public class StyleContract {
 
   private static final String PATH_WALLPAPER = "wallpaper";
 
+  public static final String[] TOP_LEVEL_PATHS = {
+      PATH_WALLPAPER
+  };
+
   public static final class Wallpaper implements WallpaperColumns, BaseColumns {
 
     public static final String TABLE_NAME = "wallpaper";

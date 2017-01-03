@@ -16,6 +16,7 @@ import com.yalin.style.util.SelectionBuilder;
 import com.yalin.style.util.WallpaperFileHelper;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * YaLin 2016/12/30.
@@ -57,6 +58,11 @@ public class StyleProvider extends ContentProvider {
         + Arrays.toString(selectionArgs) + ")");
 
     switch (uriEnum) {
+      case WALLPAPER:
+      case WALLPAPER_ID: {
+        final SelectionBuilder builder = buildSimpleSelection(uri);
+        return builder.query(db, projection, null);
+      }
       default: {
         final SelectionBuilder builder = buildExpandedSelection(uri, uriEnum.code);
 
@@ -114,8 +120,36 @@ public class StyleProvider extends ContentProvider {
   @Override
   public ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode)
       throws FileNotFoundException {
-    LogUtil.d(TAG, "openFile(uri=" + uri + ",mode=" + mode + ")");
-    return WallpaperFileHelper.openFile(getContext(), uri, mode);
+    LogUtil.d(TAG, "openReadFile(uri=" + uri + ",mode=" + mode + ")");
+
+    StyleUriEnum uriEnum = mUriMatcher.matchUri(uri);
+    switch (uriEnum) {
+      case WALLPAPER:
+        return WallpaperFileHelper.openReadFile(getContext(), queryUriForShow(), mode);
+      case WALLPAPER_ID:
+        return WallpaperFileHelper.openWriteFile(getContext(), uri, mode);
+      default:
+        return null;
+    }
+  }
+
+  private Uri queryUriForShow() {
+    Cursor cursor = query(Wallpaper.CONTENT_URI, new String[]{Wallpaper.COLUMN_NAME_IMAGE_URI},
+        null, null, null);
+    try {
+      if (cursor != null && cursor.moveToFirst()) {
+        Random random = new Random();
+        int position = random.nextInt(cursor.getCount());
+        cursor.moveToPosition(position);
+
+        return Uri.parse(cursor.getString(0));
+      }
+      return null;
+    } finally {
+      if (cursor != null) {
+        cursor.close();
+      }
+    }
   }
 
   private SelectionBuilder buildSimpleSelection(Uri uri) {
@@ -123,6 +157,9 @@ public class StyleProvider extends ContentProvider {
     StyleUriEnum uriEnum = mUriMatcher.matchUri(uri);
 
     switch (uriEnum) {
+      case WALLPAPER: {
+        return builder.table(uriEnum.table);
+      }
       case WALLPAPER_ID: {
         String wallpaperId = Wallpaper.getWallpaperId(uri);
         return builder.table(Tables.WALLPAPER)

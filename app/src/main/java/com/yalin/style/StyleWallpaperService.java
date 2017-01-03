@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build.VERSION;
 import android.support.v4.os.UserManagerCompat;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import com.yalin.style.injection.RenderControllerProvider;
-import com.yalin.style.render.DemoRenderController;
 import com.yalin.style.render.RenderController;
 import com.yalin.style.render.StyleBlurRenderer;
+import com.yalin.style.sync.SyncHelper;
+import com.yalin.style.sync.account.Account;
 import net.rbgrn.android.glwallpaperservice.GLWallpaperService;
 
 /**
@@ -33,13 +33,15 @@ public class StyleWallpaperService extends GLWallpaperService {
   @Override
   public void onCreate() {
     super.onCreate();
+    Account.createSyncAccount(this);
+    SyncHelper.updateSyncInterval(this);
+
     if (UserManagerCompat.isUserUnlocked(this)) {
       initialize();
     } else if (VERSION.SDK_INT >= 24) {
       mUnlockReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-          Log.d(TAG, "onReceive: ");
           initialize();
           unregisterReceiver(this);
         }
@@ -50,7 +52,7 @@ public class StyleWallpaperService extends GLWallpaperService {
   }
 
   private void initialize() {
-    Log.d(TAG, "initialize: ");
+
     mInitialized = true;
   }
 
@@ -79,8 +81,8 @@ public class StyleWallpaperService extends GLWallpaperService {
 
       mRenderer = new StyleBlurRenderer(StyleWallpaperService.this, this);
       mRenderer.setIsPreview(isPreview());
-      RenderControllerProvider.setStubRenderController(
-          new DemoRenderController(StyleWallpaperService.this, mRenderer, this, true));
+//      RenderControllerProvider.setStubRenderController(
+//          new DemoRenderController(StyleWallpaperService.this, mRenderer, this, true));
       mRenderController = RenderControllerProvider
           .providerRenderController(StyleWallpaperService.this, mRenderer, this);
 

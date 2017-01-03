@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import com.yalin.style.provider.StyleContract.Wallpaper;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import junit.framework.Assert;
