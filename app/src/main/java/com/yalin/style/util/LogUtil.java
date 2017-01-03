@@ -51,6 +51,8 @@ public class LogUtil {
     String procInfo = getProcessInfo();
 
     Log.d(tag, procInfo + msg);
+
+    writeLog(tag, procInfo + msg);
   }
 
   private static String getProcessInfo() {
