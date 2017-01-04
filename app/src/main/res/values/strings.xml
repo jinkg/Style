@@ -3,4 +3,6 @@
 
   <string name="app_author">Yalin</string>
   <string name="app_description">Style Live Wallpaper</string>
+
+  <string name="action_activate">Active</string>
 </resources>
