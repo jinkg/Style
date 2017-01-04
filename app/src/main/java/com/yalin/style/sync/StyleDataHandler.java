@@ -108,6 +108,7 @@ public class StyleDataHandler {
       }
       reader.endObject();
     } finally {
+      //noinspection ThrowFromFinallyBlock
       reader.close();
     }
   }

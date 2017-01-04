@@ -6,9 +6,6 @@ import android.content.Intent;
 import com.yalin.style.util.SettingsUtil;
 import com.yalin.style.util.WallpaperFileHelper;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * YaLin On 2017/1/2.
@@ -38,30 +35,9 @@ public class BootstrapService extends IntentService {
     if (file.exists()) {
       file.delete();
     }
-    InputStream is = null;
-    FileOutputStream fos = null;
-    try {
-      is = getAssets().open("starrynight.jpg");
-      fos = new FileOutputStream(file);
-      byte[] buffer = new byte[2048];
-      int len;
-      while ((len = is.read(buffer)) > 0) {
-        fos.write(buffer, 0, len);
-      }
+
+    if (WallpaperFileHelper.copyAssets(this, "starrynight.jpg", file)) {
       SettingsUtil.markBootstrapDone(getApplicationContext());
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        if (is != null) {
-          is.close();
-        }
-        if (fos != null) {
-          fos.close();
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 }

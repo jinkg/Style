@@ -14,4 +14,8 @@ public class StyleContractHelper {
     return uri.buildUpon().appendQueryParameter(QUERY_PARAMETER_CALLER_IS_SYNC_ADAPTER, "true")
         .build();
   }
+
+  public static boolean isUriCalledFromSyncAdapter(Uri uri) {
+    return uri.getBooleanQueryParameter(QUERY_PARAMETER_CALLER_IS_SYNC_ADAPTER, false);
+  }
 }

@@ -20,7 +20,6 @@ import com.yalin.style.util.WallpaperFileHelper;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * YaLin 2016/12/30.
@@ -129,7 +128,7 @@ public class StyleProvider extends ContentProvider {
     final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
     final SelectionBuilder builder = buildSimpleSelection(uri);
     int retVal = builder.where(selection, selectionArgs).delete(db);
-    notifyChange(uri);
+//    notifyChange(uri);
     return retVal;
   }
 
@@ -157,14 +156,11 @@ public class StyleProvider extends ContentProvider {
   }
 
   private Uri queryUriForShow() {
-    Cursor cursor = query(Wallpaper.CONTENT_URI, new String[]{Wallpaper.COLUMN_NAME_IMAGE_URI},
+    Cursor cursor = query(Wallpaper.CONTENT_LAST_WALLPAPER_URI,
+        new String[]{Wallpaper.COLUMN_NAME_IMAGE_URI},
         null, null, null);
     try {
       if (cursor != null && cursor.moveToFirst()) {
-        Random random = new Random();
-        int position = random.nextInt(cursor.getCount());
-        cursor.moveToPosition(position);
-
         return Uri.parse(cursor.getString(0));
       }
       return null;
@@ -213,6 +209,11 @@ public class StyleProvider extends ContentProvider {
   }
 
   private void notifyChange(Uri uri) {
-
+    if (!StyleContractHelper.isUriCalledFromSyncAdapter(uri)) {
+      Context context = getContext();
+      if (context != null) {
+        context.getContentResolver().notifyChange(uri, null);
+      }
+    }
   }
 }

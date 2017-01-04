@@ -14,7 +14,7 @@ public class Config {
 
 
   public static final long DEBUG_AUTO_SYNC_INTERVAL_LONG =
-      TimeUnit.MILLISECONDS.convert(3L, TimeUnit.MINUTES);
+      TimeUnit.MILLISECONDS.convert(2L, TimeUnit.MINUTES);
 
   public static final long AUTO_SYNC_INTERVAL_LONG =
       TimeUnit.MILLISECONDS.convert(24L, TimeUnit.HOURS);
