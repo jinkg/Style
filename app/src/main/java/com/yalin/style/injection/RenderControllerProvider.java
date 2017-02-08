@@ -15,6 +15,7 @@ public class RenderControllerProvider {
   private static RenderController stubRenderController;
 
   public static void setStubRenderController(RenderController renderController) {
+    // test
     stubRenderController = renderController;
   }
 
