@@ -6,7 +6,7 @@ import android.net.Uri;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.yalin.style.data.Config;
-import com.yalin.style.data.entity.WallPaperEntity;
+import com.yalin.style.data.entity.WallpaperEntity;
 import com.yalin.style.data.repository.datasource.provider.StyleContract.Wallpaper;
 import com.yalin.style.data.repository.datasource.provider.StyleContractHelper;
 import com.yalin.style.data.utils.TimeUtil;
@@ -28,7 +28,7 @@ import okhttp3.Response;
 
 public class WallpapersHandler extends JSONHandler {
 
-  private ArrayList<WallPaperEntity> mWallpapers = new ArrayList<>();
+  private ArrayList<WallpaperEntity> mWallpapers = new ArrayList<>();
 
   public WallpapersHandler(Context context) {
     super(context);
@@ -38,7 +38,7 @@ public class WallpapersHandler extends JSONHandler {
   public void makeContentProviderOperations(ArrayList<ContentProviderOperation> list) {
     Uri uri = StyleContractHelper.setUriAsCalledFromSyncAdapter(Wallpaper.CONTENT_URI);
     list.add(ContentProviderOperation.newDelete(uri).build());
-    for (WallPaperEntity wallpaper : mWallpapers) {
+    for (WallpaperEntity wallpaper : mWallpapers) {
       Uri wallpaperUri = Wallpaper.buildWallpaperUri(wallpaper.wallpaperId);
       if (downloadWallpaper(wallpaper, wallpaperUri)) {
         outputWallpaper(wallpaper, list, wallpaperUri.toString());
@@ -48,12 +48,12 @@ public class WallpapersHandler extends JSONHandler {
 
   @Override
   public void process(JsonElement element) {
-    WallPaperEntity[] wallpapers = new Gson().fromJson(element, WallPaperEntity[].class);
+    WallpaperEntity[] wallpapers = new Gson().fromJson(element, WallpaperEntity[].class);
     mWallpapers.ensureCapacity(wallpapers.length);
     Collections.addAll(mWallpapers, wallpapers);
   }
 
-  private void outputWallpaper(WallPaperEntity wallpaper,
+  private void outputWallpaper(WallpaperEntity wallpaper,
       ArrayList<ContentProviderOperation> list, String uriString) {
     Uri uri = StyleContractHelper.setUriAsCalledFromSyncAdapter(Wallpaper.CONTENT_URI);
     ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(uri);
@@ -67,7 +67,7 @@ public class WallpapersHandler extends JSONHandler {
     list.add(builder.build());
   }
 
-  private boolean downloadWallpaper(WallPaperEntity wallpaper, Uri uri) {
+  private boolean downloadWallpaper(WallpaperEntity wallpaper, Uri uri) {
     OutputStream os = null;
     InputStream is = null;
     try {

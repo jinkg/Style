@@ -7,12 +7,15 @@ import android.content.IntentFilter;
 import android.os.Build.VERSION;
 import android.support.v4.os.UserManagerCompat;
 import android.view.SurfaceHolder;
-import com.yalin.style.injection.RenderControllerProvider;
+
 import com.yalin.style.render.RenderController;
 import com.yalin.style.render.StyleBlurRenderer;
 import com.yalin.style.data.repository.datasource.sync.SyncHelper;
 import com.yalin.style.data.repository.datasource.sync.account.Account;
+
 import net.rbgrn.android.glwallpaperservice.GLWallpaperService;
+
+import javax.inject.Inject;
 
 /**
  * YaLin 2016/12/30.
@@ -20,123 +23,127 @@ import net.rbgrn.android.glwallpaperservice.GLWallpaperService;
 
 public class StyleWallpaperService extends GLWallpaperService {
 
-  private static final String TAG = "StyleWallpaperService";
+    private static final String TAG = "StyleWallpaperService";
 
-  private boolean mInitialized = false;
-  private BroadcastReceiver mUnlockReceiver;
-
-  @Override
-  public Engine onCreateEngine() {
-    return new StyleWallpaperEngine();
-  }
-
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    Account.createSyncAccount(this);
-    SyncHelper.updateSyncInterval(this);
-
-    if (UserManagerCompat.isUserUnlocked(this)) {
-      initialize();
-    } else if (VERSION.SDK_INT >= 24) {
-      mUnlockReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-          initialize();
-          unregisterReceiver(this);
-        }
-      };
-      IntentFilter filter = new IntentFilter(Intent.ACTION_USER_UNLOCKED);
-      registerReceiver(mUnlockReceiver, filter);
-    }
-  }
-
-  private void initialize() {
-
-    mInitialized = true;
-  }
-
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    if (mInitialized) {
-      //todo
-    } else {
-      unregisterReceiver(mUnlockReceiver);
-    }
-  }
-
-  private class StyleWallpaperEngine extends GLEngine implements
-      StyleBlurRenderer.Callbacks,
-      RenderController.Callbacks {
-
-    private StyleBlurRenderer mRenderer;
-    private RenderController mRenderController;
-
-    private boolean mVisible = true;
+    private boolean mInitialized = false;
+    private BroadcastReceiver mUnlockReceiver;
 
     @Override
-    public void onCreate(SurfaceHolder surfaceHolder) {
-      super.onCreate(surfaceHolder);
+    public Engine onCreateEngine() {
+        return new StyleWallpaperEngine();
+    }
 
-      mRenderer = new StyleBlurRenderer(StyleWallpaperService.this, this);
-      mRenderer.setIsPreview(isPreview());
-//      RenderControllerProvider.setStubRenderController(
-//          new DemoRenderController(StyleWallpaperService.this, mRenderer, this, true));
-      mRenderController = RenderControllerProvider
-          .providerRenderController(StyleWallpaperService.this, mRenderer, this);
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Account.createSyncAccount(this);
+        SyncHelper.updateSyncInterval(this);
 
-      setEGLContextClientVersion(2);
-      setEGLConfigChooser(8, 8, 8, 0, 0, 0);
-      setRenderer(mRenderer);
-      setRenderMode(RENDERMODE_WHEN_DIRTY);
-      requestRender();
+        if (UserManagerCompat.isUserUnlocked(this)) {
+            initialize();
+        } else if (VERSION.SDK_INT >= 24) {
+            mUnlockReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    initialize();
+                    unregisterReceiver(this);
+                }
+            };
+            IntentFilter filter = new IntentFilter(Intent.ACTION_USER_UNLOCKED);
+            registerReceiver(mUnlockReceiver, filter);
+        }
+    }
+
+    private void initialize() {
+
+        mInitialized = true;
     }
 
     @Override
     public void onDestroy() {
-      super.onDestroy();
-      queueEvent(new Runnable() {
-        @Override
-        public void run() {
-          if (mRenderer != null) {
-            mRenderer.destroy();
-          }
+        super.onDestroy();
+        if (mInitialized) {
+            //todo
+        } else {
+            unregisterReceiver(mUnlockReceiver);
         }
-      });
-      mRenderController.destroy();
     }
 
-    @Override
-    public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-      super.onSurfaceChanged(holder, format, width, height);
-      mRenderController.reloadCurrentArtwork(true);
-    }
+    public class StyleWallpaperEngine extends GLEngine implements
+            StyleBlurRenderer.Callbacks,
+            RenderController.Callbacks {
 
-    @Override
-    public void onVisibilityChanged(boolean visible) {
-      mVisible = visible;
-      mRenderController.setVisible(visible);
-    }
+        private StyleBlurRenderer mRenderer;
 
-    @Override
-    public void onOffsetsChanged(float xOffset, float yOffset, float xOffsetStep,
-        float yOffsetStep, int xPixelOffset, int yPixelOffset) {
-      super.onOffsetsChanged(xOffset, yOffset, xOffsetStep,
-          yOffsetStep, xPixelOffset, yPixelOffset);
-      mRenderer.setNormalOffsetX(xOffset);
-    }
+        @Inject
+        RenderController mRenderController;
 
-    @Override
-    public void queueEventOnGlThread(Runnable runnable) {
-      queueEvent(runnable);
-    }
+        private boolean mVisible = true;
 
-    @Override
-    public void requestRender() {
-      if (mVisible) {
-        super.requestRender();
-      }
+        @Override
+        public void onCreate(SurfaceHolder surfaceHolder) {
+            super.onCreate(surfaceHolder);
+
+            mRenderer = new StyleBlurRenderer(StyleWallpaperService.this, this);
+            mRenderer.setIsPreview(isPreview());
+
+            setEGLContextClientVersion(2);
+            setEGLConfigChooser(8, 8, 8, 0, 0, 0);
+            setRenderer(mRenderer);
+            setRenderMode(RENDERMODE_WHEN_DIRTY);
+            requestRender();
+
+            StyleApplication.getInstance().getApplicationComponent()
+                    .inject(this);
+
+            mRenderController.setRenderer(mRenderer);
+            mRenderController.setCallbacks(this);
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    if (mRenderer != null) {
+                        mRenderer.destroy();
+                    }
+                }
+            });
+            mRenderController.destroy();
+        }
+
+        @Override
+        public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            super.onSurfaceChanged(holder, format, width, height);
+            mRenderController.reloadCurrentArtwork();
+        }
+
+        @Override
+        public void onVisibilityChanged(boolean visible) {
+            mVisible = visible;
+            mRenderController.setVisible(visible);
+        }
+
+        @Override
+        public void onOffsetsChanged(float xOffset, float yOffset, float xOffsetStep,
+                                     float yOffsetStep, int xPixelOffset, int yPixelOffset) {
+            super.onOffsetsChanged(xOffset, yOffset, xOffsetStep,
+                    yOffsetStep, xPixelOffset, yPixelOffset);
+            mRenderer.setNormalOffsetX(xOffset);
+        }
+
+        @Override
+        public void queueEventOnGlThread(Runnable runnable) {
+            queueEvent(runnable);
+        }
+
+        @Override
+        public void requestRender() {
+            if (mVisible) {
+                super.requestRender();
+            }
+        }
     }
-  }
 }

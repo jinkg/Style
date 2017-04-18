@@ -32,6 +32,11 @@ dependencies {
     compile "com.android.support:exifinterface:${SUPPORT_LIBRARY_VERSION}"
     compile "com.google.code.gson:gson:${GSON_VERSION}"
     compile "com.squareup.okhttp3:okhttp:${OK_HTTP_VERSION}"
+    compile "com.google.dagger:dagger:${DAGGER_VERSION}"
+    compile "io.reactivex.rxjava2:rxjava:${RXJAVA_VERSION}"
+    compile "io.reactivex.rxjava2:rxandroid:${RXANDROID_VERSION}"
+
+    annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
 
     compile project(':domain')
     compile project(':data')
