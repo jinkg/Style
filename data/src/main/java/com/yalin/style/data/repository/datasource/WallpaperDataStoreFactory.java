@@ -16,7 +16,7 @@ public class WallpaperDataStoreFactory {
     private Context context;
 
     @Inject
-    public WallpaperDataStoreFactory(Context context) {
+    WallpaperDataStoreFactory(Context context) {
         this.context = context;
     }
 

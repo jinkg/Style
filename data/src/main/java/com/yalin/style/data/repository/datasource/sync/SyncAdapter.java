@@ -16,30 +16,27 @@ import com.yalin.style.data.log.LogUtil;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
-  private static final String TAG = "SyncAdapter";
+    private static final String TAG = "SyncAdapter";
 
-  private final Context mContext;
+    private final Context mContext;
 
-  public SyncAdapter(Context context, boolean autoInitialize) {
-    super(context, autoInitialize);
-    mContext = context;
+    public SyncAdapter(Context context, boolean autoInitialize) {
+        super(context, autoInitialize);
+        mContext = context;
 
-    if (!BuildConfig.DEBUG) {
-      Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-        @Override
-        public void uncaughtException(Thread thread, Throwable throwable) {
-          LogUtil.f(TAG, "Uncaught sync exception, suppressing UI in release build.",
-              throwable);
+        if (!BuildConfig.DEBUG) {
+            Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
+                    LogUtil.f(TAG, "Uncaught sync exception, suppressing UI in release build.",
+                            throwable));
         }
-      });
+
     }
-  }
 
-  @Override
-  public void onPerformSync(Account account, Bundle extras, String authority,
-      ContentProviderClient provider, SyncResult syncResult) {
-    LogUtil.d(TAG, "PerformSync");
+    @Override
+    public void onPerformSync(Account account, Bundle extras, String authority,
+                              ContentProviderClient provider, SyncResult syncResult) {
+        LogUtil.d(TAG, "PerformSync");
 
-    new SyncHelper(mContext).performSync(syncResult, extras);
-  }
+        new SyncHelper(mContext).performSync(syncResult, extras);
+    }
 }

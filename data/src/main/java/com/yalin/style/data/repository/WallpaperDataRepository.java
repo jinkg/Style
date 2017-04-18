@@ -9,6 +9,8 @@ import com.yalin.style.data.entity.mapper.WallpaperEntityMapper;
 import com.yalin.style.data.repository.datasource.WallpaperDataStore;
 import com.yalin.style.data.repository.datasource.WallpaperDataStoreFactory;
 import com.yalin.style.data.repository.datasource.provider.StyleContract;
+import com.yalin.style.data.repository.datasource.sync.SyncHelper;
+import com.yalin.style.data.repository.datasource.sync.account.Account;
 import com.yalin.style.domain.Wallpaper;
 import com.yalin.style.domain.interactor.DefaultObserver;
 import com.yalin.style.domain.repository.WallpaperRepository;
@@ -36,9 +38,9 @@ public class WallpaperDataRepository implements WallpaperRepository {
     private final WallpaperEntityMapper wallpaperEntityMapper;
 
     @Inject
-    public WallpaperDataRepository(Context context,
-                                   WallpaperDataStoreFactory wallpaperDataStoreFactory,
-                                   WallpaperEntityMapper wallpaperEntityMapper) {
+    WallpaperDataRepository(Context context,
+                            WallpaperDataStoreFactory wallpaperDataStoreFactory,
+                            WallpaperEntityMapper wallpaperEntityMapper) {
         this.wallpaperDataStoreFactory = wallpaperDataStoreFactory;
         this.wallpaperEntityMapper = wallpaperEntityMapper;
         mContentObserver = new ContentObserver(new Handler()) {
@@ -49,6 +51,9 @@ public class WallpaperDataRepository implements WallpaperRepository {
         };
         context.getContentResolver().registerContentObserver(StyleContract.Wallpaper.CONTENT_URI,
                 true, mContentObserver);
+
+        Account.createSyncAccount(context);
+        SyncHelper.updateSyncInterval(context);
     }
 
     private void notifyObserver() {

@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.yalin.style.data.entity.WallpaperEntity;
 
-import javax.inject.Inject;
-
 import io.reactivex.Observable;
 
 /**

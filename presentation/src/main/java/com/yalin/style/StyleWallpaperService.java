@@ -10,8 +10,6 @@ import android.view.SurfaceHolder;
 
 import com.yalin.style.render.RenderController;
 import com.yalin.style.render.StyleBlurRenderer;
-import com.yalin.style.data.repository.datasource.sync.SyncHelper;
-import com.yalin.style.data.repository.datasource.sync.account.Account;
 
 import net.rbgrn.android.glwallpaperservice.GLWallpaperService;
 
@@ -36,8 +34,6 @@ public class StyleWallpaperService extends GLWallpaperService {
     @Override
     public void onCreate() {
         super.onCreate();
-        Account.createSyncAccount(this);
-        SyncHelper.updateSyncInterval(this);
 
         if (UserManagerCompat.isUserUnlocked(this)) {
             initialize();
