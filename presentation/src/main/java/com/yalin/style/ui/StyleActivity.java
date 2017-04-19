@@ -1,5 +1,7 @@
 package com.yalin.style.ui;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.yalin.style.R;
 import com.yalin.style.StyleWallpaperService;
+import com.yalin.style.util.StyleConfig;
 
 public class StyleActivity extends AppCompatActivity implements OnClickListener {
 
@@ -23,6 +26,8 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener 
     private Button mActiveButton;
 
     private Handler mHandler = new Handler();
+
+    private boolean mStyleActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,8 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener 
         showHideChrome(true);
 
         setUpActiveView();
+
+        mStyleActive = StyleConfig.isStyleActive();
 
         updateUi();
     }
@@ -63,8 +70,19 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener 
                 .setDuration(1000)
                 .start();
 
-        final AnimatedStyleLogoFragment logoFragment = (AnimatedStyleLogoFragment) getFragmentManager()
-                .findFragmentById(R.id.animated_logo_fragment);
+        if (!mStyleActive) {
+            FragmentManager fragmentManager = getFragmentManager();
+            Fragment demoFragment = fragmentManager.findFragmentById(R.id.demo_container_layout);
+            if (demoFragment == null) {
+                fragmentManager.beginTransaction()
+                        .add(R.id.demo_container_layout,
+                                StyleRenderFragment.createInstance(true, true))
+                        .commit();
+            }
+        }
+
+        final AnimatedStyleLogoFragment logoFragment = (AnimatedStyleLogoFragment)
+                getFragmentManager().findFragmentById(R.id.animated_logo_fragment);
         logoFragment.reset();
         logoFragment.setOnFillStartedCallback(new Runnable() {
             @Override

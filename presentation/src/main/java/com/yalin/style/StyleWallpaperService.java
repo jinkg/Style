@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import android.view.ViewConfiguration;
 
 import com.yalin.style.render.RenderController;
 import com.yalin.style.render.StyleBlurRenderer;
+import com.yalin.style.util.StyleConfig;
 
 import net.rbgrn.android.glwallpaperservice.GLWallpaperService;
 
@@ -94,6 +96,8 @@ public class StyleWallpaperService extends GLWallpaperService {
         // is last double tab valid
         private boolean mValidDoubleTap = false;
 
+        private BroadcastReceiver mEngineUnlockReceiver;
+
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
@@ -115,6 +119,22 @@ public class StyleWallpaperService extends GLWallpaperService {
 
             mGestureDetector
                     = new GestureDetectorCompat(StyleWallpaperService.this, mGestureListener);
+
+            if (!isPreview()) {
+                if (UserManagerCompat.isUserUnlocked(getApplicationContext())) {
+                    activateWallpaper();
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    mEngineUnlockReceiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            activateWallpaper();
+                            unregisterReceiver(this);
+                        }
+                    };
+                    IntentFilter filter = new IntentFilter(Intent.ACTION_USER_UNLOCKED);
+                    registerReceiver(mEngineUnlockReceiver, filter);
+                }
+            }
         }
 
         @Override
@@ -129,6 +149,21 @@ public class StyleWallpaperService extends GLWallpaperService {
                 }
             });
             mRenderController.destroy();
+
+            if (!isPreview()) {
+                deactivateWallpaper();
+                if (mEngineUnlockReceiver != null) {
+                    unregisterReceiver(mEngineUnlockReceiver);
+                }
+            }
+        }
+
+        private void activateWallpaper() {
+            StyleConfig.setStyleActive(true);
+        }
+
+        private void deactivateWallpaper() {
+            StyleConfig.setStyleActive(false);
         }
 
         @Override
