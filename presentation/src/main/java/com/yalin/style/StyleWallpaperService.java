@@ -1,12 +1,19 @@
 package com.yalin.style;
 
+import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build.VERSION;
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.os.UserManagerCompat;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.ViewConfiguration;
 
 import com.yalin.style.render.RenderController;
 import com.yalin.style.render.StyleBlurRenderer;
@@ -68,13 +75,24 @@ public class StyleWallpaperService extends GLWallpaperService {
     public class StyleWallpaperEngine extends GLEngine implements
             StyleBlurRenderer.Callbacks,
             RenderController.Callbacks {
+        private static final long TEMPORARY_FOCUS_DURATION_MILLIS = 3000;
 
         private StyleBlurRenderer mRenderer;
 
         @Inject
         RenderController mRenderController;
 
+        GestureDetectorCompat mGestureDetector;
+
+        private Handler mMainThreadHandler = new Handler();
+
         private boolean mVisible = true;
+
+        // is MainActivity visible
+        private boolean mWallpaperDetailMode = false;
+
+        // is last double tab valid
+        private boolean mValidDoubleTap = false;
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
@@ -94,6 +112,9 @@ public class StyleWallpaperService extends GLWallpaperService {
 
             mRenderController.setRenderer(mRenderer);
             mRenderController.setCallbacks(this);
+
+            mGestureDetector
+                    = new GestureDetectorCompat(StyleWallpaperService.this, mGestureListener);
         }
 
         @Override
@@ -131,6 +152,29 @@ public class StyleWallpaperService extends GLWallpaperService {
         }
 
         @Override
+        public void onTouchEvent(MotionEvent event) {
+            super.onTouchEvent(event);
+            mGestureDetector.onTouchEvent(event);
+            delayBlur();
+        }
+
+        @Override
+        public Bundle onCommand(String action, int x, int y, int z, Bundle extras,
+                                boolean resultRequested) {
+            if (WallpaperManager.COMMAND_TAP.equals(action) && mValidDoubleTap) {
+                queueEvent(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRenderer.setIsBlurred(!mRenderer.isBlurred(), false);
+                        delayBlur();
+                    }
+                });
+                mValidDoubleTap = false;
+            }
+            return super.onCommand(action, x, y, z, extras, resultRequested);
+        }
+
+        @Override
         public void queueEventOnGlThread(Runnable runnable) {
             queueEvent(runnable);
         }
@@ -141,5 +185,57 @@ public class StyleWallpaperService extends GLWallpaperService {
                 super.requestRender();
             }
         }
+
+        private void cancelDelayBlur() {
+            mMainThreadHandler.removeCallbacks(mBlurRunnable);
+        }
+
+        private void delayBlur() {
+            if (mWallpaperDetailMode || mRenderer.isBlurred()) {
+                return;
+            }
+            cancelDelayBlur();
+            mMainThreadHandler.postDelayed(mBlurRunnable, TEMPORARY_FOCUS_DURATION_MILLIS);
+        }
+
+        private final Runnable mBlurRunnable = new Runnable() {
+            @Override
+            public void run() {
+                queueEvent(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRenderer.setIsBlurred(true, false);
+                    }
+                });
+            }
+        };
+
+        private final Runnable mDoubleTapTimeoutRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mValidDoubleTap = false;
+            }
+        };
+
+        private final GestureDetector.OnGestureListener mGestureListener
+                = new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                if (mWallpaperDetailMode) {
+                    return true;
+                }
+
+                mValidDoubleTap = true;
+                mMainThreadHandler.removeCallbacks(mDoubleTapTimeoutRunnable);
+                int timeout = ViewConfiguration.getTapTimeout();
+                mMainThreadHandler.postDelayed(mDoubleTapTimeoutRunnable, timeout);
+                return true;
+            }
+        };
     }
 }

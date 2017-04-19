@@ -1,36 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/active_container"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:alpha="0"
-  android:fitsSystemWindows="true">
-
-  <View
+    android:id="@+id/active_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/intro_background_protection" />
+    android:alpha="0">
 
-  <fragment
-    android:id="@+id/animated_logo_fragment"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
-    android:name="com.yalin.style.ui.AnimatedStyleLogoFragment" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/intro_background_protection" />
 
-  <Button
-    android:id="@+id/activate_style_button"
-    android:textStyle="bold"
-    android:layout_width="@dimen/activate_button_size"
-    android:layout_height="@dimen/activate_button_size"
-    android:layout_marginTop="48dp"
-    android:layout_below="@+id/animated_logo_fragment"
-    android:layout_centerHorizontal="true"
-    android:background="@drawable/white_circle_button"
-    android:fontFamily="sans-serif-condensed"
-    android:text="@string/action_activate"
-    android:textAllCaps="true"
-    android:textColor="#333"
-    android:textSize="18sp" />
+    <fragment
+        android:id="@+id/animated_logo_fragment"
+        android:name="com.yalin.style.ui.AnimatedStyleLogoFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <Button
+        android:id="@+id/activate_style_button"
+        android:layout_width="@dimen/activate_button_size"
+        android:layout_height="@dimen/activate_button_size"
+        android:layout_below="@+id/animated_logo_fragment"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/white_circle_button"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/action_activate"
+        android:textAllCaps="true"
+        android:textColor="#333"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

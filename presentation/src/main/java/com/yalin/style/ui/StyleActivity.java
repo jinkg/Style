@@ -31,15 +31,24 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener 
         setContentView(R.layout.activity_main);
 
         mMainContainer = (RelativeLayout) findViewById(R.id.main_container);
-        int flags = 0;
-        flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-        mMainContainer.setSystemUiVisibility(flags);
+        showHideChrome(true);
 
         setUpActiveView();
 
         updateUi();
+    }
+
+    private void showHideChrome(boolean show) {
+        int flags = show ? 0 : View.SYSTEM_UI_FLAG_LOW_PROFILE;
+        flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+        if (!show) {
+            flags |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE;
+        }
+        mMainContainer.setSystemUiVisibility(flags);
     }
 
     private void setUpActiveView() {
