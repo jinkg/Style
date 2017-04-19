@@ -39,7 +39,7 @@ public class WallpapersHandler extends JSONHandler {
     Uri uri = StyleContractHelper.setUriAsCalledFromSyncAdapter(Wallpaper.CONTENT_URI);
     list.add(ContentProviderOperation.newDelete(uri).build());
     for (WallpaperEntity wallpaper : mWallpapers) {
-      Uri wallpaperUri = Wallpaper.buildWallpaperUri(wallpaper.wallpaperId);
+      Uri wallpaperUri = Wallpaper.buildWallpaperSaveUri(wallpaper.wallpaperId);
       if (downloadWallpaper(wallpaper, wallpaperUri)) {
         outputWallpaper(wallpaper, list, wallpaperUri.toString());
       }

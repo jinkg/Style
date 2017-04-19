@@ -31,7 +31,7 @@ import io.reactivex.Observable;
 @Singleton
 public class WallpaperDataRepository implements WallpaperRepository {
 
-    private final Set<DefaultObserver<Wallpaper>> mObserverSet = new HashSet<>();
+    private final Set<DefaultObserver<Void>> mObserverSet = new HashSet<>();
     private final ContentObserver mContentObserver;
 
     private final WallpaperDataStoreFactory wallpaperDataStoreFactory;
@@ -57,10 +57,9 @@ public class WallpaperDataRepository implements WallpaperRepository {
     }
 
     private void notifyObserver() {
-        Wallpaper wallpaper = new Wallpaper();
-        for (DefaultObserver<Wallpaper> defaultObserver : mObserverSet) {
-            defaultObserver.onNext(wallpaper);
-            defaultObserver.onComplete();
+        for (DefaultObserver<Void> observer : mObserverSet) {
+            observer.onNext(null);
+            observer.onComplete();
         }
     }
 
@@ -71,12 +70,12 @@ public class WallpaperDataRepository implements WallpaperRepository {
     }
 
     @Override
-    public void registerObserver(DefaultObserver<Wallpaper> observer) {
+    public void registerObserver(DefaultObserver<Void> observer) {
         mObserverSet.add(observer);
     }
 
     @Override
-    public void unregisterObserver(DefaultObserver<Wallpaper> observer) {
+    public void unregisterObserver(DefaultObserver<Void> observer) {
         mObserverSet.remove(observer);
     }
 

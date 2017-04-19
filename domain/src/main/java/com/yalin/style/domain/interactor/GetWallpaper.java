@@ -30,11 +30,11 @@ public class GetWallpaper extends UseCase<Wallpaper, Void> {
         return wallpaperRepository.getWallpaper();
     }
 
-    public void registerObserver(DefaultObserver<Wallpaper> observer) {
+    public void registerObserver(DefaultObserver<Void> observer) {
         wallpaperRepository.registerObserver(observer);
     }
 
-    public void unregisterObserver(DefaultObserver<Wallpaper> observer) {
+    public void unregisterObserver(DefaultObserver<Void> observer) {
         wallpaperRepository.unregisterObserver(observer);
     }
 }

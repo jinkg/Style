@@ -42,11 +42,11 @@ public class SyncHelper {
 
   private boolean doStyleSync() throws IOException {
     if (!isOnline()) {
-      LogUtil.d(TAG, "Not attempting remote sync because device is OFFLINE");
+      LogUtil.D(TAG, "Not attempting remote sync because device is OFFLINE");
       return false;
     }
 
-    LogUtil.d(TAG, "Starting remote sync.");
+    LogUtil.D(TAG, "Starting remote sync.");
 
     String data = new RemoteStyleDataFetcher(mContext).fetchStyleDataIfNewer();
     if (!TextUtils.isEmpty(data)) {
@@ -64,9 +64,9 @@ public class SyncHelper {
 
   public static void updateSyncInterval(final Context context) {
     Account account = com.yalin.style.data.repository.datasource.sync.account.Account.getAccount();
-    LogUtil.d(TAG, "Checking sync interval");
+    LogUtil.D(TAG, "Checking sync interval");
     long recommended = calculateRecommendedSyncInterval(context);
-    LogUtil.d(TAG, "Setting up sync for account, interval " + recommended + "ms");
+    LogUtil.D(TAG, "Setting up sync for account, interval " + recommended + "ms");
     ContentResolver.setIsSyncable(account, StyleContract.AUTHORITY, 1);
     ContentResolver.setSyncAutomatically(account, StyleContract.AUTHORITY, true);
     ContentResolver

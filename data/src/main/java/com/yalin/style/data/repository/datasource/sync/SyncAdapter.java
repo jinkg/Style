@@ -26,7 +26,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         if (!BuildConfig.DEBUG) {
             Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
-                    LogUtil.f(TAG, "Uncaught sync exception, suppressing UI in release build.",
+                    LogUtil.F(TAG, "Uncaught sync exception, suppressing UI in release build.",
                             throwable));
         }
 
@@ -35,7 +35,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
-        LogUtil.d(TAG, "PerformSync");
+        LogUtil.D(TAG, "PerformSync");
 
         new SyncHelper(mContext).performSync(syncResult, extras);
     }

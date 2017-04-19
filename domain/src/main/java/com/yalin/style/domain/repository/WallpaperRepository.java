@@ -13,7 +13,7 @@ import io.reactivex.Observable;
 public interface WallpaperRepository {
     Observable<Wallpaper> getWallpaper();
 
-    void registerObserver(DefaultObserver<Wallpaper> observer);
+    void registerObserver(DefaultObserver<Void> observer);
 
-    void unregisterObserver(DefaultObserver<Wallpaper> observer);
+    void unregisterObserver(DefaultObserver<Void> observer);
 }

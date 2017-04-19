@@ -44,47 +44,47 @@ public class StyleDataHandler {
   }
 
   public void applyStyleData(String[] dataBodies) throws IOException {
-    LogUtil.d(TAG, "Applying data from " + dataBodies.length + " files");
+    LogUtil.D(TAG, "Applying data from " + dataBodies.length + " files");
 
     mHandlerForKey.put(DATA_KEY_WALLPAPER, mWallpapersHandler = new WallpapersHandler(mContext));
 
-    LogUtil.d(TAG, "Processing " + dataBodies.length + " JSON objects.");
+    LogUtil.D(TAG, "Processing " + dataBodies.length + " JSON objects.");
     for (int i = 0; i < dataBodies.length; i++) {
-      LogUtil.d(TAG, "Processing json object #" + (i + 1) + " of " + dataBodies.length);
+      LogUtil.D(TAG, "Processing json object #" + (i + 1) + " of " + dataBodies.length);
       processDataBody(dataBodies[i]);
     }
 
     ArrayList<ContentProviderOperation> batch = new ArrayList<>();
     for (String key : DATA_KEYS_IN_ORDER) {
-      LogUtil.d(TAG, "Building content provider operations for: " + key);
+      LogUtil.D(TAG, "Building content provider operations for: " + key);
       mHandlerForKey.get(key).makeContentProviderOperations(batch);
-      LogUtil.d(TAG, "Content provider operations so far: " + batch.size());
+      LogUtil.D(TAG, "Content provider operations so far: " + batch.size());
     }
 
-    LogUtil.d(TAG, "Applying " + batch.size() + " content provider operations.");
+    LogUtil.D(TAG, "Applying " + batch.size() + " content provider operations.");
     try {
       int operations = batch.size();
       if (operations > 0) {
         mContext.getContentResolver().applyBatch(StyleContract.AUTHORITY, batch);
       }
-      LogUtil.d(TAG, "Successfully applied " + operations + " content provider operations.");
+      LogUtil.D(TAG, "Successfully applied " + operations + " content provider operations.");
       mContentProviderOperationsDone += operations;
     } catch (RemoteException ex) {
-      LogUtil.d(TAG, "RemoteException while applying content provider operations.");
+      LogUtil.D(TAG, "RemoteException while applying content provider operations.");
       throw new RuntimeException("Error executing content provider batch operation", ex);
     } catch (OperationApplicationException ex) {
-      LogUtil.d(TAG, "OperationApplicationException while applying content provider operations.");
+      LogUtil.D(TAG, "OperationApplicationException while applying content provider operations.");
       throw new RuntimeException("Error executing content provider batch operation", ex);
     }
 
-    LogUtil.d(TAG, "Notifying changes on all top-level paths on Content Resolver.");
+    LogUtil.D(TAG, "Notifying changes on all top-level paths on Content Resolver.");
     ContentResolver resolver = mContext.getContentResolver();
     for (String path : StyleContract.TOP_LEVEL_PATHS) {
       Uri uri = StyleContract.BASE_CONTENT_URI.buildUpon().appendPath(path).build();
       resolver.notifyChange(uri, null);
     }
 
-    LogUtil.d(TAG, "Done applying conference data.");
+    LogUtil.D(TAG, "Done applying conference data.");
   }
 
   private void processDataBody(String dataBody) throws IOException {
@@ -99,10 +99,10 @@ public class StyleDataHandler {
       while (reader.hasNext()) {
         String key = reader.nextName();
         if (mHandlerForKey.containsKey(key)) {
-          LogUtil.d(TAG, "Processing key in conference data json: " + key);
+          LogUtil.D(TAG, "Processing key in conference data json: " + key);
           mHandlerForKey.get(key).process(parser.parse(reader));
         } else {
-          LogUtil.d(TAG, "Skipping unknown key in conference data json: " + key);
+          LogUtil.D(TAG, "Skipping unknown key in conference data json: " + key);
           reader.skipValue();
         }
       }

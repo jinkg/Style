@@ -28,7 +28,7 @@ public class RenderController {
 
     private final GetWallpaper getWallpaperUseCase;
     private final WallpaperItemMapper wallpaperItemMapper;
-    private final WallPaperItemObserver wallPaperItemObserver;
+    private final WallpaperRefreshObserver wallpaperRefreshObserver;
 
     @Inject
     public RenderController(Context context, GetWallpaper getWallpaperUseCase,
@@ -36,9 +36,9 @@ public class RenderController {
         mContext = context;
 
         this.wallpaperItemMapper = wallpaperItemMapper;
-        wallPaperItemObserver = new WallPaperItemObserver();
+        wallpaperRefreshObserver = new WallpaperRefreshObserver();
         this.getWallpaperUseCase = getWallpaperUseCase;
-        getWallpaperUseCase.registerObserver(wallPaperItemObserver);
+        this.getWallpaperUseCase.registerObserver(wallpaperRefreshObserver);
     }
 
     public void setRenderer(StyleBlurRenderer renderer) {
@@ -53,21 +53,21 @@ public class RenderController {
         if (mQueuedBitmapRegionLoader != null) {
             mQueuedBitmapRegionLoader.destroy();
         }
-        getWallpaperUseCase.unregisterObserver(wallPaperItemObserver);
+        getWallpaperUseCase.unregisterObserver(wallpaperRefreshObserver);
     }
 
     private BitmapRegionLoader createBitmapRegionLoader(WallpaperItem wallpaperItem) {
         try {
             return BitmapRegionLoader.newInstance(wallpaperItem.inputStream);
         } catch (IOException e) {
-            LogUtil.d(TAG, "Could't load wallpaper. " + wallpaperItem.title
+            LogUtil.D(TAG, "Could't load wallpaper. " + wallpaperItem.title
                     + " " + e.getMessage());
         }
         return null;
     }
 
     public void reloadCurrentArtwork() {
-        getWallpaperUseCase.execute(new WallPaperItemObserver(), null);
+        getWallpaperUseCase.execute(new WallpaperItemObserver(), null);
     }
 
     public void setVisible(boolean visible) {
@@ -99,7 +99,7 @@ public class RenderController {
         });
     }
 
-    private final class WallPaperItemObserver extends DefaultObserver<Wallpaper> {
+    private final class WallpaperItemObserver extends DefaultObserver<Wallpaper> {
         @Override
         public void onNext(Wallpaper wallpaper) {
             WallpaperItem wallpaperItem = wallpaperItemMapper.transform(wallpaper);
@@ -111,15 +111,12 @@ public class RenderController {
             }
             setBitmapRegionLoader(bitmapRegionLoader);
         }
+    }
 
+    private final class WallpaperRefreshObserver extends DefaultObserver<Void> {
         @Override
         public void onComplete() {
-            super.onComplete();
-        }
-
-        @Override
-        public void onError(Throwable exception) {
-            super.onError(exception);
+            reloadCurrentArtwork();
         }
     }
 

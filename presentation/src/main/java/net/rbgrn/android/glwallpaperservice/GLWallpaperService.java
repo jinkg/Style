@@ -74,19 +74,19 @@ public class GLWallpaperService extends WallpaperService {
                 @Override
                 public void onCreate(SurfaceHolder surfaceHolder) {
                         super.onCreate(surfaceHolder);
-                        // Log.d(TAG, "GLEngine.onCreate()");
+                        // Log.D(TAG, "GLEngine.onCreate()");
                 }
 
                 @Override
                 public void onDestroy() {
                         super.onDestroy();
-                        // Log.d(TAG, "GLEngine.onDestroy()");
+                        // Log.D(TAG, "GLEngine.onDestroy()");
                         mGLThread.requestExitAndWait();
                 }
 
                 @Override
                 public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                        // Log.d(TAG, "onSurfaceChanged()");
+                        // Log.D(TAG, "onSurfaceChanged()");
                         mGLThread.onWindowResize(width, height);
                         super.onSurfaceChanged(holder, format, width, height);
                 }
@@ -346,29 +346,29 @@ class EglHelper {
          * @param configSpec
          */
         public void start() {
-                // Log.d("EglHelper" + instanceId, "start()");
+                // Log.D("EglHelper" + instanceId, "start()");
                 if (mEgl == null) {
-                        // Log.d("EglHelper" + instanceId, "getting new EGL");
+                        // Log.D("EglHelper" + instanceId, "getting new EGL");
                         /*
                          * Get an EGL instance
                          */
                         mEgl = (EGL10) EGLContext.getEGL();
                 } else {
-                        // Log.d("EglHelper" + instanceId, "reusing EGL");
+                        // Log.D("EglHelper" + instanceId, "reusing EGL");
                 }
 
                 if (mEglDisplay == null) {
-                        // Log.d("EglHelper" + instanceId, "getting new display");
+                        // Log.D("EglHelper" + instanceId, "getting new display");
                         /*
                          * Get to the default display.
                          */
                         mEglDisplay = mEgl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
                 } else {
-                        // Log.d("EglHelper" + instanceId, "reusing display");
+                        // Log.D("EglHelper" + instanceId, "reusing display");
                 }
 
                 if (mEglConfig == null) {
-                        // Log.d("EglHelper" + instanceId, "getting new config");
+                        // Log.D("EglHelper" + instanceId, "getting new config");
                         /*
                          * We can now initialize EGL for that display
                          */
@@ -376,11 +376,11 @@ class EglHelper {
                         mEgl.eglInitialize(mEglDisplay, version);
                         mEglConfig = mEGLConfigChooser.chooseConfig(mEgl, mEglDisplay);
                 } else {
-                        // Log.d("EglHelper" + instanceId, "reusing config");
+                        // Log.D("EglHelper" + instanceId, "reusing config");
                 }
 
                 if (mEglContext == null) {
-                        // Log.d("EglHelper" + instanceId, "creating new context");
+                        // Log.D("EglHelper" + instanceId, "creating new context");
                         /*
                          * Create an OpenGL ES context. This must be done only once, an OpenGL context is a somewhat heavy object.
                          */
@@ -389,7 +389,7 @@ class EglHelper {
                                 throw new RuntimeException("createContext failed");
                         }
                 } else {
-                        // Log.d("EglHelper" + instanceId, "reusing context");
+                        // Log.D("EglHelper" + instanceId, "reusing context");
                 }
 
                 mEglSurface = null;

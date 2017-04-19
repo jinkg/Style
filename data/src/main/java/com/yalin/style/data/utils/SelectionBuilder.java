@@ -166,7 +166,7 @@ public class SelectionBuilder {
     if (columns != null) {
       mapColumns(columns);
     }
-    LogUtil.d(TAG, "query(columns=" + Arrays.toString(columns)
+    LogUtil.D(TAG, "query(columns=" + Arrays.toString(columns)
         + ", distinct=" + distinct + ") " + this);
     return db.query(distinct, mTable, columns, getSelection(), getSelectionArgs(), mGroupBy,
         mHaving, orderBy, limit);
@@ -177,7 +177,7 @@ public class SelectionBuilder {
    */
   public int update(SQLiteDatabase db, ContentValues values) {
     assertTable();
-    LogUtil.d(TAG, "update() " + this);
+    LogUtil.D(TAG, "update() " + this);
     return db.update(mTable, values, getSelection(), getSelectionArgs());
   }
 
@@ -186,7 +186,7 @@ public class SelectionBuilder {
    */
   public int delete(SQLiteDatabase db) {
     assertTable();
-    LogUtil.d(TAG, "delete() " + this);
+    LogUtil.D(TAG, "delete() " + this);
     return db.delete(mTable, getSelection(), getSelectionArgs());
   }
 

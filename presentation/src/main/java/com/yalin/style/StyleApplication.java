@@ -2,6 +2,7 @@ package com.yalin.style;
 
 import android.app.Application;
 
+import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.injection.component.ApplicationComponent;
 import com.yalin.style.injection.component.DaggerApplicationComponent;
 import com.yalin.style.injection.modules.ApplicationModule;
@@ -12,6 +13,8 @@ import com.yalin.style.injection.modules.ApplicationModule;
  */
 
 public class StyleApplication extends Application {
+    private static final String TAG = "StyleApplication";
+
     private static StyleApplication INSTANCE;
 
     public static StyleApplication getInstance() {
@@ -25,12 +28,26 @@ public class StyleApplication extends Application {
         super.onCreate();
         INSTANCE = this;
         initializeInjector();
+
+        resetExceptionHandler();
     }
 
     private void initializeInjector() {
         applicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
                 .build();
+    }
+
+    private void resetExceptionHandler() {
+        final Thread.UncaughtExceptionHandler exceptionHandler
+                = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                LogUtil.F(TAG, "exception", e);
+                exceptionHandler.uncaughtException(t, e);
+            }
+        });
     }
 
     public ApplicationComponent getApplicationComponent() {

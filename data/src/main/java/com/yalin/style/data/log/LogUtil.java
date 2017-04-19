@@ -29,15 +29,15 @@ public class LogUtil {
     return BuildConfig.ENABLE_EXTERNAL_LOG;
   }
 
-  public static void f(String tag, String msg, Throwable throwable) {
+  public static void F(String tag, String msg, Throwable throwable) {
     String stackTraces = Log.getStackTraceString(throwable);
     if (msg == null) {
       msg = "";
     }
-    f(tag, msg + " :\n " + stackTraces);
+    F(tag, msg + " :\n " + stackTraces);
   }
 
-  public static void f(String tag, String msg) {
+  public static void F(String tag, String msg) {
     String procInfo = getProcessInfo();
 
     Log.e(tag, procInfo + msg);
@@ -49,12 +49,16 @@ public class LogUtil {
     writeLog(tag, procInfo + msg);
   }
 
-  public static void d(String tag, String msg) {
+  public static void E(String tag, String msg) {
+    String procInfo = getProcessInfo();
+
+    Log.e(tag, procInfo + msg);
+  }
+
+  public static void D(String tag, String msg) {
     String procInfo = getProcessInfo();
 
     Log.d(tag, procInfo + msg);
-
-    writeLog(tag, procInfo + msg);
   }
 
   private static String getProcessInfo() {

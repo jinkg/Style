@@ -41,24 +41,24 @@ public class RemoteStyleDataFetcher {
     Request request = new Request.Builder().url(new URL(mWallpaperUrl)).build();
     Response response = httpClient.newCall(request).execute();
     if (response == null) {
-      LogUtil.f(TAG, "Request for wallpaper returned null response.");
+      LogUtil.F(TAG, "Request for wallpaper returned null response.");
       throw new IOException("Request for data wallpaper returned null response.");
     }
     int status = response.code();
     if (status == HttpURLConnection.HTTP_OK) {
-      LogUtil.d(TAG, "Server return HTTP_OK, so new data is available.");
+      LogUtil.D(TAG, "Server return HTTP_OK, so new data is available.");
       String body = response.body().string();
       if (TextUtils.isEmpty(body)) {
-        LogUtil.f(TAG, "Request for wallpaper returned empty data.");
+        LogUtil.F(TAG, "Request for wallpaper returned empty data.");
         throw new IOException("Error fetching wallpaper data : no data.");
       }
-      LogUtil.d(TAG, "Wallpaper " + mWallpaperUrl + " read, contents: " + body);
+      LogUtil.D(TAG, "Wallpaper " + mWallpaperUrl + " read, contents: " + body);
       return body;
     } else if (status == HttpURLConnection.HTTP_NOT_MODIFIED) {
-      LogUtil.d(TAG, "HTTP_NOT_MODIFIED: data has not changed since");
+      LogUtil.D(TAG, "HTTP_NOT_MODIFIED: data has not changed since");
       return null;
     } else {
-      LogUtil.d(TAG, "Error fetching conference data: HTTP status " + status + " and manifest " +
+      LogUtil.D(TAG, "Error fetching conference data: HTTP status " + status + " and manifest " +
           mWallpaperUrl);
       throw new IOException("Error fetching conference data: HTTP status " + status);
     }

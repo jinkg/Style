@@ -26,7 +26,7 @@ public class Account {
     if (accountManager.addAccountExplicitly(account, null, null)) {
       return account;
     } else {
-      LogUtil.d(TAG, "Unable to create account");
+      LogUtil.D(TAG, "Unable to create account");
       return null;
     }
   }

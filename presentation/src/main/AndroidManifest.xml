@@ -35,10 +35,6 @@
         </activity>
 
         <service
-            android:name=".service.BootstrapService"
-            android:exported="false" />
-
-        <service
             android:name=".StyleWallpaperService"
             android:permission="android.permission.BIND_WALLPAPER">
             <intent-filter>
