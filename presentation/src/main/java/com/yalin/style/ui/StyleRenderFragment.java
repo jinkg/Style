@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
@@ -20,6 +19,7 @@ import com.bumptech.glide.request.target.BaseTarget;
 import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.yalin.style.StyleApplication;
+import com.yalin.style.render.DemoRenderController;
 import com.yalin.style.render.GLTextureView;
 import com.yalin.style.render.ImageBlurrer;
 import com.yalin.style.render.RenderController;
@@ -82,7 +82,7 @@ public class StyleRenderFragment extends Fragment implements RenderController.Ca
                              @Nullable ViewGroup container, Bundle savedInstanceState) {
         ActivityManager activityManager = (ActivityManager)
                 getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-        if (mDemoMode && Build.VERSION.SDK_INT >= 19 && activityManager.isLowRamDevice()) {
+        if (mDemoMode && activityManager.isLowRamDevice()) {
             DisplayMetrics dm = getResources().getDisplayMetrics();
             int targetWidth = dm.widthPixels;
             int targetHeight = dm.heightPixels;
@@ -173,7 +173,7 @@ public class StyleRenderFragment extends Fragment implements RenderController.Ca
 
     public class StyleView extends GLTextureView {
         @Inject
-        RenderController mRenderController;
+        DemoRenderController mRenderController;
 
         private StyleBlurRenderer mRenderer;
 
@@ -192,6 +192,8 @@ public class StyleRenderFragment extends Fragment implements RenderController.Ca
             mRenderController.setCallbacks(StyleRenderFragment.this);
 
             mRenderController.setVisible(true);
+
+            mRenderController.start(mDemoFocus);
         }
 
         @Override
