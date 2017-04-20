@@ -19,7 +19,8 @@ import com.yalin.style.R;
 import com.yalin.style.StyleWallpaperService;
 import com.yalin.style.util.StyleConfig;
 
-public class StyleActivity extends AppCompatActivity implements OnClickListener {
+public class StyleActivity extends AppCompatActivity implements OnClickListener,
+        StyleConfig.ActivateListener {
 
     private RelativeLayout mMainContainer;
     private View mActiveContainer;
@@ -42,7 +43,15 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener 
 
         mStyleActive = StyleConfig.isStyleActive();
 
+        StyleConfig.registerActivateListener(this);
+
         updateUi();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        StyleConfig.unregisterActivateListener(this);
     }
 
     private void showHideChrome(boolean show) {
@@ -126,5 +135,10 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener 
                 setWallpaper();
                 break;
         }
+    }
+
+    @Override
+    public void onStyleActivate() {
+
     }
 }

@@ -87,7 +87,7 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
         wallpaperEntity.title = "demo";
         wallpaperEntity.wallpaperId = "10";
         try {
-            wallpaperEntity.inputStream = context.getAssets().open("starrynight.jpg");
+            wallpaperEntity.inputStream = context.getAssets().open("default_wallpaper.jpg");
         } catch (IOException e) {
             LogUtil.D(TAG, "Open assets for default wallpaper failed.");
         }

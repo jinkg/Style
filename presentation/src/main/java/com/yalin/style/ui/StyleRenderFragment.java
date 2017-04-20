@@ -91,7 +91,7 @@ public class StyleRenderFragment extends Fragment implements RenderController.Ca
             mSimpleDemoModeImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
             mImageLoader = new ImageLoader(getActivity());
-            mImageLoader.beginImageLoad("file:///android_asset/starrynight.jpg", null, true)
+            mImageLoader.beginImageLoad("file:///android_asset/default_wallpaper.jpg", null, true)
                     .override(targetWidth, targetHeight)
                     .into(mSimpleDemoModeLoadTarget);
             return mSimpleDemoModeImageView;
