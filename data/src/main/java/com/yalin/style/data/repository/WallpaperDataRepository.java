@@ -49,6 +49,7 @@ public class WallpaperDataRepository implements WallpaperRepository {
             @Override
             public void onChange(boolean selfChange, Uri uri) {
                 LogUtil.D(TAG, "Wallpaper data changed notify observer to reload.");
+                wallpaperDataStoreFactory.invalidCache();
                 notifyObserver();
             }
         };

@@ -24,37 +24,33 @@ public class WallpaperFileHelper {
 
     public static final String WALLPAPER_FOLDER = "wallpaper";
 
-    public static ParcelFileDescriptor openReadFile(Context context, Uri uri, String mode) {
+    public static ParcelFileDescriptor openReadFile(Context context, Uri uri, String mode)
+            throws FileNotFoundException {
         LogUtil.D(TAG, "Read file Uri=" + (uri == null ? null : uri.toString()));
 
         String wallpaperId = Wallpaper.getWallpaperId(uri);
 
         File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
         if (!directory.exists()) {
-            return null;
+            throw new FileNotFoundException("Wallpaper file : "
+                    + directory.toString() + " cannot found.");
         }
 
         File file = new File(directory, wallpaperId);
 
-        try {
-            return ParcelFileDescriptor.open(file, parseMode(mode));
-        } catch (FileNotFoundException e) {
-            return null;
-        }
+        return ParcelFileDescriptor.open(file, parseMode(mode));
     }
 
-    public static ParcelFileDescriptor openWriteFile(Context context, Uri uri, String mode) {
+    public static ParcelFileDescriptor openWriteFile(Context context, Uri uri, String mode)
+            throws FileNotFoundException {
         String wallpaperId = Wallpaper.getWallpaperSaveId(uri);
         File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
         if (!directory.exists() && !directory.mkdir()) {
-            return null;
+            throw new FileNotFoundException("Wallpaper save dir : "
+                    + directory.toString() + " cannot be create.");
         }
         File file = new File(directory, wallpaperId);
-        try {
-            return ParcelFileDescriptor.open(file, parseMode(mode));
-        } catch (FileNotFoundException e) {
-            return null;
-        }
+        return ParcelFileDescriptor.open(file, parseMode(mode));
     }
 
     private static int parseMode(String mode) {

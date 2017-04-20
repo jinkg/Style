@@ -2,6 +2,8 @@ package com.yalin.style.data.repository.datasource;
 
 import com.yalin.style.data.entity.WallpaperEntity;
 
+import java.io.InputStream;
+
 import io.reactivex.Observable;
 
 /**

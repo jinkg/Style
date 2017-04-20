@@ -24,6 +24,7 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener,
 
     private RelativeLayout mMainContainer;
     private View mActiveContainer;
+    private View mDetailContainer;
     private Button mActiveButton;
 
     private Handler mHandler = new Handler();
@@ -40,6 +41,7 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener,
         showHideChrome(true);
 
         setUpActiveView();
+        setUpDetailView();
 
         mStyleActive = StyleConfig.isStyleActive();
 
@@ -73,11 +75,23 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener,
         mActiveButton.setOnClickListener(this);
     }
 
+    private void setUpDetailView() {
+        mDetailContainer = findViewById(R.id.detail_container);
+    }
+
     private void updateUi() {
         mActiveContainer.animate()
                 .alpha(1)
                 .setDuration(1000)
                 .start();
+
+        if (mStyleActive) {
+            mActiveContainer.setVisibility(View.GONE);
+            mDetailContainer.setVisibility(View.VISIBLE);
+        } else {
+            mActiveContainer.setVisibility(View.VISIBLE);
+            mDetailContainer.setVisibility(View.GONE);
+        }
 
         if (!mStyleActive) {
             FragmentManager fragmentManager = getFragmentManager();
@@ -88,23 +102,23 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener,
                                 StyleRenderFragment.createInstance(true, true))
                         .commit();
             }
-        }
 
-        final AnimatedStyleLogoFragment logoFragment = (AnimatedStyleLogoFragment)
-                getFragmentManager().findFragmentById(R.id.animated_logo_fragment);
-        logoFragment.reset();
-        logoFragment.setOnFillStartedCallback(new Runnable() {
-            @Override
-            public void run() {
-                mActiveButton.animate().alpha(1f).setDuration(500);
-            }
-        });
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                logoFragment.start();
-            }
-        }, 1000);
+            final AnimatedStyleLogoFragment logoFragment = (AnimatedStyleLogoFragment)
+                    getFragmentManager().findFragmentById(R.id.animated_logo_fragment);
+            logoFragment.reset();
+            logoFragment.setOnFillStartedCallback(new Runnable() {
+                @Override
+                public void run() {
+                    mActiveButton.animate().alpha(1f).setDuration(500);
+                }
+            });
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    logoFragment.start();
+                }
+            }, 1000);
+        }
     }
 
     @Override
@@ -139,6 +153,7 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onStyleActivate() {
-
+        mStyleActive = StyleConfig.isStyleActive();
+        updateUi();
     }
 }

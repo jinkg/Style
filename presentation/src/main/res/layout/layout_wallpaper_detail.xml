@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/chrome_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <com.yalin.style.ui.view.ShadowDipsTextView
+                android:id="@+id/attribution"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/wallpaper_detail_attribution_title_margin"
+                android:fontFamily="sans-serif-condensed"
+                android:paddingEnd="@dimen/wallpaper_detail_metadata_margin"
+                android:paddingStart="@dimen/wallpaper_detail_metadata_margin"
+                android:paddingTop="@dimen/wallpaper_detail_metadata_margin"
+                android:textColor="@color/attribution_text_color"
+                android:textSize="@dimen/text_size_medium"
+                app:shadowColor="@color/shadow_color"
+                app:shadowDx="0dp"
+                app:shadowDy="1dp"
+                app:shadowRadius="3dp" />
+
+            <com.yalin.style.ui.view.ShadowDipsTextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/wallpaper_detail_title_byline_margin"
+                android:paddingBottom="@dimen/wallpaper_detail_title_bottom_padding"
+                android:paddingEnd="@dimen/wallpaper_detail_metadata_margin"
+                android:paddingStart="@dimen/wallpaper_detail_metadata_margin"
+                android:paddingTop="@dimen/wallpaper_detail_metadata_margin"
+                android:textColor="@color/wallpaper_detail_text_color"
+                android:textSize="@dimen/wallpaper_detail_title_text_size"
+                app:shadowColor="@color/shadow_color"
+                app:shadowDx="0dp"
+                app:shadowDy="1dp"
+                app:shadowRadius="3dp" />
+
+            <com.yalin.style.ui.view.ShadowDipsTextView
+                android:id="@+id/byline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/wallpaper_detail_metadata_margin_bottom"
+                android:paddingEnd="@dimen/wallpaper_detail_metadata_margin"
+                android:paddingStart="@dimen/wallpaper_detail_metadata_margin"
+                android:textColor="@color/wallpaper_detail_text_color"
+                android:textSize="@dimen/wallpaper_detail_byline_text_size"
+                app:shadowColor="@color/shadow_color"
+                app:shadowDx="0dp"
+                app:shadowDy="1dp"
+                app:shadowRadius="3dp" />
+
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/overflow_button"
+            android:layout_width="@dimen/wallpaper_detail_button_width"
+            android:layout_height="@dimen/wallpaper_detail_button_height"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/app_name"
+            android:scaleType="center"
+            android:src="@drawable/ic_overflow" />
+    </LinearLayout>
+
+</FrameLayout>

@@ -16,11 +16,24 @@ public class WallpaperDataStoreFactory {
     private Context context;
 
     @Inject
+    DbWallpaperDataStore dbWallpaperDataStore;
+    @Inject
+    CacheWallpaperDataStore cacheWallpaperDataStore;
+
+    @Inject
     WallpaperDataStoreFactory(Context context) {
         this.context = context;
     }
 
     public WallpaperDataStore create() {
-        return new DbWallpaperDataStore(context);
+        return dbWallpaperDataStore;
+    }
+
+    public WallpaperDataStore createDbDataStore() {
+        return dbWallpaperDataStore;
+    }
+
+    public void invalidCache() {
+        cacheWallpaperDataStore.clearCache();
     }
 }

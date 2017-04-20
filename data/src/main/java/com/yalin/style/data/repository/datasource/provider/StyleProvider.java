@@ -153,7 +153,7 @@ public class StyleProvider extends ContentProvider {
             case WALLPAPER_SAVE:
                 return WallpaperFileHelper.openWriteFile(getContext(), uri, mode);
             default:
-                return null;
+                throw new FileNotFoundException("Cannot match uri : " + uri);
         }
     }
 

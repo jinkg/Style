@@ -9,8 +9,6 @@ import com.yalin.style.domain.interactor.GetWallpaper;
 import com.yalin.style.mapper.WallpaperItemMapper;
 import com.yalin.style.model.WallpaperItem;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 /**
