@@ -34,27 +34,28 @@ public class WallpaperDataRepository implements WallpaperRepository {
     private static final String TAG = "WallpaperDataRepository";
 
     private final Set<DefaultObserver<Void>> mObserverSet = new HashSet<>();
-    private final ContentObserver mContentObserver;
+    private final ContentObserver mContentObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            LogUtil.D(TAG, "Wallpaper data changed notify observer to reload.");
+            wallpaperDataStoreFactory.onDataRefresh();
+            notifyObserver();
+        }
+    };
 
+    private final Context context;
     private final WallpaperDataStoreFactory wallpaperDataStoreFactory;
     private final WallpaperEntityMapper wallpaperEntityMapper;
+
+    private boolean observerRegistered = false;
 
     @Inject
     WallpaperDataRepository(Context context,
                             WallpaperDataStoreFactory wallpaperDataStoreFactory,
                             WallpaperEntityMapper wallpaperEntityMapper) {
+        this.context = context;
         this.wallpaperDataStoreFactory = wallpaperDataStoreFactory;
         this.wallpaperEntityMapper = wallpaperEntityMapper;
-        mContentObserver = new ContentObserver(new Handler()) {
-            @Override
-            public void onChange(boolean selfChange, Uri uri) {
-                LogUtil.D(TAG, "Wallpaper data changed notify observer to reload.");
-                wallpaperDataStoreFactory.invalidCache();
-                notifyObserver();
-            }
-        };
-        context.getContentResolver().registerContentObserver(StyleContract.Wallpaper.CONTENT_URI,
-                true, mContentObserver);
 
         Account.createSyncAccount(context);
         SyncHelper.updateSyncInterval(context);
@@ -75,12 +76,26 @@ public class WallpaperDataRepository implements WallpaperRepository {
 
     @Override
     public void registerObserver(DefaultObserver<Void> observer) {
-        mObserverSet.add(observer);
+        synchronized (mObserverSet) {
+            mObserverSet.add(observer);
+            if (!observerRegistered) {
+                context.getContentResolver()
+                        .registerContentObserver(StyleContract.Wallpaper.CONTENT_URI,
+                                true, mContentObserver);
+                observerRegistered = true;
+            }
+        }
     }
 
     @Override
     public void unregisterObserver(DefaultObserver<Void> observer) {
-        mObserverSet.remove(observer);
+        synchronized (mObserverSet) {
+            mObserverSet.remove(observer);
+            if (mObserverSet.isEmpty()) {
+                context.getContentResolver().unregisterContentObserver(mContentObserver);
+                observerRegistered = false;
+            }
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.yalin.style.mapper;
 
 import com.fernandocejas.arrow.checks.Preconditions;
 import com.yalin.style.domain.Wallpaper;
+import com.yalin.style.injection.PerActivity;
 import com.yalin.style.model.WallpaperItem;
 
 import javax.inject.Inject;
@@ -11,7 +12,6 @@ import javax.inject.Singleton;
  * @author jinyalin
  * @since 2017/4/18.
  */
-@Singleton
 public class WallpaperItemMapper {
     @Inject
     public WallpaperItemMapper() {

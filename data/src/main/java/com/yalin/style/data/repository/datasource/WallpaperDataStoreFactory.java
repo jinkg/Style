@@ -3,6 +3,8 @@ package com.yalin.style.data.repository.datasource;
 
 import android.content.Context;
 
+import com.yalin.style.data.cache.WallpaperCache;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -13,27 +15,30 @@ import javax.inject.Singleton;
 
 @Singleton
 public class WallpaperDataStoreFactory {
-    private Context context;
+    private final Context context;
+    private final WallpaperCache wallpaperCache;
 
     @Inject
-    DbWallpaperDataStore dbWallpaperDataStore;
-    @Inject
-    CacheWallpaperDataStore cacheWallpaperDataStore;
-
-    @Inject
-    WallpaperDataStoreFactory(Context context) {
+    WallpaperDataStoreFactory(Context context, WallpaperCache wallpaperCache) {
         this.context = context;
+        this.wallpaperCache = wallpaperCache;
     }
 
     public WallpaperDataStore create() {
-        return dbWallpaperDataStore;
+        WallpaperDataStore wallpaperDataStore;
+        if (!wallpaperCache.isDirty() && wallpaperCache.isCached()) {
+            wallpaperDataStore = new CacheWallpaperDataStore(wallpaperCache);
+        } else {
+            wallpaperDataStore = createDbDataStore();
+        }
+        return wallpaperDataStore;
     }
 
     public WallpaperDataStore createDbDataStore() {
-        return dbWallpaperDataStore;
+        return new DbWallpaperDataStore(context, wallpaperCache);
     }
 
-    public void invalidCache() {
-        cacheWallpaperDataStore.clearCache();
+    public void onDataRefresh() {
+        wallpaperCache.evictAll();
     }
 }

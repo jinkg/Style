@@ -1,4 +1,4 @@
-package com.yalin.style.ui;
+package com.yalin.style.view.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

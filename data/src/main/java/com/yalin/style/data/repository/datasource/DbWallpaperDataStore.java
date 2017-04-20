@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.yalin.style.data.cache.WallpaperCache;
 import com.yalin.style.data.entity.WallpaperEntity;
 import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.provider.StyleContract;
@@ -20,14 +21,23 @@ import io.reactivex.Observable;
 public class DbWallpaperDataStore implements WallpaperDataStore {
     private static final String TAG = "DbWallpaperDataStore";
 
-    private Context context;
+    private final Context context;
 
-    public DbWallpaperDataStore(Context context) {
+    private final WallpaperCache wallpaperCache;
+
+    public DbWallpaperDataStore(Context context, WallpaperCache wallpaperCache) {
         this.context = context;
+        this.wallpaperCache = wallpaperCache;
+
+        getWallPaperEntity().doOnNext(wallpaperCache::put);
     }
 
     @Override
     public Observable<WallpaperEntity> getWallPaperEntity() {
+        return createObservable().doOnNext(wallpaperCache::put);
+    }
+
+    private Observable<WallpaperEntity> createObservable() {
         return Observable.create(emitter -> {
             Cursor cursor = null;
             WallpaperEntity validWallpaper = null;

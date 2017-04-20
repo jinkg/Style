@@ -3,6 +3,8 @@ package com.yalin.style.injection.modules;
 import android.content.Context;
 
 import com.yalin.style.UIThread;
+import com.yalin.style.data.cache.WallpaperCache;
+import com.yalin.style.data.cache.WallpaperCacheImpl;
 import com.yalin.style.data.executor.JobExecutor;
 import com.yalin.style.data.repository.WallpaperDataRepository;
 import com.yalin.style.domain.executor.PostExecutionThread;
@@ -48,5 +50,11 @@ public class ApplicationModule {
     @Singleton
     WallpaperRepository provideUserRepository(WallpaperDataRepository wallpaperDataRepository) {
         return wallpaperDataRepository;
+    }
+
+    @Provides
+    @Singleton
+    WallpaperCache provideWallpaperCache(WallpaperCacheImpl wallpaperCache) {
+        return wallpaperCache;
     }
 }

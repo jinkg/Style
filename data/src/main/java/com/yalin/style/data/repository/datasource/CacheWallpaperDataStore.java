@@ -1,9 +1,7 @@
 package com.yalin.style.data.repository.datasource;
 
-import com.fernandocejas.arrow.checks.Preconditions;
+import com.yalin.style.data.cache.WallpaperCache;
 import com.yalin.style.data.entity.WallpaperEntity;
-
-import java.io.InputStream;
 
 import javax.inject.Inject;
 
@@ -15,44 +13,15 @@ import io.reactivex.Observable;
  */
 
 public class CacheWallpaperDataStore implements WallpaperDataStore {
-    private WallpaperEntity cachedEntity;
-
-    private boolean dirty = false;
+    private final WallpaperCache wallpaperCache;
 
     @Inject
-    public CacheWallpaperDataStore() {
+    public CacheWallpaperDataStore(WallpaperCache wallpaperCache) {
+        this.wallpaperCache = wallpaperCache;
     }
 
     @Override
     public Observable<WallpaperEntity> getWallPaperEntity() {
-        Preconditions.checkNotNull(cachedEntity, "There is no cached entity.");
-        return Observable.create(emitter -> {
-            emitter.onNext(cachedEntity);
-            emitter.onComplete();
-        });
-    }
-
-    @Override
-    public Observable<InputStream> openWallpaperInputStream(String id) {
-        throw new UnsupportedOperationException(
-                "Cache data store not support this open operation.");
-    }
-
-    public void setWallpaperEntity(WallpaperEntity wallpaperEntity) {
-        cachedEntity = wallpaperEntity;
-        dirty = false;
-    }
-
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    public boolean isCached() {
-        return cachedEntity != null;
-    }
-
-    public void clearCache() {
-        dirty = true;
-        cachedEntity = null;
+        return wallpaperCache.get();
     }
 }

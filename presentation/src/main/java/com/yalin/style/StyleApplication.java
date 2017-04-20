@@ -11,7 +11,6 @@ import com.yalin.style.injection.modules.ApplicationModule;
  * @author jinyalin
  * @since 2017/4/18.
  */
-
 public class StyleApplication extends Application {
     private static final String TAG = "StyleApplication";
 

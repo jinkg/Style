@@ -1,4 +1,4 @@
-package com.yalin.style.ui;
+package com.yalin.style.view.fragment;
 
 import android.app.ActivityManager;
 import android.app.Fragment;

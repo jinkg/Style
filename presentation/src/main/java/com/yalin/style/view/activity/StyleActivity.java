@@ -1,4 +1,4 @@
-package com.yalin.style.ui;
+package com.yalin.style.view.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -7,7 +7,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,10 +16,15 @@ import android.widget.Toast;
 
 import com.yalin.style.R;
 import com.yalin.style.StyleWallpaperService;
+import com.yalin.style.injection.HasComponent;
+import com.yalin.style.injection.component.DaggerWallpaperComponent;
+import com.yalin.style.injection.component.WallpaperComponent;
+import com.yalin.style.view.fragment.AnimatedStyleLogoFragment;
+import com.yalin.style.view.fragment.StyleRenderFragment;
 import com.yalin.style.util.StyleConfig;
 
-public class StyleActivity extends AppCompatActivity implements OnClickListener,
-        StyleConfig.ActivateListener {
+public class StyleActivity extends BaseActivity implements OnClickListener,
+        StyleConfig.ActivateListener, HasComponent<WallpaperComponent> {
 
     private RelativeLayout mMainContainer;
     private View mActiveContainer;
@@ -31,9 +35,13 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener,
 
     private boolean mStyleActive = false;
 
+    private WallpaperComponent wallpaperComponent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initializeInjector();
 
         setContentView(R.layout.activity_main);
 
@@ -118,6 +126,8 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener,
                     logoFragment.start();
                 }
             }, 1000);
+        }else{
+
         }
     }
 
@@ -155,5 +165,16 @@ public class StyleActivity extends AppCompatActivity implements OnClickListener,
     public void onStyleActivate() {
         mStyleActive = StyleConfig.isStyleActive();
         updateUi();
+    }
+
+    private void initializeInjector() {
+        wallpaperComponent = DaggerWallpaperComponent.builder()
+                .applicationComponent(getApplicationComponent())
+                .build();
+    }
+
+    @Override
+    public WallpaperComponent getComponent() {
+        return wallpaperComponent;
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yalin.style.ui.view;
+package com.yalin.style.view.component;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -4,7 +4,7 @@
     android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.yalin.style.ui.StyleActivity">
+    tools:context="com.yalin.style.view.activity.StyleActivity">
 
     <include layout="@layout/layout_include_wallpaper_detail" />
 
