@@ -35,7 +35,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
-        LogUtil.D(TAG, "PerformSync");
+        LogUtil.F(TAG, "PerformSync");
 
         new SyncHelper(mContext).performSync(syncResult, extras);
     }

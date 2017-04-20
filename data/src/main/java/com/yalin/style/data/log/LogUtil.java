@@ -49,6 +49,14 @@ public class LogUtil {
     writeLog(tag, procInfo + msg);
   }
 
+  public static void E(String tag, String msg, Throwable throwable) {
+    String stackTraces = Log.getStackTraceString(throwable);
+    if (msg == null) {
+      msg = "";
+    }
+    E(tag, msg + " :\n " + stackTraces);
+  }
+
   public static void E(String tag, String msg) {
     String procInfo = getProcessInfo();
 

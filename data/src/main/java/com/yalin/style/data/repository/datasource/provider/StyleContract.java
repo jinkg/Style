@@ -71,9 +71,12 @@ public class StyleContract {
                     .appendPath(PATH_SAVE_WALLPAPER).appendPath(wallpaperId).build();
         }
 
-
         public static String getWallpaperId(Uri uri) {
             return uri.getPathSegments().get(1);
+        }
+
+        public static String getWallpaperSaveId(Uri uri) {
+            return uri.getPathSegments().get(2);
         }
     }
 }

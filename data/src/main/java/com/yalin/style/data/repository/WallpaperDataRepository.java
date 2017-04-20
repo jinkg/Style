@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Handler;
 
 import com.yalin.style.data.entity.mapper.WallpaperEntityMapper;
+import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.WallpaperDataStore;
 import com.yalin.style.data.repository.datasource.WallpaperDataStoreFactory;
 import com.yalin.style.data.repository.datasource.provider.StyleContract;
@@ -30,6 +31,7 @@ import io.reactivex.Observable;
  */
 @Singleton
 public class WallpaperDataRepository implements WallpaperRepository {
+    private static final String TAG = "WallpaperDataRepository";
 
     private final Set<DefaultObserver<Void>> mObserverSet = new HashSet<>();
     private final ContentObserver mContentObserver;
@@ -46,6 +48,7 @@ public class WallpaperDataRepository implements WallpaperRepository {
         mContentObserver = new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange, Uri uri) {
+                LogUtil.D(TAG, "Wallpaper data changed notify observer to reload.");
                 notifyObserver();
             }
         };

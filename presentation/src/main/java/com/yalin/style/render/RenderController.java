@@ -56,17 +56,17 @@ public class RenderController {
         getWallpaperUseCase.unregisterObserver(wallpaperRefreshObserver);
     }
 
-    private BitmapRegionLoader createBitmapRegionLoader(WallpaperItem wallpaperItem) {
-        try {
-            return BitmapRegionLoader.newInstance(wallpaperItem.inputStream);
-        } catch (IOException e) {
-            LogUtil.D(TAG, "Could't load wallpaper. " + wallpaperItem.title
-                    + " " + e.getMessage());
+    private BitmapRegionLoader createBitmapRegionLoader(WallpaperItem wallpaperItem)
+            throws Exception {
+        BitmapRegionLoader bitmapRegionLoader
+                = BitmapRegionLoader.newInstance(wallpaperItem.inputStream);
+        if (bitmapRegionLoader == null) {
+            throw new IllegalStateException("Bitmap region loader create failed.");
         }
-        return null;
+        return bitmapRegionLoader;
     }
 
-    public void reloadCurrentArtwork() {
+    public void reloadCurrentWallpaper() {
         getWallpaperUseCase.execute(new WallpaperItemObserver(), null);
     }
 
@@ -103,20 +103,27 @@ public class RenderController {
         @Override
         public void onNext(Wallpaper wallpaper) {
             WallpaperItem wallpaperItem = wallpaperItemMapper.transform(wallpaper);
-            final BitmapRegionLoader bitmapRegionLoader
-                    = createBitmapRegionLoader(wallpaperItem);
-            if (bitmapRegionLoader == null) {
-                onError(new NullPointerException("Create bitmapRegionLoader error."));
-                return;
+            BitmapRegionLoader bitmapRegionLoader = null;
+            try {
+                bitmapRegionLoader = createBitmapRegionLoader(wallpaperItem);
+            } catch (Exception e) {
+                onError(e);
             }
+            LogUtil.D(TAG, "Create bitmap region loader success.");
             setBitmapRegionLoader(bitmapRegionLoader);
+        }
+
+        @Override
+        public void onError(Throwable exception) {
+            LogUtil.E(TAG, "Load wallpaper failed.", exception);
         }
     }
 
     private final class WallpaperRefreshObserver extends DefaultObserver<Void> {
         @Override
         public void onComplete() {
-            reloadCurrentArtwork();
+            LogUtil.D(TAG, "Wallpaper update,reload wallpaper.");
+            reloadCurrentWallpaper();
         }
     }
 

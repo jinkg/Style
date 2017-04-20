@@ -44,7 +44,7 @@ public class WallpaperFileHelper {
     }
 
     public static ParcelFileDescriptor openWriteFile(Context context, Uri uri, String mode) {
-        String wallpaperId = Wallpaper.getWallpaperId(uri);
+        String wallpaperId = Wallpaper.getWallpaperSaveId(uri);
         File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
         if (!directory.exists() && !directory.mkdir()) {
             return null;

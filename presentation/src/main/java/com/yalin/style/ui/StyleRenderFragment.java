@@ -200,7 +200,7 @@ public class StyleRenderFragment extends Fragment implements RenderController.Ca
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
             mRenderer.hintViewportSize(w, h);
-            mRenderController.reloadCurrentArtwork();
+            mRenderController.reloadCurrentWallpaper();
         }
 
         @Override

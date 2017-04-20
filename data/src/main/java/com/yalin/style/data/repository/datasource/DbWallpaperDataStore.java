@@ -41,6 +41,9 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
                         wallpaperEntity.inputStream = contentResolver.openInputStream(
                                 StyleContract.Wallpaper.buildWallpaperUri(
                                         wallpaperEntity.wallpaperId));
+                        if (wallpaperEntity.inputStream == null) {
+                            continue;
+                        }
                         validWallpaper = wallpaperEntity;
                         break;
                     } catch (Exception e) {

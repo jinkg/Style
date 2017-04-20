@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.yalin.style.data.Config;
 import com.yalin.style.data.entity.WallpaperEntity;
+import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.provider.StyleContract.Wallpaper;
 import com.yalin.style.data.repository.datasource.provider.StyleContractHelper;
 import com.yalin.style.data.utils.TimeUtil;
@@ -27,6 +28,7 @@ import okhttp3.Response;
  */
 
 public class WallpapersHandler extends JSONHandler {
+  private static final String TAG = "WallpapersHandler";
 
   private ArrayList<WallpaperEntity> mWallpapers = new ArrayList<>();
 
@@ -41,6 +43,7 @@ public class WallpapersHandler extends JSONHandler {
     for (WallpaperEntity wallpaper : mWallpapers) {
       Uri wallpaperUri = Wallpaper.buildWallpaperSaveUri(wallpaper.wallpaperId);
       if (downloadWallpaper(wallpaper, wallpaperUri)) {
+        LogUtil.D(TAG, "download wallpaper " + wallpaperUri + " success, do output wallpaper.");
         outputWallpaper(wallpaper, list, wallpaperUri.toString());
       }
     }
@@ -68,6 +71,7 @@ public class WallpapersHandler extends JSONHandler {
   }
 
   private boolean downloadWallpaper(WallpaperEntity wallpaper, Uri uri) {
+    LogUtil.D(TAG, "Start download wallpaper uri = " + uri);
     OutputStream os = null;
     InputStream is = null;
     try {
