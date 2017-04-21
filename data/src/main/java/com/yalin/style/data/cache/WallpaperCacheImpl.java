@@ -41,7 +41,7 @@ public class WallpaperCacheImpl implements WallpaperCache {
 
     @Override
     public boolean isDirty() {
-        return wallpaperEntity != null;
+        return wallpaperEntity == null;
     }
 
     @Override

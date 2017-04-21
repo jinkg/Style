@@ -12,6 +12,7 @@ import com.yalin.style.R;
 import com.yalin.style.injection.component.WallpaperComponent;
 import com.yalin.style.model.WallpaperItem;
 import com.yalin.style.presenter.WallpaperDetailPresenter;
+import com.yalin.style.util.TypefaceUtil;
 import com.yalin.style.view.WallpaperDetailView;
 
 import javax.inject.Inject;
@@ -29,6 +30,10 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     TextView tvAttribution;
     TextView tvTitle;
     TextView tvByline;
+
+    public static WallpaperDetailFragment createInstance() {
+        return new WallpaperDetailFragment();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,8 +85,12 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
 
     @Override
     public void renderWallpaper(WallpaperItem wallpaperItem) {
-        tvAttribution.setText(wallpaperItem.attribution);
+        String titleFont = "AlegreyaSans-Black.ttf";
+        String bylineFont = "AlegreyaSans-Medium.ttf";
+        tvTitle.setTypeface(TypefaceUtil.getAndCache(context(), titleFont));
         tvTitle.setText(wallpaperItem.title);
+        tvAttribution.setText(wallpaperItem.attribution);
+        tvByline.setTypeface(TypefaceUtil.getAndCache(context(), bylineFont));
         tvByline.setText(wallpaperItem.byline);
     }
 

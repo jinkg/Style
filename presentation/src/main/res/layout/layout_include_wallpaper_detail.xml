@@ -4,13 +4,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:alpha="0"
-    android:visibility="gone">
-
-    <fragment
-        android:id="@+id/wallpaper_detail_fragment"
-        android:name="com.yalin.style.view.fragment.WallpaperDetailFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
-</RelativeLayout>
+    android:visibility="gone" />

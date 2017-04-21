@@ -3,7 +3,8 @@
     android:id="@+id/active_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="0">
+    android:alpha="0"
+    android:visibility="gone">
 
     <FrameLayout
         android:id="@+id/demo_container_layout"

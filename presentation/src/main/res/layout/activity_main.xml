@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.yalin.style.view.component.DrawInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_container"
     android:layout_width="match_parent"
@@ -9,4 +9,4 @@
     <include layout="@layout/layout_include_wallpaper_detail" />
 
     <include layout="@layout/layout_include_active" />
-</RelativeLayout>
+</com.yalin.style.view.component.DrawInsetsFrameLayout>
