@@ -26,6 +26,9 @@ import com.yalin.style.view.fragment.StyleRenderFragment;
 import com.yalin.style.util.StyleConfig;
 import com.yalin.style.view.fragment.WallpaperDetailFragment;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class StyleActivity extends BaseActivity implements OnClickListener,
         StyleConfig.ActivateListener, HasComponent<WallpaperComponent>,
         PanScaleProxyView.OnOtherGestureListener {
@@ -48,6 +51,9 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     private int mUiMode = MODE_UNKNOWN;
     private boolean needUpdateUi = true;
 
+    private Set<InsetsChangeListener> insetsChangeListeners = new HashSet<>();
+    private Rect mLastInsets = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,10 +69,13 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         mMainContainer.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
             @Override
             public void onInsetsChanged(Rect insets) {
-                mDetailContainer.setPadding(
-                        insets.left, insets.top, insets.right, insets.bottom);
+                mLastInsets = insets;
+                for (InsetsChangeListener listener : insetsChangeListeners) {
+                    listener.onInsetsChanged(insets);
+                }
             }
         });
+
         showHideChrome(true);
 
         mStyleActive = StyleConfig.isStyleActive();
@@ -158,8 +167,6 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
                 .withEndAction(null);
 
         if (newMode == MODE_ACTIVATE) {
-
-
             final AnimatedStyleLogoFragment logoFragment = (AnimatedStyleLogoFragment)
                     getFragmentManager().findFragmentById(R.id.animated_logo_fragment);
             logoFragment.reset();
@@ -196,9 +203,11 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
             FragmentManager fragmentManager = getFragmentManager();
             Fragment detailFragment = fragmentManager.findFragmentById(R.id.detail_container);
             if (detailFragment == null) {
+                WallpaperDetailFragment wallpaperDetailFragment
+                        = WallpaperDetailFragment.createInstance();
+                mMainContainer.setOnSystemUiVisibilityChangeListener(wallpaperDetailFragment);
                 fragmentManager.beginTransaction()
-                        .add(R.id.detail_container,
-                                WallpaperDetailFragment.createInstance())
+                        .add(R.id.detail_container, wallpaperDetailFragment)
                         .commit();
             }
         }
@@ -258,5 +267,20 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
             showHideChrome((mMainContainer.getSystemUiVisibility()
                     & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0);
         }
+    }
+
+    public interface InsetsChangeListener {
+        void onInsetsChanged(Rect insets);
+    }
+
+    public void registerInsetsChangeListener(InsetsChangeListener listener) {
+        insetsChangeListeners.add(listener);
+        if (mLastInsets != null) {
+            listener.onInsetsChanged(mLastInsets);
+        }
+    }
+
+    public void unregisterInsetsChangeListener(InsetsChangeListener listener) {
+        insetsChangeListeners.remove(listener);
     }
 }
