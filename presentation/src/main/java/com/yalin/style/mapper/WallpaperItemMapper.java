@@ -25,7 +25,6 @@ public class WallpaperItemMapper {
         wallpaperItem.byline = wallpaper.byline;
         wallpaperItem.imageUri = wallpaper.imageUri;
         wallpaperItem.wallpaperId = wallpaper.wallpaperId;
-        wallpaperItem.inputStream = wallpaper.inputStream;
         return wallpaperItem;
     }
 }

@@ -5,6 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.yalin.style.view.component.PanScaleProxyView
+        android:id="@+id/pan_scale_proxy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:id="@+id/chrome_container"
         android:layout_width="match_parent"

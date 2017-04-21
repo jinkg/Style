@@ -3,6 +3,8 @@ package com.yalin.style.data.repository.datasource;
 import com.yalin.style.data.cache.WallpaperCache;
 import com.yalin.style.data.entity.WallpaperEntity;
 
+import java.io.InputStream;
+
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
@@ -23,5 +25,10 @@ public class CacheWallpaperDataStore implements WallpaperDataStore {
     @Override
     public Observable<WallpaperEntity> getWallPaperEntity() {
         return wallpaperCache.get();
+    }
+
+    @Override
+    public Observable<InputStream> openInputStream(String wallpaperId) {
+        throw new UnsupportedOperationException("Cache data store not support open input stream.");
     }
 }

@@ -13,4 +13,6 @@ import io.reactivex.Observable;
 
 public interface WallpaperDataStore {
     Observable<WallpaperEntity> getWallPaperEntity();
+
+    Observable<InputStream> openInputStream(String wallpaperId);
 }

@@ -10,6 +10,7 @@ import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.provider.StyleContract;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import io.reactivex.Observable;
 
@@ -20,6 +21,8 @@ import io.reactivex.Observable;
 
 public class DbWallpaperDataStore implements WallpaperDataStore {
     private static final String TAG = "DbWallpaperDataStore";
+
+    private static final String DEFAULT_WALLPAPER_ID = "-1";
 
     private final Context context;
 
@@ -34,10 +37,30 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
 
     @Override
     public Observable<WallpaperEntity> getWallPaperEntity() {
-        return createObservable().doOnNext(wallpaperCache::put);
+        return createEntityObservable().doOnNext(wallpaperCache::put);
     }
 
-    private Observable<WallpaperEntity> createObservable() {
+    @Override
+    public Observable<InputStream> openInputStream(String wallpaperId) {
+        return Observable.create(emitter -> {
+            try {
+                InputStream inputStream;
+                if (DEFAULT_WALLPAPER_ID.equals(wallpaperId)) {
+                    inputStream = context.getAssets().open("painterly-architectonic.jpg");
+                } else {
+                    inputStream = context.getContentResolver().openInputStream(
+                            StyleContract.Wallpaper.buildWallpaperUri(wallpaperId));
+                }
+                emitter.onNext(inputStream);
+                emitter.onComplete();
+            } catch (IOException e) {
+                LogUtil.D(TAG, "Open input stream failed for id : " + wallpaperId);
+                emitter.onError(e);
+            }
+        });
+    }
+
+    private Observable<WallpaperEntity> createEntityObservable() {
         return Observable.create(emitter -> {
             Cursor cursor = null;
             WallpaperEntity validWallpaper = null;
@@ -48,7 +71,8 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
                 while (cursor != null && cursor.moveToNext()) {
                     WallpaperEntity wallpaperEntity = readCursor(cursor);
                     try {
-                        wallpaperEntity.inputStream = contentResolver.openInputStream(
+                        // valid input stream
+                        contentResolver.openInputStream(
                                 StyleContract.Wallpaper.buildWallpaperUri(
                                         wallpaperEntity.wallpaperId));
                         validWallpaper = wallpaperEntity;
@@ -95,12 +119,7 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
         wallpaperEntity.byline = "Lyubov Popova, 1918";
         wallpaperEntity.imageUri = "imageUri";
         wallpaperEntity.title = "Painterly Architectonic";
-        wallpaperEntity.wallpaperId = "10";
-        try {
-            wallpaperEntity.inputStream = context.getAssets().open("painterly-architectonic.jpg");
-        } catch (IOException e) {
-            LogUtil.D(TAG, "Open assets for default wallpaper failed.");
-        }
+        wallpaperEntity.wallpaperId = DEFAULT_WALLPAPER_ID;
         return wallpaperEntity;
     }
 }

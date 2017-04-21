@@ -20,13 +20,15 @@ import com.yalin.style.injection.HasComponent;
 import com.yalin.style.injection.component.DaggerWallpaperComponent;
 import com.yalin.style.injection.component.WallpaperComponent;
 import com.yalin.style.view.component.DrawInsetsFrameLayout;
+import com.yalin.style.view.component.PanScaleProxyView;
 import com.yalin.style.view.fragment.AnimatedStyleLogoFragment;
 import com.yalin.style.view.fragment.StyleRenderFragment;
 import com.yalin.style.util.StyleConfig;
 import com.yalin.style.view.fragment.WallpaperDetailFragment;
 
 public class StyleActivity extends BaseActivity implements OnClickListener,
-        StyleConfig.ActivateListener, HasComponent<WallpaperComponent> {
+        StyleConfig.ActivateListener, HasComponent<WallpaperComponent>,
+        PanScaleProxyView.OnOtherGestureListener {
     // ui mode
     private static final int MODE_UNKNOWN = -1;
     private static final int MODE_ACTIVATE = 0;
@@ -248,5 +250,13 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     @Override
     public WallpaperComponent getComponent() {
         return wallpaperComponent;
+    }
+
+    @Override
+    public void onSingleTapUp() {
+        if (mUiMode == MODE_DETAIL) {
+            showHideChrome((mMainContainer.getSystemUiVisibility()
+                    & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0);
+        }
     }
 }

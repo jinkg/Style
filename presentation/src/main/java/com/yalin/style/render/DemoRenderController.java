@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.yalin.style.domain.interactor.GetWallpaper;
+import com.yalin.style.domain.interactor.OpenWallpaperInputStream;
 import com.yalin.style.mapper.WallpaperItemMapper;
 
 import javax.inject.Inject;
@@ -28,8 +29,9 @@ public class DemoRenderController extends RenderController {
 
     @Inject
     public DemoRenderController(Context context, GetWallpaper getWallpaperUseCase,
+                                OpenWallpaperInputStream openWallpaperInputStream,
                                 WallpaperItemMapper wallpaperItemMapper) {
-        super(context, getWallpaperUseCase, wallpaperItemMapper);
+        super(context, getWallpaperUseCase, openWallpaperInputStream, wallpaperItemMapper);
     }
 
     public void start(boolean allowFocus) {

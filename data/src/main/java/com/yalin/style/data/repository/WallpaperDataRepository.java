@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
+import android.text.TextUtils;
 
+import com.fernandocejas.arrow.checks.Preconditions;
 import com.yalin.style.data.entity.mapper.WallpaperEntityMapper;
 import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.WallpaperDataStore;
@@ -17,6 +19,7 @@ import com.yalin.style.domain.interactor.DefaultObserver;
 import com.yalin.style.domain.repository.WallpaperRepository;
 
 
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -72,6 +75,13 @@ public class WallpaperDataRepository implements WallpaperRepository {
     public Observable<Wallpaper> getWallpaper() {
         final WallpaperDataStore dataStore = wallpaperDataStoreFactory.create();
         return dataStore.getWallPaperEntity().map(wallpaperEntityMapper::transform);
+    }
+
+    @Override
+    public Observable<InputStream> openInputStream(String wallpaperId) {
+        Preconditions.checkArgument(!TextUtils.isEmpty(wallpaperId), "WallpaperId cannot be null");
+        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
+        return dataStore.openInputStream(wallpaperId);
     }
 
     @Override

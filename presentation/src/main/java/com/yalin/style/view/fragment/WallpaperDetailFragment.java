@@ -14,6 +14,7 @@ import com.yalin.style.model.WallpaperItem;
 import com.yalin.style.presenter.WallpaperDetailPresenter;
 import com.yalin.style.util.TypefaceUtil;
 import com.yalin.style.view.WallpaperDetailView;
+import com.yalin.style.view.component.PanScaleProxyView;
 
 import javax.inject.Inject;
 
@@ -27,6 +28,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     @Inject
     WallpaperDetailPresenter presenter;
 
+    PanScaleProxyView panScaleProxyView;
     TextView tvAttribution;
     TextView tvTitle;
     TextView tvByline;
@@ -46,10 +48,20 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.layout_wallpaper_detail, container, false);
+        panScaleProxyView = (PanScaleProxyView) rootView.findViewById(R.id.pan_scale_proxy);
         tvAttribution = (TextView) rootView.findViewById(R.id.attribution);
         tvTitle = (TextView) rootView.findViewById(R.id.title);
         tvByline = (TextView) rootView.findViewById(R.id.byline);
+        setupPanScaleProxyView();
         return rootView;
+    }
+
+    private void setupPanScaleProxyView() {
+        panScaleProxyView.setMaxZoom(5);
+        if (getActivity() instanceof PanScaleProxyView.OnOtherGestureListener) {
+            panScaleProxyView.setOnOtherGestureListener(
+                    (PanScaleProxyView.OnOtherGestureListener) getActivity());
+        }
     }
 
     @Override
