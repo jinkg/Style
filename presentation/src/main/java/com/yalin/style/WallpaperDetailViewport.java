@@ -18,19 +18,28 @@ package com.yalin.style;
 
 import android.graphics.RectF;
 
+import com.yalin.style.data.log.LogUtil;
+import com.yalin.style.register.EventObservable;
+
 // Singleton that also behaves as an event
-public class ArtDetailViewport {
+public class WallpaperDetailViewport {
     private volatile RectF mViewport0 = new RectF();
     private volatile RectF mViewport1 = new RectF();
     private boolean mFromUser;
 
-    private static ArtDetailViewport sInstance = new ArtDetailViewport();
+    private EventObservable<WallpaperDetailViewport> eventObservable = new EventObservable<>();
 
-    public static ArtDetailViewport getInstance() {
+    private static WallpaperDetailViewport sInstance = new WallpaperDetailViewport();
+
+    public static WallpaperDetailViewport getInstance() {
         return sInstance;
     }
 
-    private ArtDetailViewport() {
+    public static EventObservable<WallpaperDetailViewport> getEventObservable() {
+        return getInstance().eventObservable;
+    }
+
+    private WallpaperDetailViewport() {
     }
 
     public RectF getViewport(int id) {
@@ -43,17 +52,18 @@ public class ArtDetailViewport {
     }
 
     public void setViewport(int id, float left, float top, float right, float bottom,
-            boolean fromUser) {
+                            boolean fromUser) {
         mFromUser = fromUser;
         getViewport(id).set(left, top, right, bottom);
+        eventObservable.notify(this);
     }
 
     public boolean isFromUser() {
         return mFromUser;
     }
 
-    public ArtDetailViewport setDefaultViewport(int id, float bitmapAspectRatio,
-            float screenAspectRatio) {
+    public WallpaperDetailViewport setDefaultViewport(int id, float bitmapAspectRatio,
+                                                      float screenAspectRatio) {
         mFromUser = false;
         if (bitmapAspectRatio > screenAspectRatio) {
             getViewport(id).set(

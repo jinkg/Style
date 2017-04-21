@@ -15,7 +15,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
-import com.yalin.style.ArtDetailViewport;
+import com.yalin.style.WallpaperDetailViewport;
 import com.yalin.style.util.MathUtil;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -70,7 +70,7 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
   private Context mContext;
 
   private boolean mIsBlurred = true;
-  private boolean mBlurRelatedToArtDetailMode = false;
+  private boolean mBlurRelatedToWallpaperDetailMode = false;
   private Interpolator mBlurInterpolator = new AccelerateDecelerateInterpolator();
   private TickingFloatAnimator mBlurAnimator;
   private TickingFloatAnimator mCrossfadeAnimator = TickingFloatAnimator.create().from(0);
@@ -156,8 +156,8 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
     hintViewportSize(width, height);
     if (!mDemoMode && !mPreview) {
       // Reset art detail viewports
-      ArtDetailViewport.getInstance().setViewport(0, 0, 0, 0, 0, false);
-      ArtDetailViewport.getInstance().setViewport(1, 0, 0, 0, 0, false);
+      WallpaperDetailViewport.getInstance().setViewport(0, 0, 0, 0, 0, false);
+      WallpaperDetailViewport.getInstance().setViewport(1, 0, 0, 0, 0, false);
     }
     mCurrentGLPictureSet.recomputeTransformMatrices();
     mNextGLPictureSet.recomputeTransformMatrices();
@@ -177,7 +177,7 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
     boolean stillAnimating = mCrossfadeAnimator.tick();
     stillAnimating |= mBlurAnimator.tick();
 
-    if (mBlurRelatedToArtDetailMode) {
+    if (mBlurRelatedToWallpaperDetailMode) {
       mCurrentGLPictureSet.recomputeTransformMatrices();
       mNextGLPictureSet.recomputeTransformMatrices();
     }
@@ -231,7 +231,7 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
     }
 
     if (!mDemoMode && !mPreview) {
-      ArtDetailViewport.getInstance().setDefaultViewport(mNextGLPictureSet.mId,
+      WallpaperDetailViewport.getInstance().setDefaultViewport(mNextGLPictureSet.mId,
           bitmapRegionLoader.getWidth() * 1f / bitmapRegionLoader.getHeight(),
           mAspectRatio);
     }
@@ -415,12 +415,12 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
       mCurrentViewport.top = 1f / zoom;
 
       float focusAmount = (mBlurKeyframes - mBlurAnimator.currentValue()) / mBlurKeyframes;
-      if (mBlurRelatedToArtDetailMode && focusAmount > 0) {
-        RectF artDetailViewport = ArtDetailViewport.getInstance().getViewport(mId);
-        if (artDetailViewport.width() == 0 || artDetailViewport.height() == 0) {
+      if (mBlurRelatedToWallpaperDetailMode && focusAmount > 0) {
+        RectF wallpaperDetailViewport = WallpaperDetailViewport.getInstance().getViewport(mId);
+        if (wallpaperDetailViewport.width() == 0 || wallpaperDetailViewport.height() == 0) {
           if (!mDemoMode && !mPreview) {
             // reset art detail viewport
-            ArtDetailViewport.getInstance().setViewport(mId,
+            WallpaperDetailViewport.getInstance().setViewport(mId,
                 MathUtil.uninterpolate(-1, 1, mCurrentViewport.left),
                 MathUtil.uninterpolate(1, -1, mCurrentViewport.top),
                 MathUtil.uninterpolate(-1, 1, mCurrentViewport.right),
@@ -431,19 +431,19 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
           // interpolate
           mCurrentViewport.left = MathUtil.interpolate(
               mCurrentViewport.left,
-              MathUtil.interpolate(-1, 1, artDetailViewport.left),
+              MathUtil.interpolate(-1, 1, wallpaperDetailViewport.left),
               focusAmount);
           mCurrentViewport.top = MathUtil.interpolate(
               mCurrentViewport.top,
-              MathUtil.interpolate(1, -1, artDetailViewport.top),
+              MathUtil.interpolate(1, -1, wallpaperDetailViewport.top),
               focusAmount);
           mCurrentViewport.right = MathUtil.interpolate(
               mCurrentViewport.right,
-              MathUtil.interpolate(-1, 1, artDetailViewport.right),
+              MathUtil.interpolate(-1, 1, wallpaperDetailViewport.right),
               focusAmount);
           mCurrentViewport.bottom = MathUtil.interpolate(
               mCurrentViewport.bottom,
-              MathUtil.interpolate(1, -1, artDetailViewport.bottom),
+              MathUtil.interpolate(1, -1, wallpaperDetailViewport.bottom),
               focusAmount);
         }
       }
@@ -523,14 +523,14 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
     return mIsBlurred;
   }
 
-  public void setIsBlurred(final boolean isBlurred, final boolean artDetailMode) {
-    if (artDetailMode && !isBlurred && !mDemoMode && !mPreview) {
+  public void setIsBlurred(final boolean isBlurred, final boolean wallpaperDetailMode) {
+    if (wallpaperDetailMode && !isBlurred && !mDemoMode && !mPreview) {
       // Reset art detail viewport
-      ArtDetailViewport.getInstance().setViewport(0, 0, 0, 0, 0, false);
-      ArtDetailViewport.getInstance().setViewport(1, 0, 0, 0, 0, false);
+      WallpaperDetailViewport.getInstance().setViewport(0, 0, 0, 0, 0, false);
+      WallpaperDetailViewport.getInstance().setViewport(1, 0, 0, 0, 0, false);
     }
 
-    mBlurRelatedToArtDetailMode = artDetailMode;
+    mBlurRelatedToWallpaperDetailMode = wallpaperDetailMode;
     mIsBlurred = isBlurred;
     mBlurAnimator.cancel();
     mBlurAnimator
@@ -539,7 +539,7 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
         .withEndListener(new Runnable() {
           @Override
           public void run() {
-            if (isBlurred && artDetailMode) {
+            if (isBlurred && wallpaperDetailMode) {
               System.gc();
             }
           }

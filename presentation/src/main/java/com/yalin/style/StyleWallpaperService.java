@@ -16,13 +16,17 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.ViewConfiguration;
 
+import com.yalin.style.domain.interactor.DefaultObserver;
+import com.yalin.style.event.WallpaperDetailOpenedEvent;
 import com.yalin.style.render.RenderController;
 import com.yalin.style.render.StyleBlurRenderer;
-import com.yalin.style.util.StyleConfig;
+import com.yalin.style.util.StyleEvent;
 
 import net.rbgrn.android.glwallpaperservice.GLWallpaperService;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observer;
 
 /**
  * YaLin 2016/12/30.
@@ -98,6 +102,10 @@ public class StyleWallpaperService extends GLWallpaperService {
 
         private BroadcastReceiver mEngineUnlockReceiver;
 
+        private Observer<WallpaperDetailViewport> viewportObserver;
+
+        private Observer<WallpaperDetailOpenedEvent> detailOpenedClosedEventObserver;
+
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
@@ -135,6 +143,29 @@ public class StyleWallpaperService extends GLWallpaperService {
                     registerReceiver(mEngineUnlockReceiver, filter);
                 }
             }
+
+            viewportObserver = new DefaultObserver<WallpaperDetailViewport>() {
+                @Override
+                public void onNext(WallpaperDetailViewport wallpaperDetailViewport) {
+                    requestRender();
+                }
+            };
+            detailOpenedClosedEventObserver
+                    = new DefaultObserver<WallpaperDetailOpenedEvent>() {
+                @Override
+                public void onNext(final WallpaperDetailOpenedEvent event) {
+                    mWallpaperDetailMode = event.isWallpaperDetailOpened();
+                    cancelDelayedBlur();
+                    queueEvent(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRenderer.setIsBlurred(!event.isWallpaperDetailOpened(), true);
+                        }
+                    });
+                }
+            };
+            WallpaperDetailViewport.getEventObservable().subscribe(viewportObserver);
+            StyleEvent.getDetailObservable().subscribe(detailOpenedClosedEventObserver);
         }
 
         @Override
@@ -156,14 +187,17 @@ public class StyleWallpaperService extends GLWallpaperService {
                     unregisterReceiver(mEngineUnlockReceiver);
                 }
             }
+
+            WallpaperDetailViewport.getEventObservable().unsubscribe(viewportObserver);
+            StyleEvent.getDetailObservable().unsubscribe(detailOpenedClosedEventObserver);
         }
 
         private void activateWallpaper() {
-            StyleConfig.setStyleActive(true);
+            StyleEvent.notifyStyleActive(true);
         }
 
         private void deactivateWallpaper() {
-            StyleConfig.setStyleActive(false);
+            StyleEvent.notifyStyleActive(false);
         }
 
         @Override
@@ -221,7 +255,7 @@ public class StyleWallpaperService extends GLWallpaperService {
             }
         }
 
-        private void cancelDelayBlur() {
+        private void cancelDelayedBlur() {
             mMainThreadHandler.removeCallbacks(mBlurRunnable);
         }
 
@@ -229,7 +263,7 @@ public class StyleWallpaperService extends GLWallpaperService {
             if (mWallpaperDetailMode || mRenderer.isBlurred()) {
                 return;
             }
-            cancelDelayBlur();
+            cancelDelayedBlur();
             mMainThreadHandler.postDelayed(mBlurRunnable, TEMPORARY_FOCUS_DURATION_MILLIS);
         }
 

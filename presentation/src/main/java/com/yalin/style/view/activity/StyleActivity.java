@@ -16,6 +16,9 @@ import android.widget.Toast;
 
 import com.yalin.style.R;
 import com.yalin.style.StyleWallpaperService;
+import com.yalin.style.domain.interactor.DefaultObserver;
+import com.yalin.style.event.WallpaperActivateEvent;
+import com.yalin.style.event.WallpaperDetailOpenedEvent;
 import com.yalin.style.injection.HasComponent;
 import com.yalin.style.injection.component.DaggerWallpaperComponent;
 import com.yalin.style.injection.component.WallpaperComponent;
@@ -23,15 +26,14 @@ import com.yalin.style.view.component.DrawInsetsFrameLayout;
 import com.yalin.style.view.component.PanScaleProxyView;
 import com.yalin.style.view.fragment.AnimatedStyleLogoFragment;
 import com.yalin.style.view.fragment.StyleRenderFragment;
-import com.yalin.style.util.StyleConfig;
+import com.yalin.style.util.StyleEvent;
 import com.yalin.style.view.fragment.WallpaperDetailFragment;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class StyleActivity extends BaseActivity implements OnClickListener,
-        StyleConfig.ActivateListener, HasComponent<WallpaperComponent>,
-        PanScaleProxyView.OnOtherGestureListener {
+        HasComponent<WallpaperComponent>, PanScaleProxyView.OnOtherGestureListener {
     // ui mode
     private static final int MODE_UNKNOWN = -1;
     private static final int MODE_ACTIVATE = 0;
@@ -53,6 +55,17 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
 
     private Set<InsetsChangeListener> insetsChangeListeners = new HashSet<>();
     private Rect mLastInsets = null;
+
+    private boolean mPaused = false;
+
+    private DefaultObserver<WallpaperActivateEvent> activateObserver
+            = new DefaultObserver<WallpaperActivateEvent>() {
+        @Override
+        public void onNext(WallpaperActivateEvent wallpaperActivateEvent) {
+            mStyleActive = wallpaperActivateEvent.isWallpaperActivate();
+            needUpdateUi = true;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,21 +91,29 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
 
         showHideChrome(true);
 
-        mStyleActive = StyleConfig.isStyleActive();
+        mStyleActive = StyleEvent.isStyleActive();
 
-        StyleConfig.registerActivateListener(this);
+        StyleEvent.getActivateEventObservable().subscribe(activateObserver);
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        mPaused = false;
         updateUiIfNeed();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPaused = true;
+        maybeUpdateWallpaperDetailOpenedClosed();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        StyleConfig.unregisterActivateListener(this);
+        StyleEvent.getActivateEventObservable().unsubscribe(activateObserver);
     }
 
     private void showHideChrome(boolean show) {
@@ -212,6 +233,13 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
             }
         }
         mUiMode = newMode;
+
+        maybeUpdateWallpaperDetailOpenedClosed();
+    }
+
+    private void maybeUpdateWallpaperDetailOpenedClosed() {
+        boolean opened = (mUiMode == MODE_DETAIL) && !mPaused;
+        StyleEvent.getDetailObservable().notify(new WallpaperDetailOpenedEvent(opened));
     }
 
     @Override
@@ -242,12 +270,6 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
                 setWallpaper();
                 break;
         }
-    }
-
-    @Override
-    public void onStyleActivate() {
-        mStyleActive = StyleConfig.isStyleActive();
-        needUpdateUi = true;
     }
 
     private void initializeInjector() {

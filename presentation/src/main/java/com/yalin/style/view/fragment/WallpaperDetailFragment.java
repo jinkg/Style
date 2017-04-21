@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.yalin.style.WallpaperDetailViewport;
 import com.yalin.style.R;
+import com.yalin.style.domain.interactor.DefaultObserver;
 import com.yalin.style.injection.component.WallpaperComponent;
 import com.yalin.style.model.WallpaperItem;
 import com.yalin.style.presenter.WallpaperDetailPresenter;
@@ -44,6 +46,21 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     TextView tvTitle;
     TextView tvByline;
 
+    private int currentViewportId = 0;
+
+
+    private DefaultObserver<WallpaperDetailViewport> detailViewportObserver =
+            new DefaultObserver<WallpaperDetailViewport>() {
+                @Override
+                public void onNext(WallpaperDetailViewport event) {
+                    if (!event.isFromUser() && panScaleProxyView != null) {
+//                        mGuardViewportChangeListener = true;
+                        panScaleProxyView.setViewport(event.getViewport(currentViewportId));
+//                        mGuardViewportChangeListener = false;
+                    }
+                }
+            };
+
     public static WallpaperDetailFragment createInstance() {
         return new WallpaperDetailFragment();
     }
@@ -52,6 +69,8 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getComponent(WallpaperComponent.class).inject(this);
+
+        WallpaperDetailViewport.getEventObservable().subscribe(detailViewportObserver);
     }
 
     @Nullable
@@ -84,6 +103,14 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         }
 
         panScaleProxyView.setMaxZoom(5);
+        panScaleProxyView.setOnViewportChangedListener(
+                new PanScaleProxyView.OnViewportChangedListener() {
+                    @Override
+                    public void onViewportChanged() {
+                        WallpaperDetailViewport.getInstance().setViewport(
+                                currentViewportId, panScaleProxyView.getCurrentViewport(), true);
+                    }
+                });
         if (getActivity() instanceof PanScaleProxyView.OnOtherGestureListener) {
             panScaleProxyView.setOnOtherGestureListener(
                     (PanScaleProxyView.OnOtherGestureListener) getActivity());
@@ -133,6 +160,8 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     public void onDestroy() {
         super.onDestroy();
         presenter.destroy();
+
+        WallpaperDetailViewport.getEventObservable().unsubscribe(detailViewportObserver);
     }
 
     private void loadWallpaper() {
