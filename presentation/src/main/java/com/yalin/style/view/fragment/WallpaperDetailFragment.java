@@ -48,15 +48,16 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
 
     private int currentViewportId = 0;
 
+    private boolean mGuardViewportChangeListener = false;
 
     private DefaultObserver<WallpaperDetailViewport> detailViewportObserver =
             new DefaultObserver<WallpaperDetailViewport>() {
                 @Override
                 public void onNext(WallpaperDetailViewport event) {
                     if (!event.isFromUser() && panScaleProxyView != null) {
-//                        mGuardViewportChangeListener = true;
+                        mGuardViewportChangeListener = true;
                         panScaleProxyView.setViewport(event.getViewport(currentViewportId));
-//                        mGuardViewportChangeListener = false;
+                        mGuardViewportChangeListener = false;
                     }
                 }
             };
@@ -107,6 +108,9 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
                 new PanScaleProxyView.OnViewportChangedListener() {
                     @Override
                     public void onViewportChanged() {
+                        if (mGuardViewportChangeListener) {
+                            return;
+                        }
                         WallpaperDetailViewport.getInstance().setViewport(
                                 currentViewportId, panScaleProxyView.getCurrentViewport(), true);
                     }
