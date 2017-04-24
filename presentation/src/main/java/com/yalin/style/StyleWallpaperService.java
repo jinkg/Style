@@ -122,8 +122,7 @@ public class StyleWallpaperService extends GLWallpaperService {
             StyleApplication.getInstance().getApplicationComponent()
                     .inject(this);
 
-            mRenderController.setRenderer(mRenderer);
-            mRenderController.setCallbacks(this);
+            mRenderController.setComponent(mRenderer, this);
 
             mGestureDetector
                     = new GestureDetectorCompat(StyleWallpaperService.this, mGestureListener);

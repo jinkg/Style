@@ -43,15 +43,12 @@ public class RenderController {
         this.getWallpaperUseCase = getWallpaperUseCase;
         this.getWallpaperUseCase.registerObserver(wallpaperRefreshObserver);
         this.openWallpaperInputStreamUseCase = openWallpaperInputStream;
-        reloadCurrentWallpaper();
     }
 
-    public void setRenderer(StyleBlurRenderer renderer) {
+    public void setComponent(StyleBlurRenderer renderer,Callbacks callbacks){
         this.mRenderer = renderer;
-    }
-
-    public void setCallbacks(Callbacks callbacks) {
         this.mCallbacks = callbacks;
+        reloadCurrentWallpaper();
     }
 
     public void destroy() {
