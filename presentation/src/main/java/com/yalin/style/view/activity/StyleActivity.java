@@ -101,6 +101,7 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         super.onPostResume();
         mPaused = false;
         updateUiIfNeed();
+        maybeUpdateWallpaperDetailOpenedClosed();
     }
 
     @Override
@@ -243,8 +244,9 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        maybeUpdateWallpaperDetailOpenedClosed();
     }
 
     private void setWallpaper() {
