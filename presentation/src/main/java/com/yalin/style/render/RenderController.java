@@ -43,6 +43,7 @@ public class RenderController {
         this.getWallpaperUseCase = getWallpaperUseCase;
         this.getWallpaperUseCase.registerObserver(wallpaperRefreshObserver);
         this.openWallpaperInputStreamUseCase = openWallpaperInputStream;
+        reloadCurrentWallpaper();
     }
 
     public void setRenderer(StyleBlurRenderer renderer) {
