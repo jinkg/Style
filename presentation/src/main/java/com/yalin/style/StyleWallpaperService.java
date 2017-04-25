@@ -16,22 +16,22 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.ViewConfiguration;
 
-import com.yalin.style.domain.interactor.DefaultObserver;
+import com.yalin.style.event.SystemWallpaperSizeChangedEvent;
+import com.yalin.style.event.WallpaperActivateEvent;
 import com.yalin.style.event.WallpaperDetailOpenedEvent;
 import com.yalin.style.render.RenderController;
 import com.yalin.style.render.StyleBlurRenderer;
-import com.yalin.style.util.StyleEvent;
 
 import net.rbgrn.android.glwallpaperservice.GLWallpaperService;
 
-import javax.inject.Inject;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
-import io.reactivex.Observer;
+import javax.inject.Inject;
 
 /**
  * YaLin 2016/12/30.
  */
-
 public class StyleWallpaperService extends GLWallpaperService {
 
     private static final String TAG = "StyleWallpaperService";
@@ -102,9 +102,7 @@ public class StyleWallpaperService extends GLWallpaperService {
 
         private BroadcastReceiver mEngineUnlockReceiver;
 
-        private Observer<WallpaperDetailViewport> viewportObserver;
-
-        private Observer<WallpaperDetailOpenedEvent> detailOpenedClosedEventObserver;
+        private boolean mWallpaperActivate = false;
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
@@ -143,33 +141,12 @@ public class StyleWallpaperService extends GLWallpaperService {
                 }
             }
 
-            viewportObserver = new DefaultObserver<WallpaperDetailViewport>() {
-                @Override
-                public void onNext(WallpaperDetailViewport wallpaperDetailViewport) {
-                    requestRender();
-                }
-            };
-            detailOpenedClosedEventObserver
-                    = new DefaultObserver<WallpaperDetailOpenedEvent>() {
-                @Override
-                public void onNext(final WallpaperDetailOpenedEvent event) {
-                    mWallpaperDetailMode = event.isWallpaperDetailOpened();
-                    cancelDelayedBlur();
-                    queueEvent(new Runnable() {
-                        @Override
-                        public void run() {
-                            mRenderer.setIsBlurred(!event.isWallpaperDetailOpened(), true);
-                        }
-                    });
-                }
-            };
-            WallpaperDetailViewport.getEventObservable().subscribe(viewportObserver);
-            StyleEvent.getDetailObservable().subscribe(detailOpenedClosedEventObserver);
+            EventBus.getDefault().register(this);
         }
 
         @Override
         public void onDestroy() {
-            super.onDestroy();
+            EventBus.getDefault().unregister(this);
             queueEvent(new Runnable() {
                 @Override
                 public void run() {
@@ -186,22 +163,48 @@ public class StyleWallpaperService extends GLWallpaperService {
                     unregisterReceiver(mEngineUnlockReceiver);
                 }
             }
-
-            WallpaperDetailViewport.getEventObservable().unsubscribe(viewportObserver);
-            StyleEvent.getDetailObservable().unsubscribe(detailOpenedClosedEventObserver);
+            super.onDestroy();
         }
 
         private void activateWallpaper() {
-            StyleEvent.notifyStyleActive(true);
+            mWallpaperActivate = true;
+            EventBus.getDefault().postSticky(new WallpaperActivateEvent(true));
         }
 
         private void deactivateWallpaper() {
-            StyleEvent.notifyStyleActive(false);
+            if (mWallpaperActivate) {
+                EventBus.getDefault().postSticky(new WallpaperActivateEvent(false));
+            }
+        }
+
+        @Subscribe
+        public void onEventMainThread(final WallpaperDetailOpenedEvent e) {
+            if (e.isWallpaperDetailOpened() == mWallpaperDetailMode) {
+                return;
+            }
+
+            mWallpaperDetailMode = e.isWallpaperDetailOpened();
+            cancelDelayedBlur();
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    mRenderer.setIsBlurred(!e.isWallpaperDetailOpened(), true);
+                }
+            });
+        }
+
+        @Subscribe
+        public void onEventMainThread(WallpaperDetailViewport e) {
+            requestRender();
         }
 
         @Override
         public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             super.onSurfaceChanged(holder, format, width, height);
+            if (!isPreview()) {
+                EventBus.getDefault().postSticky(
+                        new SystemWallpaperSizeChangedEvent(width, height));
+            }
             mRenderController.reloadCurrentWallpaper();
         }
 

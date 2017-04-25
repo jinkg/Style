@@ -14,16 +14,21 @@ import android.widget.TextView;
 
 import com.yalin.style.WallpaperDetailViewport;
 import com.yalin.style.R;
-import com.yalin.style.domain.interactor.DefaultObserver;
+import com.yalin.style.event.MainContainerInsetsChangedEvent;
+import com.yalin.style.event.StyleWallpaperSizeChangedEvent;
+import com.yalin.style.event.SwitchingPhotosStateChangedEvent;
+import com.yalin.style.event.SystemWallpaperSizeChangedEvent;
 import com.yalin.style.injection.component.WallpaperComponent;
 import com.yalin.style.model.WallpaperItem;
 import com.yalin.style.presenter.WallpaperDetailPresenter;
 import com.yalin.style.util.ScrimUtil;
 import com.yalin.style.util.TypefaceUtil;
 import com.yalin.style.view.WallpaperDetailView;
-import com.yalin.style.view.activity.StyleActivity;
 import com.yalin.style.view.component.DrawInsetsFrameLayout;
 import com.yalin.style.view.component.PanScaleProxyView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import javax.inject.Inject;
 
@@ -33,7 +38,7 @@ import javax.inject.Inject;
  */
 
 public class WallpaperDetailFragment extends BaseFragment implements WallpaperDetailView,
-        StyleActivity.InsetsChangeListener, View.OnSystemUiVisibilityChangeListener {
+        View.OnSystemUiVisibilityChangeListener {
 
     @Inject
     WallpaperDetailPresenter presenter;
@@ -47,20 +52,11 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     TextView tvByline;
 
     private int currentViewportId = 0;
+    private float systemWallpaperAspectRatio;
+    private float styleWallpaperAspectRatio;
+    private boolean deferResetViewport;
 
     private boolean mGuardViewportChangeListener = false;
-
-    private DefaultObserver<WallpaperDetailViewport> detailViewportObserver =
-            new DefaultObserver<WallpaperDetailViewport>() {
-                @Override
-                public void onNext(WallpaperDetailViewport event) {
-                    if (!event.isFromUser() && panScaleProxyView != null) {
-                        mGuardViewportChangeListener = true;
-                        panScaleProxyView.setViewport(event.getViewport(currentViewportId));
-                        mGuardViewportChangeListener = false;
-                    }
-                }
-            };
 
     public static WallpaperDetailFragment createInstance() {
         return new WallpaperDetailFragment();
@@ -71,7 +67,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         super.onCreate(savedInstanceState);
         getComponent(WallpaperComponent.class).inject(this);
 
-        WallpaperDetailViewport.getEventObservable().subscribe(detailViewportObserver);
+        EventBus.getDefault().register(this);
     }
 
     @Nullable
@@ -91,7 +87,6 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     }
 
     private void setupDetailViews() {
-        registerInsetsChangeListener();
         chromeContainer.setBackground(ScrimUtil.makeCubicGradientScrimDrawable(
                 0xaa000000, 8, Gravity.BOTTOM));
 
@@ -121,28 +116,46 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         }
     }
 
-    private void registerInsetsChangeListener() {
-        if (getActivity() instanceof StyleActivity) {
-            ((StyleActivity) getActivity()).registerInsetsChangeListener(this);
-        }
-    }
-
-    private void unregisterInsetsChangeListener() {
-        if (getActivity() instanceof StyleActivity) {
-            ((StyleActivity) getActivity()).unregisterInsetsChangeListener(this);
-        }
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unregisterInsetsChangeListener();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.setView(this);
+
+        SystemWallpaperSizeChangedEvent syswsce = EventBus.getDefault().getStickyEvent(
+                SystemWallpaperSizeChangedEvent.class);
+        if (syswsce != null) {
+            onEventMainThread(syswsce);
+        }
+
+        StyleWallpaperSizeChangedEvent swsce = EventBus.getDefault().getStickyEvent(
+                StyleWallpaperSizeChangedEvent.class);
+        if (swsce != null) {
+            onEventMainThread(swsce);
+        }
+
+        WallpaperDetailViewport wdvp = EventBus.getDefault().getStickyEvent(
+                WallpaperDetailViewport.class);
+        if (wdvp != null) {
+            onEventMainThread(wdvp);
+        }
+
+        MainContainerInsetsChangedEvent mcisce = EventBus.getDefault().getStickyEvent(
+                MainContainerInsetsChangedEvent.class);
+        if (mcisce != null) {
+            onEventMainThread(mcisce);
+        }
+
+        SwitchingPhotosStateChangedEvent spsce = EventBus.getDefault().getStickyEvent(
+                SwitchingPhotosStateChangedEvent.class);
+        if (spsce != null) {
+            onEventMainThread(spsce);
+        }
+
         if (savedInstanceState == null) {
             loadWallpaper();
         }
@@ -164,12 +177,73 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     public void onDestroy() {
         super.onDestroy();
         presenter.destroy();
-
-        WallpaperDetailViewport.getEventObservable().unsubscribe(detailViewportObserver);
+        EventBus.getDefault().unregister(this);
     }
 
     private void loadWallpaper() {
         presenter.initialize();
+    }
+
+    @Subscribe
+    public void onEventMainThread(SystemWallpaperSizeChangedEvent syswsce) {
+        if (syswsce.getHeight() > 0) {
+            systemWallpaperAspectRatio = syswsce.getWidth() * 1f / syswsce.getHeight();
+        } else {
+            systemWallpaperAspectRatio = panScaleProxyView.getWidth()
+                    * 1f / panScaleProxyView.getHeight();
+        }
+        resetProxyViewport();
+    }
+
+    @Subscribe
+    public void onEventMainThread(StyleWallpaperSizeChangedEvent swsce) {
+        styleWallpaperAspectRatio = swsce.getWidth() * 1f / swsce.getHeight();
+        resetProxyViewport();
+    }
+
+    @Subscribe
+    public void onEventMainThread(WallpaperDetailViewport e) {
+        if (!e.isFromUser()) {
+            mGuardViewportChangeListener = true;
+            panScaleProxyView.setViewport(e.getViewport(currentViewportId));
+            mGuardViewportChangeListener = false;
+        }
+    }
+
+    @Subscribe
+    public void onEventMainThread(SwitchingPhotosStateChangedEvent spe) {
+        currentViewportId = spe.getCurrentId();
+        panScaleProxyView.enablePanScale(!spe.isSwitchingPhotos());
+        // Process deferred wallpaper size change when done switching
+        if (!spe.isSwitchingPhotos() && deferResetViewport) {
+            resetProxyViewport();
+        }
+    }
+
+    @Subscribe
+    public void onEventMainThread(MainContainerInsetsChangedEvent spe) {
+        Rect insets = spe.getInsets();
+        chromeContainer.setPadding(
+                insets.left, insets.top, insets.right, insets.bottom);
+    }
+
+    private void resetProxyViewport() {
+        if (systemWallpaperAspectRatio == 0 || styleWallpaperAspectRatio == 0) {
+            return;
+        }
+
+        deferResetViewport = false;
+        SwitchingPhotosStateChangedEvent spe = EventBus.getDefault()
+                .getStickyEvent(SwitchingPhotosStateChangedEvent.class);
+        if (spe != null && spe.isSwitchingPhotos()) {
+            deferResetViewport = true;
+            return;
+        }
+
+        if (panScaleProxyView != null) {
+            panScaleProxyView.setRelativeAspectRatio(
+                    styleWallpaperAspectRatio / systemWallpaperAspectRatio);
+        }
     }
 
     @Override
@@ -211,12 +285,6 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     @Override
     public Context context() {
         return getActivity();
-    }
-
-    @Override
-    public void onInsetsChanged(Rect insets) {
-        chromeContainer.setPadding(
-                insets.left, insets.top, insets.right, insets.bottom);
     }
 
     @Override

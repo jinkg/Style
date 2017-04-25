@@ -18,8 +18,7 @@ package com.yalin.style;
 
 import android.graphics.RectF;
 
-import com.yalin.style.data.log.LogUtil;
-import com.yalin.style.register.EventObservable;
+import org.greenrobot.eventbus.EventBus;
 
 // Singleton that also behaves as an event
 public class WallpaperDetailViewport {
@@ -27,16 +26,10 @@ public class WallpaperDetailViewport {
     private volatile RectF mViewport1 = new RectF();
     private boolean mFromUser;
 
-    private EventObservable<WallpaperDetailViewport> eventObservable = new EventObservable<>();
-
     private static WallpaperDetailViewport sInstance = new WallpaperDetailViewport();
 
     public static WallpaperDetailViewport getInstance() {
         return sInstance;
-    }
-
-    public static EventObservable<WallpaperDetailViewport> getEventObservable() {
-        return getInstance().eventObservable;
     }
 
     private WallpaperDetailViewport() {
@@ -55,7 +48,7 @@ public class WallpaperDetailViewport {
                             boolean fromUser) {
         mFromUser = fromUser;
         getViewport(id).set(left, top, right, bottom);
-        eventObservable.notify(this);
+        EventBus.getDefault().post(this);
     }
 
     public boolean isFromUser() {
@@ -78,6 +71,7 @@ public class WallpaperDetailViewport {
                     1,
                     0.5f + bitmapAspectRatio / screenAspectRatio / 2);
         }
+        EventBus.getDefault().post(this);
         return this;
     }
 }

@@ -36,6 +36,7 @@ dependencies {
     compile "io.reactivex.rxjava2:rxjava:${RXJAVA_VERSION}"
     compile "io.reactivex.rxjava2:rxandroid:${RXANDROID_VERSION}"
     compile "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
+    compile "org.greenrobot:eventbus:${EVENT_BUS_VERSION}"
 
     annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
 

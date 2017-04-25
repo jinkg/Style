@@ -16,7 +16,11 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 
 import com.yalin.style.WallpaperDetailViewport;
+import com.yalin.style.event.StyleWallpaperSizeChangedEvent;
+import com.yalin.style.event.SwitchingPhotosStateChangedEvent;
 import com.yalin.style.util.MathUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -228,10 +232,10 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
         }
 
         if (!mDemoMode && !mPreview) {
-//            EventBus.getDefault().postSticky(new SwitchingPhotosStateChangedEvent(
-//                    mNextGLPictureSet.mId, true));
-//            EventBus.getDefault().postSticky(new ArtworkSizeChangedEvent(
-//                    bitmapRegionLoader.getWidth(), bitmapRegionLoader.getHeight()));
+            EventBus.getDefault().postSticky(new SwitchingPhotosStateChangedEvent(
+                    mNextGLPictureSet.mId, true));
+            EventBus.getDefault().postSticky(new StyleWallpaperSizeChangedEvent(
+                    bitmapRegionLoader.getWidth(), bitmapRegionLoader.getHeight()));
             WallpaperDetailViewport.getInstance().setDefaultViewport(mNextGLPictureSet.mId,
                     bitmapRegionLoader.getWidth() * 1f / bitmapRegionLoader.getHeight(),
                     mAspectRatio);
@@ -252,8 +256,8 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
                         mCallbacks.requestRender();
                         oldGLPictureSet.destroyPictures();
                         if (!mDemoMode) {
-//                            EventBus.getDefault().postSticky(new SwitchingPhotosStateChangedEvent(
-//                                    mCurrentGLPictureSet.mId, false));
+                            EventBus.getDefault().postSticky(new SwitchingPhotosStateChangedEvent(
+                                    mCurrentGLPictureSet.mId, false));
                         }
                         System.gc();
                         if (mQueuedNextBitmapRegionLoader != null) {

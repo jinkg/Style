@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.yalin.style.R;
 import com.yalin.style.StyleWallpaperService;
-import com.yalin.style.domain.interactor.DefaultObserver;
+import com.yalin.style.event.MainContainerInsetsChangedEvent;
 import com.yalin.style.event.WallpaperActivateEvent;
 import com.yalin.style.event.WallpaperDetailOpenedEvent;
 import com.yalin.style.injection.HasComponent;
@@ -26,11 +26,10 @@ import com.yalin.style.view.component.DrawInsetsFrameLayout;
 import com.yalin.style.view.component.PanScaleProxyView;
 import com.yalin.style.view.fragment.AnimatedStyleLogoFragment;
 import com.yalin.style.view.fragment.StyleRenderFragment;
-import com.yalin.style.util.StyleEvent;
 import com.yalin.style.view.fragment.WallpaperDetailFragment;
 
-import java.util.HashSet;
-import java.util.Set;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class StyleActivity extends BaseActivity implements OnClickListener,
         HasComponent<WallpaperComponent>, PanScaleProxyView.OnOtherGestureListener {
@@ -46,26 +45,15 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
 
     private Handler mHandler = new Handler();
 
-    private boolean mStyleActive = false;
-
     private WallpaperComponent wallpaperComponent;
 
     private int mUiMode = MODE_UNKNOWN;
-    private boolean needUpdateUi = true;
 
-    private Set<InsetsChangeListener> insetsChangeListeners = new HashSet<>();
-    private Rect mLastInsets = null;
-
+    private boolean mWindowHasFocus;
+    private boolean mOverflowMenuVisible = false;
     private boolean mPaused = false;
 
-    private DefaultObserver<WallpaperActivateEvent> activateObserver
-            = new DefaultObserver<WallpaperActivateEvent>() {
-        @Override
-        public void onNext(WallpaperActivateEvent wallpaperActivateEvent) {
-            mStyleActive = wallpaperActivateEvent.isWallpaperActivate();
-            needUpdateUi = true;
-        }
-    };
+    private boolean mStyleActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,25 +70,37 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         mMainContainer.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
             @Override
             public void onInsetsChanged(Rect insets) {
-                mLastInsets = insets;
-                for (InsetsChangeListener listener : insetsChangeListeners) {
-                    listener.onInsetsChanged(insets);
-                }
+                EventBus.getDefault().postSticky(new MainContainerInsetsChangedEvent(insets));
             }
         });
 
         showHideChrome(true);
 
-        mStyleActive = StyleEvent.isStyleActive();
-
-        StyleEvent.getActivateEventObservable().subscribe(activateObserver);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
         mPaused = false;
-        updateUiIfNeed();
+
+        // update intro mode UI to latest wallpaper active state
+        WallpaperActivateEvent e = EventBus.getDefault()
+                .getStickyEvent(WallpaperActivateEvent.class);
+        if (e != null) {
+            onEventMainThread(e);
+        } else {
+            onEventMainThread(new WallpaperActivateEvent(false));
+        }
+
+        View decorView = getWindow().getDecorView();
+        decorView.setAlpha(0f);
+        decorView.animate().cancel();
+        decorView.animate()
+                .setStartDelay(500)
+                .alpha(1f)
+                .setDuration(300);
+
         maybeUpdateWallpaperDetailOpenedClosed();
     }
 
@@ -114,7 +114,7 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        StyleEvent.getActivateEventObservable().unsubscribe(activateObserver);
+        EventBus.getDefault().unregister(this);
     }
 
     private void showHideChrome(boolean show) {
@@ -138,13 +138,6 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
 
     private void setUpDetailView() {
         mDetailContainer = findViewById(R.id.detail_container);
-    }
-
-    private void updateUiIfNeed() {
-        if (needUpdateUi) {
-            updateUi();
-            needUpdateUi = false;
-        }
     }
 
     private View getContainerFromMode(int uiMode) {
@@ -239,13 +232,39 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     }
 
     private void maybeUpdateWallpaperDetailOpenedClosed() {
-        boolean opened = (mUiMode == MODE_DETAIL) && !mPaused;
-        StyleEvent.getDetailObservable().notify(new WallpaperDetailOpenedEvent(opened));
+        boolean currentlyOpened = false;
+        WallpaperDetailOpenedEvent wdoe = EventBus.getDefault()
+                .getStickyEvent(WallpaperDetailOpenedEvent.class);
+        if (wdoe != null) {
+            currentlyOpened = wdoe.isWallpaperDetailOpened();
+        }
+
+        boolean shouldBeOpened = false;
+        if (mUiMode == MODE_DETAIL
+                && (mWindowHasFocus || mOverflowMenuVisible)
+                && !mPaused) {
+            shouldBeOpened = true;
+        }
+
+        if (currentlyOpened != shouldBeOpened) {
+            EventBus.getDefault().postSticky(new WallpaperDetailOpenedEvent(shouldBeOpened));
+        }
+    }
+
+    @Subscribe
+    public void onEventMainThread(final WallpaperActivateEvent e) {
+        if (mPaused) {
+            return;
+        }
+
+        mStyleActive = e.isWallpaperActivate();
+        updateUi();
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+        mWindowHasFocus = hasFocus;
         maybeUpdateWallpaperDetailOpenedClosed();
     }
 
@@ -291,20 +310,5 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
             showHideChrome((mMainContainer.getSystemUiVisibility()
                     & View.SYSTEM_UI_FLAG_LOW_PROFILE) != 0);
         }
-    }
-
-    public interface InsetsChangeListener {
-        void onInsetsChanged(Rect insets);
-    }
-
-    public void registerInsetsChangeListener(InsetsChangeListener listener) {
-        insetsChangeListeners.add(listener);
-        if (mLastInsets != null) {
-            listener.onInsetsChanged(mLastInsets);
-        }
-    }
-
-    public void unregisterInsetsChangeListener(InsetsChangeListener listener) {
-        insetsChangeListeners.remove(listener);
     }
 }
