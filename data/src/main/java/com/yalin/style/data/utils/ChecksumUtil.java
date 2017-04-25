@@ -21,7 +21,7 @@ public class ChecksumUtil {
             md = MessageDigest.getInstance("MD5");
             is = new FileInputStream(file);
             byte[] digest = md.digest();
-            return Base64.encodeToString(digest, Base64.URL_SAFE);
+            return Base64.encodeToString(digest, Base64.URL_SAFE).trim();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
