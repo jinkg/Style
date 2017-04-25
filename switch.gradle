@@ -1,0 +1,14 @@
+Properties properties = new Properties()
+properties.load(project.rootProject.file('switch.properties').newDataInputStream())
+
+def DEMO_MODE = properties.get('DEMO_MODE').toString()
+def ENABLE_EXTERNAL_LOG = properties.get('ENABLE_EXTERNAL_LOG').toString()
+
+for (ExtensionContainer ec : project.getExtensions()) {
+    def extension = ec.findByName("android")
+    if (extension != null) {
+        extension.defaultConfig.buildConfigField("boolean", "DEMO_MODE", DEMO_MODE)
+        extension.defaultConfig.buildConfigField("boolean", "ENABLE_EXTERNAL_LOG", ENABLE_EXTERNAL_LOG)
+        break;
+    }
+}

@@ -88,9 +88,8 @@ public class StyleDataHandler {
   }
 
   private void processDataBody(String dataBody) throws IOException {
-    JsonReader reader = new JsonReader(new StringReader(dataBody));
     JsonParser parser = new JsonParser();
-    try {
+    try (JsonReader reader = new JsonReader(new StringReader(dataBody))) {
       reader.setLenient(true); // To err is human
 
       // the whole file is a single JSON object
@@ -107,9 +106,6 @@ public class StyleDataHandler {
         }
       }
       reader.endObject();
-    } finally {
-      //noinspection ThrowFromFinallyBlock
-      reader.close();
     }
   }
 }

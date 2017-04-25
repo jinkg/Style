@@ -5,12 +5,13 @@ import android.content.Context;
 import android.net.Uri;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.yalin.style.data.Config;
+import com.yalin.style.data.SyncConfig;
 import com.yalin.style.data.entity.WallpaperEntity;
 import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.provider.StyleContract.Wallpaper;
 import com.yalin.style.data.repository.datasource.provider.StyleContractHelper;
 import com.yalin.style.data.utils.TimeUtil;
+import com.yalin.style.data.utils.WallpaperFileHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +19,8 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -40,13 +43,18 @@ public class WallpapersHandler extends JSONHandler {
   public void makeContentProviderOperations(ArrayList<ContentProviderOperation> list) {
     Uri uri = StyleContractHelper.setUriAsCalledFromSyncAdapter(Wallpaper.CONTENT_URI);
     list.add(ContentProviderOperation.newDelete(uri).build());
+
+    Set<String> validFiles = new HashSet<>();
     for (WallpaperEntity wallpaper : mWallpapers) {
       Uri wallpaperUri = Wallpaper.buildWallpaperSaveUri(wallpaper.wallpaperId);
       if (downloadWallpaper(wallpaper, wallpaperUri)) {
         LogUtil.D(TAG, "download wallpaper " + wallpaperUri + " success, do output wallpaper.");
         outputWallpaper(wallpaper, list, wallpaperUri.toString());
+        validFiles.add(wallpaper.wallpaperId);
       }
     }
+    // delete old wallpapers
+    WallpaperFileHelper.deleteOldFiles(mContext, validFiles);
   }
 
   @Override
@@ -80,8 +88,8 @@ public class WallpapersHandler extends JSONHandler {
         return false;
       }
       OkHttpClient httpClient = new OkHttpClient.Builder()
-          .connectTimeout(Config.DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-          .readTimeout(Config.DEFAULT_DOWNLOAD_TIMEOUT, TimeUnit.SECONDS)
+          .connectTimeout(SyncConfig.DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+          .readTimeout(SyncConfig.DEFAULT_DOWNLOAD_TIMEOUT, TimeUnit.SECONDS)
           .build();
       Request request = new Request.Builder().url(new URL(wallpaper.imageUri)).build();
 

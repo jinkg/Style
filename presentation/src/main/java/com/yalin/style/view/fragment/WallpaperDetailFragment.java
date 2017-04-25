@@ -203,7 +203,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
 
     @Subscribe
     public void onEventMainThread(WallpaperDetailViewport e) {
-        if (!e.isFromUser()) {
+        if (!e.isFromUser() && panScaleProxyView != null) {
             mGuardViewportChangeListener = true;
             panScaleProxyView.setViewport(e.getViewport(currentViewportId));
             mGuardViewportChangeListener = false;
@@ -213,7 +213,9 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     @Subscribe
     public void onEventMainThread(SwitchingPhotosStateChangedEvent spe) {
         currentViewportId = spe.getCurrentId();
-        panScaleProxyView.enablePanScale(!spe.isSwitchingPhotos());
+        if (panScaleProxyView != null) {
+            panScaleProxyView.enablePanScale(!spe.isSwitchingPhotos());
+        }
         // Process deferred wallpaper size change when done switching
         if (!spe.isSwitchingPhotos() && deferResetViewport) {
             resetProxyViewport();

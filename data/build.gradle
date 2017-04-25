@@ -9,6 +9,7 @@ buildscript {
 
 apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
+apply from: '../switch.gradle'
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
@@ -22,7 +23,6 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("boolean", "ENABLE_EXTERNAL_LOG", "true")
         buildConfigField("String", "SERVER_WALLPAPER_ENDPOINT", "\"${STAGOMG_API_WALLPAPER_ENDPOINT}\"")
     }
     buildTypes {

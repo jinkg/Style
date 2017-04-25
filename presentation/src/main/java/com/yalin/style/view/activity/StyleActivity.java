@@ -1,14 +1,18 @@
 package com.yalin.style.view.activity;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -37,6 +41,8 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     private static final int MODE_UNKNOWN = -1;
     private static final int MODE_ACTIVATE = 0;
     private static final int MODE_DETAIL = 1;
+
+    private static final int REQUEST_PERMISSION_CODE = 10000;
 
     private DrawInsetsFrameLayout mMainContainer;
     private View mActiveContainer;
@@ -77,6 +83,17 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         showHideChrome(true);
 
         EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION_CODE);
+        }
     }
 
     @Override

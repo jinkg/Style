@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.yalin.style.data.BuildConfig;
-import com.yalin.style.data.Config;
+import com.yalin.style.data.SyncConfig;
 import com.yalin.style.data.log.LogUtil;
 
 import java.io.IOException;
@@ -34,8 +34,8 @@ public class RemoteStyleDataFetcher {
 
   public String fetchStyleDataIfNewer() throws IOException {
     OkHttpClient httpClient = new OkHttpClient.Builder()
-        .connectTimeout(Config.DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-        .readTimeout(Config.DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+        .connectTimeout(SyncConfig.DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+        .readTimeout(SyncConfig.DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
         .build();
 
     Request request = new Request.Builder().url(new URL(mWallpaperUrl)).build();

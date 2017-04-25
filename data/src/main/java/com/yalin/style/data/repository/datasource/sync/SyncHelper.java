@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.yalin.style.data.BuildConfig;
-import com.yalin.style.data.Config;
+import com.yalin.style.data.SyncConfig;
 import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.provider.StyleContract;
 import java.io.IOException;
@@ -75,10 +75,10 @@ public class SyncHelper {
   }
 
   private static long calculateRecommendedSyncInterval(final Context context) {
-    if (BuildConfig.DEBUG) {
-      return Config.DEBUG_AUTO_SYNC_INTERVAL_LONG;
+    if (BuildConfig.DEMO_MODE) {
+      return SyncConfig.DEBUG_AUTO_SYNC_INTERVAL_LONG;
     } else {
-      return Config.AUTO_SYNC_INTERVAL_LONG;
+      return SyncConfig.AUTO_SYNC_INTERVAL_LONG;
     }
   }
 }

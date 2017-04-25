@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
  * YaLin 2017/1/3.
  */
 
-public class Config {
+public class SyncConfig {
 
   public static final int DEFAULT_DOWNLOAD_TIMEOUT = 120; // in seconds
   public static final int DEFAULT_READ_TIMEOUT = 30; // in seconds

@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
 
-import com.yalin.style.data.BuildConfig;
 import com.yalin.style.data.log.LogUtil;
 
 /**
@@ -24,11 +23,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         super(context, autoInitialize);
         mContext = context;
 
-        if (!BuildConfig.DEBUG) {
-            Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
-                    LogUtil.F(TAG, "Uncaught sync exception, suppressing UI in release build.",
-                            throwable));
-        }
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) ->
+                LogUtil.F(TAG, "Uncaught sync exception, suppressing UI in release build.",
+                        throwable));
 
     }
 

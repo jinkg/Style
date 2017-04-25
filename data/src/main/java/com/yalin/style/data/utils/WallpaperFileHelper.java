@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * YaLin On 2017/1/2.
@@ -36,7 +38,7 @@ public class WallpaperFileHelper {
                     + directory.toString() + " cannot found.");
         }
 
-        File file = new File(directory, wallpaperId);
+        File file = new File(directory, generateFileName(wallpaperId));
 
         return ParcelFileDescriptor.open(file, parseMode(mode));
     }
@@ -49,8 +51,12 @@ public class WallpaperFileHelper {
             throw new FileNotFoundException("Wallpaper save dir : "
                     + directory.toString() + " cannot be create.");
         }
-        File file = new File(directory, wallpaperId);
+        File file = new File(directory, generateFileName(wallpaperId));
         return ParcelFileDescriptor.open(file, parseMode(mode));
+    }
+
+    private static String generateFileName(String wallpaperId) {
+        return wallpaperId;
     }
 
     private static int parseMode(String mode) {
@@ -104,6 +110,40 @@ public class WallpaperFileHelper {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static void deleteOldFiles(Context context, Set<String> excludeIds) {
+        File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
+        if (!directory.exists()) {
+            return;
+        }
+        Set<String> namesSet = new HashSet<>();
+        for (String wallpaperId : excludeIds) {
+            namesSet.add(generateFileName(wallpaperId));
+        }
+        File[] files = directory.listFiles(fileName ->
+                !namesSet.contains(fileName.getName()));
+        for (File file : files) {
+            //noinspection ResultOfMethodCallIgnored
+            file.delete();
+        }
+    }
+
+    public static void deleteOldFiles(Context context, String... excludeIds) {
+        File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
+        if (!directory.exists()) {
+            return;
+        }
+        Set<String> namesSet = new HashSet<>();
+        for (String wallpaperId : excludeIds) {
+            namesSet.add(generateFileName(wallpaperId));
+        }
+        File[] files = directory.listFiles(fileName ->
+                !namesSet.contains(fileName.getName()));
+        for (File file : files) {
+            //noinspection ResultOfMethodCallIgnored
+            file.delete();
         }
     }
 

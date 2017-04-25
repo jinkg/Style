@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply from: '../switch.gradle'
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
@@ -11,17 +12,13 @@ android {
         versionName APP_VERSION_NAME as String
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "PREF_BOOTSTRAP_DONE", "\"pref_bootstrap_done_${CONF_VERSION}\"")
     }
     buildTypes {
         debug {
             minifyEnabled false
-            buildConfigField("String", "SERVER_WALLPAPER_ENDPOINT", "\"${STAGOMG_API_WALLPAPER_ENDPOINT}\"")
         }
         release {
             minifyEnabled false
-            buildConfigField("String", "SERVER_WALLPAPER_ENDPOINT", "\"${PRODUCTION_API_WALLPAPER_ENDPOINT}\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
