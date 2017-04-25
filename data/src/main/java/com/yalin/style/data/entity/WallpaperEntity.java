@@ -11,4 +11,6 @@ public class WallpaperEntity {
     public String title;
     public String byline;
     public String attribution;
+
+    public String checksum;
 }

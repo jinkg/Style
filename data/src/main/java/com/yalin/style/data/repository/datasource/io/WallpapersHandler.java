@@ -3,6 +3,7 @@ package com.yalin.style.data.repository.datasource.io;
 import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.net.Uri;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.yalin.style.data.SyncConfig;
@@ -22,6 +23,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -31,96 +33,99 @@ import okhttp3.Response;
  */
 
 public class WallpapersHandler extends JSONHandler {
-  private static final String TAG = "WallpapersHandler";
+    private static final String TAG = "WallpapersHandler";
 
-  private ArrayList<WallpaperEntity> mWallpapers = new ArrayList<>();
+    private ArrayList<WallpaperEntity> mWallpapers = new ArrayList<>();
 
-  public WallpapersHandler(Context context) {
-    super(context);
-  }
-
-  @Override
-  public void makeContentProviderOperations(ArrayList<ContentProviderOperation> list) {
-    Uri uri = StyleContractHelper.setUriAsCalledFromSyncAdapter(Wallpaper.CONTENT_URI);
-    list.add(ContentProviderOperation.newDelete(uri).build());
-
-    Set<String> validFiles = new HashSet<>();
-    for (WallpaperEntity wallpaper : mWallpapers) {
-      Uri wallpaperUri = Wallpaper.buildWallpaperSaveUri(wallpaper.wallpaperId);
-      if (downloadWallpaper(wallpaper, wallpaperUri)) {
-        LogUtil.D(TAG, "download wallpaper " + wallpaperUri + " success, do output wallpaper.");
-        outputWallpaper(wallpaper, list, wallpaperUri.toString());
-        validFiles.add(wallpaper.wallpaperId);
-      }
+    public WallpapersHandler(Context context) {
+        super(context);
     }
-    // delete old wallpapers
-    WallpaperFileHelper.deleteOldFiles(mContext, validFiles);
-  }
 
-  @Override
-  public void process(JsonElement element) {
-    WallpaperEntity[] wallpapers = new Gson().fromJson(element, WallpaperEntity[].class);
-    mWallpapers.ensureCapacity(wallpapers.length);
-    Collections.addAll(mWallpapers, wallpapers);
-  }
+    @Override
+    public void makeContentProviderOperations(ArrayList<ContentProviderOperation> list) {
+        Uri uri = StyleContractHelper.setUriAsCalledFromSyncAdapter(Wallpaper.CONTENT_URI);
+        list.add(ContentProviderOperation.newDelete(uri).build());
 
-  private void outputWallpaper(WallpaperEntity wallpaper,
-      ArrayList<ContentProviderOperation> list, String uriString) {
-    Uri uri = StyleContractHelper.setUriAsCalledFromSyncAdapter(Wallpaper.CONTENT_URI);
-    ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(uri);
-    builder.withValue(Wallpaper.COLUMN_NAME_WALLPAPER_ID, wallpaper.wallpaperId);
-    builder.withValue(Wallpaper.COLUMN_NAME_TITLE, wallpaper.title);
-    builder.withValue(Wallpaper.COLUMN_NAME_IMAGE_URI, uriString);
-    builder.withValue(Wallpaper.COLUMN_NAME_BYLINE, wallpaper.byline);
-    builder.withValue(Wallpaper.COLUMN_NAME_ATTRIBUTION, wallpaper.attribution);
-    builder.withValue(Wallpaper.COLUMN_NAME_ADD_DATE, TimeUtil.getCurrentTime(mContext));
-
-    list.add(builder.build());
-  }
-
-  private boolean downloadWallpaper(WallpaperEntity wallpaper, Uri uri) {
-    LogUtil.D(TAG, "Start download wallpaper uri = " + uri);
-    OutputStream os = null;
-    InputStream is = null;
-    try {
-      os = mContext.getContentResolver().openOutputStream(uri);
-      if (os == null) {
-        return false;
-      }
-      OkHttpClient httpClient = new OkHttpClient.Builder()
-          .connectTimeout(SyncConfig.DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-          .readTimeout(SyncConfig.DEFAULT_DOWNLOAD_TIMEOUT, TimeUnit.SECONDS)
-          .build();
-      Request request = new Request.Builder().url(new URL(wallpaper.imageUri)).build();
-
-      Response response = httpClient.newCall(request).execute();
-      int responseCode = response.code();
-      if (responseCode >= 200 && responseCode < 300) {
-        is = response.body().byteStream();
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = is.read(buffer)) > 0) {
-          os.write(buffer, 0, bytesRead);
+        Set<String> validFiles = new HashSet<>();
+        for (WallpaperEntity wallpaper : mWallpapers) {
+            Uri wallpaperUri = Wallpaper.buildWallpaperSaveUri(wallpaper.wallpaperId);
+            if (downloadWallpaper(wallpaper, wallpaperUri)
+                    && WallpaperFileHelper.ensureChecksumValid(mContext,
+                    wallpaper.checksum, wallpaper.wallpaperId)) {
+                LogUtil.D(TAG, "download wallpaper " + wallpaperUri
+                        + " success, do output wallpaper.");
+                outputWallpaper(wallpaper, list, wallpaperUri.toString());
+                validFiles.add(wallpaper.wallpaperId);
+            }
         }
-        os.flush();
-        return true;
-      } else {
-        return false;
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-      return false;
-    } finally {
-      try {
-        if (os != null) {
-          os.close();
-        }
-        if (is != null) {
-          is.close();
-        }
-      } catch (IOException e) {
-        // ignore
-      }
+        // delete old wallpapers
+        WallpaperFileHelper.deleteOldFiles(mContext, validFiles);
     }
-  }
+
+    @Override
+    public void process(JsonElement element) {
+        WallpaperEntity[] wallpapers = new Gson().fromJson(element, WallpaperEntity[].class);
+        mWallpapers.ensureCapacity(wallpapers.length);
+        Collections.addAll(mWallpapers, wallpapers);
+    }
+
+    private void outputWallpaper(WallpaperEntity wallpaper,
+                                 ArrayList<ContentProviderOperation> list, String uriString) {
+        Uri uri = StyleContractHelper.setUriAsCalledFromSyncAdapter(Wallpaper.CONTENT_URI);
+        ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(uri);
+        builder.withValue(Wallpaper.COLUMN_NAME_WALLPAPER_ID, wallpaper.wallpaperId);
+        builder.withValue(Wallpaper.COLUMN_NAME_TITLE, wallpaper.title);
+        builder.withValue(Wallpaper.COLUMN_NAME_IMAGE_URI, uriString);
+        builder.withValue(Wallpaper.COLUMN_NAME_BYLINE, wallpaper.byline);
+        builder.withValue(Wallpaper.COLUMN_NAME_ATTRIBUTION, wallpaper.attribution);
+        builder.withValue(Wallpaper.COLUMN_NAME_ADD_DATE, TimeUtil.getCurrentTime(mContext));
+
+        list.add(builder.build());
+    }
+
+    private boolean downloadWallpaper(WallpaperEntity wallpaper, Uri uri) {
+        LogUtil.D(TAG, "Start download wallpaper uri = " + uri);
+        OutputStream os = null;
+        InputStream is = null;
+        try {
+            os = mContext.getContentResolver().openOutputStream(uri);
+            if (os == null) {
+                return false;
+            }
+            OkHttpClient httpClient = new OkHttpClient.Builder()
+                    .connectTimeout(SyncConfig.DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                    .readTimeout(SyncConfig.DEFAULT_DOWNLOAD_TIMEOUT, TimeUnit.SECONDS)
+                    .build();
+            Request request = new Request.Builder().url(new URL(wallpaper.imageUri)).build();
+
+            Response response = httpClient.newCall(request).execute();
+            int responseCode = response.code();
+            if (responseCode >= 200 && responseCode < 300) {
+                is = response.body().byteStream();
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, bytesRead);
+                }
+                os.flush();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (os != null) {
+                    os.close();
+                }
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+    }
 }

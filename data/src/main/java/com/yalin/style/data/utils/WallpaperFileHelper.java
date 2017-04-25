@@ -147,16 +147,20 @@ public class WallpaperFileHelper {
         }
     }
 
-    public static void deleteOldFiles(Context context, final String excludeName) {
+    public static boolean ensureChecksumValid(Context context,
+                                              String checksum, String wallpaperId) {
         File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
         if (!directory.exists()) {
-            return;
+            return false;
         }
-        File[] files = directory.listFiles(fileName ->
-                !TextUtils.equals(fileName.getName(), excludeName));
-        for (File file : files) {
-            //noinspection ResultOfMethodCallIgnored
-            file.delete();
+
+        File file = new File(directory, generateFileName(wallpaperId));
+        String computedChecksum = ChecksumUtil.getChecksum(file);
+        if (TextUtils.equals(checksum, computedChecksum)) {
+            return true;
         }
+        //noinspection ResultOfMethodCallIgnored
+        file.delete();
+        return false;
     }
 }
