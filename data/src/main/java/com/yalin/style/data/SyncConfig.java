@@ -17,5 +17,5 @@ public class SyncConfig {
       TimeUnit.MILLISECONDS.convert(5L, TimeUnit.MINUTES);
 
   public static final long AUTO_SYNC_INTERVAL_LONG =
-      TimeUnit.MILLISECONDS.convert(24L, TimeUnit.HOURS);
+      TimeUnit.MILLISECONDS.convert(16L, TimeUnit.HOURS);
 }
