@@ -15,7 +15,7 @@ public class HttpRequestUtil {
     private static Gson gson = new Gson();
 
     public static String getRequestBody(Context context) {
-        HttpRequestBody requestBody = new HttpRequestBody(getDeviceJson(context));
+        HttpRequestBody requestBody = new HttpRequestBody(context, getDeviceJson(context));
         return gson.toJson(requestBody);
     }
 

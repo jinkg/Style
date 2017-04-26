@@ -1,14 +1,41 @@
 Properties properties = new Properties()
 properties.load(project.rootProject.file('switch.properties').newDataInputStream())
 
-def DEMO_MODE = properties.get('DEMO_MODE').toString()
-def ENABLE_EXTERNAL_LOG = properties.get('ENABLE_EXTERNAL_LOG').toString()
+def DEMO_MODE = isProductFlavor() ? false : properties.get('DEMO_MODE')
+def ENABLE_EXTERNAL_LOG = isProductFlavor() ? false : properties.get('ENABLE_EXTERNAL_LOG')
+def SERVER_WALLPAPER_ENDPOINT = DEMO_MODE ?
+        "\"${STAGOMG_API_WALLPAPER_ENDPOINT}\"" : "\"${PRODUCTION_API_WALLPAPER_ENDPOINT}\""
 
-for (ExtensionContainer ec : project.getExtensions()) {
-    def extension = ec.findByName("android")
-    if (extension != null) {
-        extension.defaultConfig.buildConfigField("boolean", "DEMO_MODE", DEMO_MODE)
-        extension.defaultConfig.buildConfigField("boolean", "ENABLE_EXTERNAL_LOG", ENABLE_EXTERNAL_LOG)
-        break;
+def androidConfig = findAndroidExtensionConfig(project)
+if (androidConfig == null) {
+    return
+}
+
+androidConfig.buildConfigField("boolean", "DEMO_MODE", DEMO_MODE.toString())
+androidConfig.buildConfigField("boolean", "ENABLE_EXTERNAL_LOG", ENABLE_EXTERNAL_LOG.toString())
+androidConfig.buildConfigField("String", "SERVER_WALLPAPER_ENDPOINT", SERVER_WALLPAPER_ENDPOINT)
+
+def static Object findAndroidExtensionConfig(Project project) {
+    for (ExtensionContainer ec : project.getExtensions()) {
+        def extension = ec.findByName("android")
+        if (extension != null) {
+            return extension.defaultConfig
+        }
     }
+}
+
+def isProductFlavor() {
+    List<TaskExecutionRequest> taskExecutionRequests = getGradle().getStartParameter().getTaskRequests()
+
+    if (taskExecutionRequests.isEmpty()) {
+        return false
+    }
+
+    TaskExecutionRequest request = taskExecutionRequests.get(0)
+    List<String> args = request.args
+
+    String tskReqStr = args[0].toLowerCase()
+
+    return !tskReqStr.contains("demo") && tskReqStr.contains("product")
+
 }

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="action_activate">激活</string>
+    <string name="app_name">Style</string>
+
+    <string name="app_author">Yalin</string>
+    <string name="app_description">Style Live Wallpaper</string>
+
+    <string name="action_activate">开启</string>
 
 </resources>
