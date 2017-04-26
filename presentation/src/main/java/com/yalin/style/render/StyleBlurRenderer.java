@@ -30,12 +30,12 @@ import javax.microedition.khronos.opengles.GL10;
  */
 
 public class StyleBlurRenderer implements GLSurfaceView.Renderer {
-    private static final String TAG = "MuzeiBlurRenderer";
+    private static final String TAG = "StyleBlurRenderer";
 
     private static final int CROSSFADE_ANIMATION_DURATION = 750;
     private static final int BLUR_ANIMATION_DURATION = 750;
 
-    public static final int DEFAULT_BLUR = 250; // max 500
+    public static final int DEFAULT_BLUR = 150; // max 500
     public static final int DEFAULT_GREY = 0; // max 500
     public static final int DEMO_BLUR = 250;
     public static final int DEMO_DIM = 64;
