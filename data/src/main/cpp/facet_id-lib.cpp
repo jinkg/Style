@@ -12,13 +12,20 @@ int check_facet_id(JNIEnv *, jstring);
 jstring get_facet_id(JNIEnv *, jobject, jint);
 
 extern "C"
-JNIEXPORT jboolean JNICALL
+jboolean
 Java_com_yalin_style_data_utils_FacetIdUtil_checkCurrentFacetId__Landroid_content_Context_2I(
-        JNIEnv *env, jclass type, jobject context, jint uId) {
+        JNIEnv *env, jclass, jobject context, jint uId) {
     jstring facet_id = get_facet_id(env, context, uId);;
     int check_result = check_facet_id(env, facet_id);
     bool result = check_result == 0;
     return (jboolean) result;
+}
+
+extern "C"
+jstring
+Java_com_yalin_style_data_utils_FacetIdUtil_getFacetId__Landroid_content_Context_2I(
+        JNIEnv *env, jclass, jobject context, jint uId) {
+    return get_facet_id(env, context, uId);
 }
 
 jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
@@ -152,7 +159,7 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
 
 int check_facet_id(JNIEnv *env, jstring facet_id) {
     // modify to your app's facet id
-    jstring valid_facet_id_string = env->NewStringUTF("0C73mPNvXJ5tL99+xMM62U0Ii5I=\n");
+    jstring valid_facet_id_string = env->NewStringUTF("unkown");
 
     const char *valid_facet_id = env->GetStringUTFChars(valid_facet_id_string, 0);
     char *target_facet_id = (char *) env->GetStringUTFChars(facet_id, 0);
@@ -170,10 +177,4 @@ int check_facet_id(JNIEnv *env, jstring facet_id) {
 
     env->DeleteLocalRef(valid_facet_id_string);
     return result;
-}
-
-JNIEXPORT jstring JNICALL
-Java_com_yalin_style_data_utils_FacetIdUtil_getFacetId(JNIEnv *env, jclass type, jobject context,
-                                                       jint uId) {
-    return get_facet_id(env, context, uId);
 }
