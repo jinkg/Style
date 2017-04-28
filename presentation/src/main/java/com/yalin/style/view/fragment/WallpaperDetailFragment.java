@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.yalin.style.WallpaperDetailViewport;
@@ -50,6 +51,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     TextView tvAttribution;
     TextView tvTitle;
     TextView tvByline;
+    ImageButton btnNext;
 
     private int currentViewportId = 0;
     private float systemWallpaperAspectRatio;
@@ -82,6 +84,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         tvAttribution = (TextView) rootView.findViewById(R.id.attribution);
         tvTitle = (TextView) rootView.findViewById(R.id.title);
         tvByline = (TextView) rootView.findViewById(R.id.byline);
+        btnNext = (ImageButton) rootView.findViewById(R.id.next_button);
         setupDetailViews();
         return rootView;
     }
@@ -114,6 +117,13 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
             panScaleProxyView.setOnOtherGestureListener(
                     (PanScaleProxyView.OnOtherGestureListener) getActivity());
         }
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getNextWallpaper();
+            }
+        });
     }
 
     @Override
@@ -257,6 +267,11 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         tvAttribution.setText(wallpaperItem.attribution);
         tvByline.setTypeface(TypefaceUtil.getAndCache(context(), bylineFont));
         tvByline.setText(wallpaperItem.byline);
+    }
+
+    @Override
+    public void showNextButton(boolean show) {
+        btnNext.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override

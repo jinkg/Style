@@ -12,6 +12,8 @@ import io.reactivex.Observable;
 public interface WallpaperCache {
     Observable<WallpaperEntity> get();
 
+    int getCachedId();
+
     void put(WallpaperEntity wallpaperEntity);
 
     boolean isCached();

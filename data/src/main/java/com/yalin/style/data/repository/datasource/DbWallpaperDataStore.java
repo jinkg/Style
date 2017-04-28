@@ -31,13 +31,19 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
     public DbWallpaperDataStore(Context context, WallpaperCache wallpaperCache) {
         this.context = context;
         this.wallpaperCache = wallpaperCache;
-
-        getWallPaperEntity().doOnNext(wallpaperCache::put);
     }
 
     @Override
     public Observable<WallpaperEntity> getWallPaperEntity() {
         return createEntityObservable().doOnNext(wallpaperCache::put);
+    }
+
+    @Override
+    public Observable<WallpaperEntity> switchWallPaperEntity() {
+        return wallpaperCache.isCached() && !wallpaperCache.isDirty() ?
+                getNextWallpaper(wallpaperCache.getCachedId()).doOnNext(wallpaperCache::put)
+                : getWallPaperEntity();
+
     }
 
     @Override
@@ -60,6 +66,23 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
         });
     }
 
+    @Override
+    public Observable<Integer> getWallpaperCount() {
+        return Observable.create(emitter -> {
+            Cursor cursor = null;
+            int count = 0;
+            ContentResolver contentResolver = context.getContentResolver();
+            cursor = contentResolver.query(StyleContract.Wallpaper.CONTENT_URI,
+                    null, null, null, null);
+            if (cursor != null) {
+                count = cursor.getCount();
+                cursor.close();
+            }
+            emitter.onNext(count);
+            emitter.onComplete();
+        });
+    }
+
     private Observable<WallpaperEntity> createEntityObservable() {
         return Observable.create(emitter -> {
             Cursor cursor = null;
@@ -68,20 +91,31 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
                 ContentResolver contentResolver = context.getContentResolver();
                 cursor = contentResolver.query(StyleContract.Wallpaper.CONTENT_URI,
                         null, null, null, null);
-                while (cursor != null && cursor.moveToNext()) {
-                    WallpaperEntity wallpaperEntity = readCursor(cursor);
-                    try {
-                        // valid input stream
-                        contentResolver.openInputStream(
-                                StyleContract.Wallpaper.buildWallpaperUri(
-                                        wallpaperEntity.wallpaperId));
-                        validWallpaper = wallpaperEntity;
-                        break;
-                    } catch (Exception e) {
-                        LogUtil.D(TAG, "File not found with wallpaper id : "
-                                + wallpaperEntity.wallpaperId);
-                    }
+                validWallpaper = readCursor(cursor);
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
                 }
+            }
+            if (validWallpaper == null) {
+                validWallpaper = buildDefaultWallpaper();
+            }
+
+            emitter.onNext(validWallpaper);
+            emitter.onComplete();
+        });
+    }
+
+    private Observable<WallpaperEntity> getNextWallpaper(int currentId) {
+        return Observable.create(emitter -> {
+            Cursor cursor = null;
+            WallpaperEntity validWallpaper = null;
+            try {
+                ContentResolver contentResolver = context.getContentResolver();
+                cursor = contentResolver.query(
+                        StyleContract.Wallpaper.buildWallpaperUriNext(currentId),
+                        null, null, null, null);
+                validWallpaper = readCursor(cursor);
             } finally {
                 if (cursor != null) {
                     cursor.close();
@@ -97,8 +131,32 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
     }
 
     private WallpaperEntity readCursor(Cursor cursor) {
+        WallpaperEntity validWallpaper = null;
+        while (cursor != null && cursor.moveToNext()) {
+            WallpaperEntity wallpaperEntity = readEntityFromCursor(cursor);
+            try {
+                // valid input stream
+                InputStream is = context.getContentResolver().openInputStream(
+                        StyleContract.Wallpaper.buildWallpaperUri(
+                                wallpaperEntity.wallpaperId));
+                validWallpaper = wallpaperEntity;
+                if (is != null) {
+                    is.close();
+                }
+                break;
+            } catch (Exception e) {
+                LogUtil.D(TAG, "File not found with wallpaper id : "
+                        + wallpaperEntity.wallpaperId);
+            }
+        }
+        return validWallpaper;
+    }
+
+    private WallpaperEntity readEntityFromCursor(Cursor cursor) {
         WallpaperEntity wallpaperEntity = new WallpaperEntity();
 
+        wallpaperEntity.id = cursor.getInt(cursor.getColumnIndex(
+                StyleContract.Wallpaper._ID));
         wallpaperEntity.title = cursor.getString(cursor.getColumnIndex(
                 StyleContract.Wallpaper.COLUMN_NAME_TITLE));
         wallpaperEntity.wallpaperId = cursor.getString(cursor.getColumnIndex(
@@ -115,6 +173,7 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
 
     private WallpaperEntity buildDefaultWallpaper() {
         WallpaperEntity wallpaperEntity = new WallpaperEntity();
+        wallpaperEntity.id = -1;
         wallpaperEntity.attribution = "kinglloy.com";
         wallpaperEntity.byline = "Lyubov Popova, 1918";
         wallpaperEntity.imageUri = "imageUri";

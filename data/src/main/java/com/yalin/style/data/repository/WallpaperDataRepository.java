@@ -78,10 +78,22 @@ public class WallpaperDataRepository implements WallpaperRepository {
     }
 
     @Override
+    public Observable<Wallpaper> switchWallpaper() {
+        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
+        return dataStore.switchWallPaperEntity().map(wallpaperEntityMapper::transform);
+    }
+
+    @Override
     public Observable<InputStream> openInputStream(String wallpaperId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(wallpaperId), "WallpaperId cannot be null");
         final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
         return dataStore.openInputStream(wallpaperId);
+    }
+
+    @Override
+    public Observable<Integer> getWallpaperCount() {
+        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
+        return dataStore.getWallpaperCount();
     }
 
     @Override

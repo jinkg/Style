@@ -9,4 +9,6 @@ import com.yalin.style.model.WallpaperItem;
 
 public interface WallpaperDetailView extends LoadingDataView {
     void renderWallpaper(WallpaperItem wallpaperItem);
+
+    void showNextButton(boolean show);
 }

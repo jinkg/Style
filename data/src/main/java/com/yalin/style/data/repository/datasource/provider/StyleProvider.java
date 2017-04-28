@@ -81,7 +81,8 @@ public class StyleProvider extends ContentProvider {
 
         switch (uriEnum) {
             case WALLPAPER:
-            case WALLPAPER_ID: {
+            case WALLPAPER_ID:
+            case NEXT_WALLPAPER: {
                 final SelectionBuilder builder = buildSimpleSelection(uri);
                 return builder.query(db, projection, null);
             }
@@ -186,6 +187,11 @@ public class StyleProvider extends ContentProvider {
                 return builder.table(StyleDatabase.Tables.WALLPAPER)
                         .where(StyleContract.Wallpaper.COLUMN_NAME_WALLPAPER_ID + " = ?", wallpaperId);
             }
+            case NEXT_WALLPAPER: {
+                String _id = StyleContract.Wallpaper.getIdForNext(uri);
+                return builder.table(StyleDatabase.Tables.WALLPAPER)
+                        .where(StyleContract.Wallpaper._ID + " > ?", _id);
+            }
             default: {
                 throw new UnsupportedOperationException("Unknown uri for " + uri);
             }
@@ -199,7 +205,7 @@ public class StyleProvider extends ContentProvider {
             throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         switch (uriEnum) {
-            case LAST_WALLPAPER: {
+            case NEXT_WALLPAPER: {
                 return builder.table(StyleDatabase.Tables.WALLPAPER).where(StyleContract.Wallpaper.COLUMN_NAME_ADD_DATE +
                         " = (SELECT max(" + StyleContract.Wallpaper.COLUMN_NAME_ADD_DATE + ") FROM " + StyleDatabase.Tables.WALLPAPER
                         + ")");

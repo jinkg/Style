@@ -19,6 +19,7 @@ import android.view.ViewConfiguration;
 import com.yalin.style.event.SystemWallpaperSizeChangedEvent;
 import com.yalin.style.event.WallpaperActivateEvent;
 import com.yalin.style.event.WallpaperDetailOpenedEvent;
+import com.yalin.style.event.WallpaperSwitchEvent;
 import com.yalin.style.render.RenderController;
 import com.yalin.style.render.StyleBlurRenderer;
 
@@ -196,6 +197,11 @@ public class StyleWallpaperService extends GLWallpaperService {
         @Subscribe
         public void onEventMainThread(WallpaperDetailViewport e) {
             requestRender();
+        }
+
+        @Subscribe
+        public void onEventMainThread(WallpaperSwitchEvent e) {
+            mRenderController.reloadCurrentWallpaper();
         }
 
         @Override

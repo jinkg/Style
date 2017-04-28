@@ -88,6 +88,16 @@
         </FrameLayout>
 
         <ImageButton
+            android:id="@+id/next_button"
+            android:layout_width="@dimen/wallpaper_detail_button_width"
+            android:layout_height="@dimen/wallpaper_detail_button_height"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/app_name"
+            android:scaleType="center"
+            android:src="@drawable/ic_skip"
+            android:visibility="gone" />
+
+        <ImageButton
             android:id="@+id/overflow_button"
             android:layout_width="@dimen/wallpaper_detail_button_width"
             android:layout_height="@dimen/wallpaper_detail_button_height"

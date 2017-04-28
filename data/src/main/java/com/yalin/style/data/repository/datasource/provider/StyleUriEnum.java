@@ -6,8 +6,8 @@ package com.yalin.style.data.repository.datasource.provider;
 
 public enum StyleUriEnum {
     WALLPAPER(100, "wallpaper", StyleDatabase.Tables.WALLPAPER),
-    LAST_WALLPAPER(101, "wallpaper/last", null),
     WALLPAPER_SAVE(103, "wallpaper/save/*", null),
+    NEXT_WALLPAPER(101, "wallpaper/*/next", null),
     WALLPAPER_ID(102, "wallpaper/*", null);
 
     public int code;

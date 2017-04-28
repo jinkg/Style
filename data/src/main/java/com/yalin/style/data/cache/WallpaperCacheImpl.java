@@ -24,9 +24,15 @@ public class WallpaperCacheImpl implements WallpaperCache {
     public Observable<WallpaperEntity> get() {
         Preconditions.checkNotNull(wallpaperEntity, "There is not cached wallpaper.");
         return Observable.create(emitter -> {
-            emitter.onNext(wallpaperEntity);
+            emitter.onNext(new WallpaperEntity(wallpaperEntity));
             emitter.onComplete();
         });
+    }
+
+    @Override
+    public int getCachedId() {
+        Preconditions.checkNotNull(wallpaperEntity, "There is not cached wallpaper.");
+        return wallpaperEntity.id;
     }
 
     @Override

@@ -53,14 +53,14 @@ public class StyleContract {
 
         public static final String TABLE_NAME = "wallpaper";
 
-        public static final String PATH_LAST_WALLPAPER = "last";
+        public static final String PATH_NEXT_WALLPAPER = "next";
         public static final String PATH_SAVE_WALLPAPER = "save";
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_WALLPAPER).build();
 
         public static final Uri CONTENT_LAST_WALLPAPER_URI =
-                CONTENT_URI.buildUpon().appendPath(PATH_LAST_WALLPAPER).build();
+                CONTENT_URI.buildUpon().appendPath(PATH_NEXT_WALLPAPER).build();
 
         public static Uri buildWallpaperUri(String wallpaperId) {
             return CONTENT_URI.buildUpon().appendPath(wallpaperId).build();
@@ -71,12 +71,21 @@ public class StyleContract {
                     .appendPath(PATH_SAVE_WALLPAPER).appendPath(wallpaperId).build();
         }
 
+        public static Uri buildWallpaperUriNext(int currentId) {
+            return CONTENT_URI.buildUpon().appendPath(currentId + "")
+                    .appendPath(PATH_NEXT_WALLPAPER).build();
+        }
+
         public static String getWallpaperId(Uri uri) {
             return uri.getPathSegments().get(1);
         }
 
         public static String getWallpaperSaveId(Uri uri) {
             return uri.getPathSegments().get(2);
+        }
+
+        public static String getIdForNext(Uri uri) {
+            return uri.getPathSegments().get(1);
         }
     }
 }
