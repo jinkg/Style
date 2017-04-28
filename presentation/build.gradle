@@ -1,5 +1,14 @@
 apply plugin: 'com.android.application'
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+def alias = properties.get('alias')
+def _keyPassword = properties.get('keyPassword')
+def _storePassword = properties.get('storePassword')
+def keystorePath = properties.get('keystorePath')
+
+println(alias + " " + _keyPassword + " " + _storePassword + " " + keystorePath)
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
     buildToolsVersion BUILD_TOOLS_VERSION as String
@@ -12,6 +21,14 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            keyAlias alias
+            keyPassword _keyPassword
+            storeFile file(keystorePath)
+            storePassword _storePassword
+        }
+    }
     buildTypes {
         debug {
             minifyEnabled false
@@ -19,6 +36,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     productFlavors {
@@ -29,6 +47,7 @@ android {
             buildConfigField("boolean", "DEMO_MODE", "false")
         }
     }
+
 }
 
 dependencies {
@@ -46,7 +65,7 @@ dependencies {
 
     compile project(':domain')
     demoCompile project(path: ':data', configuration: 'demoDebug')
-    productionCompile project(path: ':data', configuration: 'productionDebug')
+    productionCompile project(path: ':data', configuration: 'productionRelease')
 
     compile files('../third_party/volley/libs/volley.jar')
 
