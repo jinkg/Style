@@ -21,7 +21,7 @@ public class LogUtil {
 
     private static final String FILE_NAME = "Style/stat_log.txt";
 
-    private static final boolean LOG_ENABLE = BuildConfig.DEMO_MODE;
+    private static final boolean LOG_ENABLE = BuildConfig.DEMO_MODE || BuildConfig.LOG_ENABLE;
 
     public static synchronized boolean isExternalLogEnabled() {
         //noinspection SimplifiableIfStatement

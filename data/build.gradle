@@ -9,7 +9,12 @@ buildscript {
 
 apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
-apply from: '../switch.gradle'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('switch.properties').newDataInputStream())
+
+def ENABLE_EXTERNAL_LOG = properties.get('ENABLE_EXTERNAL_LOG')
+def LOG_ENABLE = properties.get('LOG_ENABLE')
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
@@ -27,11 +32,25 @@ android {
                 cppFlags ""
             }
         }
+        buildConfigField("boolean", "LOG_ENABLE", "${LOG_ENABLE}")
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    publishNonDefault true
+    productFlavors {
+        demo {
+            buildConfigField("boolean", "DEMO_MODE", "true")
+            buildConfigField("boolean", "ENABLE_EXTERNAL_LOG", "true")
+            buildConfigField("String", "SERVER_WALLPAPER_ENDPOINT", "\"${DEMO_API_WALLPAPER_ENDPOINT}\"")
+        }
+        production {
+            buildConfigField("boolean", "DEMO_MODE", "false")
+            buildConfigField("boolean", "ENABLE_EXTERNAL_LOG", "${ENABLE_EXTERNAL_LOG}")
+            buildConfigField("String", "SERVER_WALLPAPER_ENDPOINT", "\"${PRODUCTION_API_WALLPAPER_ENDPOINT}\"")
         }
     }
     compileOptions {

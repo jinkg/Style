@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply from: '../switch.gradle'
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
@@ -24,10 +23,10 @@ android {
     }
     productFlavors {
         demo {
-
+            buildConfigField("boolean", "DEMO_MODE", "true")
         }
-        product {
-
+        production {
+            buildConfigField("boolean", "DEMO_MODE", "false")
         }
     }
 }
@@ -46,7 +45,8 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
 
     compile project(':domain')
-    compile project(':data')
+    demoCompile project(path: ':data', configuration: 'demoDebug')
+    productionCompile project(path: ':data', configuration: 'productionDebug')
 
     compile files('../third_party/volley/libs/volley.jar')
 

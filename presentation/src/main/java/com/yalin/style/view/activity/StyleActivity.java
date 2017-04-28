@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.yalin.style.R;
 import com.yalin.style.StyleWallpaperService;
+import com.yalin.style.data.BuildConfig;
 import com.yalin.style.event.MainContainerInsetsChangedEvent;
 import com.yalin.style.event.WallpaperActivateEvent;
 import com.yalin.style.event.WallpaperDetailOpenedEvent;
@@ -88,7 +89,8 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     @Override
     protected void onStart() {
         super.onStart();
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (BuildConfig.ENABLE_EXTERNAL_LOG &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
