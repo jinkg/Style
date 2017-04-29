@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.yalin.style.R;
 import com.yalin.style.data.exception.NetworkConnectionException;
-import com.yalin.style.data.exception.ResyncException;
+import com.yalin.style.data.exception.ReswitchException;
 
 /**
  * @author jinyalin
@@ -28,7 +28,7 @@ public class ErrorMessageFactory {
 
         if (exception instanceof NetworkConnectionException) {
             message = context.getString(R.string.exception_message_no_connection);
-        } else if (exception instanceof ResyncException) {
+        } else if (exception instanceof ReswitchException) {
             message = context.getString(R.string.exception_message_resync);
         }
 

@@ -5,12 +5,12 @@ package com.yalin.style.data.exception;
  * @since 2017/4/29.
  */
 
-public class ResyncException extends Exception {
-    public ResyncException() {
+public class ReswitchException extends Exception {
+    public ReswitchException() {
         super();
     }
 
-    public ResyncException(final Throwable cause) {
+    public ReswitchException(final Throwable cause) {
         super(cause);
     }
 }

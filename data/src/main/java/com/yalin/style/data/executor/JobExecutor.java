@@ -23,7 +23,7 @@ public class JobExecutor implements ThreadExecutor {
     @Inject
     JobExecutor() {
         threadPoolExecutor = new ThreadPoolExecutor(3, 5, 10, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>(), new JobThreadFactory());
+                new LinkedBlockingQueue<>(), new JobThreadFactory());
     }
 
     @Override
