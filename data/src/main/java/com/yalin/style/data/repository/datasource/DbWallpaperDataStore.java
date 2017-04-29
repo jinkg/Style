@@ -83,11 +83,6 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
         });
     }
 
-    @Override
-    public Observable<Void> refreshWallpapers() {
-        throw new UnsupportedOperationException("Cache data store not support refresh.");
-    }
-
     private Observable<WallpaperEntity> createEntityObservable() {
         return Observable.create(emitter -> {
             Cursor cursor = null;

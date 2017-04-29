@@ -21,8 +21,6 @@ public interface WallpaperRepository {
 
     Observable<Integer> getWallpaperCount();
 
-    Observable<Void> refreshWallpapers();
-
     void registerObserver(DefaultObserver<Void> observer);
 
     void unregisterObserver(DefaultObserver<Void> observer);

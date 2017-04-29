@@ -38,10 +38,6 @@ public class WallpaperDataStoreFactory {
         return new DbWallpaperDataStore(context, wallpaperCache);
     }
 
-    public WallpaperDataStore createCloudDataStore() {
-        return new CloudWallpaperDataStore(context, wallpaperCache);
-    }
-
     public void onDataRefresh() {
         wallpaperCache.evictAll();
     }

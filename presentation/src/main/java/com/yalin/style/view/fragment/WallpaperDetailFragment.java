@@ -155,9 +155,6 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.action_refresh:
-                        presenter.refreshWallpapers();
-                        return true;
                     case R.id.action_share:
                         presenter.shareWallpaper();
                         return true;
@@ -169,7 +166,6 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         });
         overflowMenu.getMenu().clear();
         overflowMenu.inflate(R.menu.style_overflow);
-        overflowMenu.getMenu().add(0, R.id.action_refresh, 0, R.string.action_refresh);
         overflowMenu.getMenu().add(0, R.id.action_share, 0, R.string.action_share);
     }
 

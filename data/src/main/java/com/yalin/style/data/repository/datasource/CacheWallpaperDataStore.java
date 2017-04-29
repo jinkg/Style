@@ -41,9 +41,4 @@ public class CacheWallpaperDataStore implements WallpaperDataStore {
     public Observable<Integer> getWallpaperCount() {
         throw new UnsupportedOperationException("Cache data store not support get count.");
     }
-
-    @Override
-    public Observable<Void> refreshWallpapers() {
-        throw new UnsupportedOperationException("Cache data store not support refresh.");
-    }
 }
