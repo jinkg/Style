@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Style</string>
+
+    <string name="authority">com.yalin.style</string>
 </resources>

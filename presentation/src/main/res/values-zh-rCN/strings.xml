@@ -6,5 +6,11 @@
     <string name="app_description">Style Live Wallpaper</string>
 
     <string name="action_activate">开启</string>
+    <string name="action_settings">设置</string>
+    <string name="action_refresh">刷新</string>
+    <string name="action_share">分享</string>
 
+    <string name="exception_message_generic">操作出现了一个错误。</string>
+    <string name="exception_message_no_connection">网络不可用，请检查网络连接。</string>
+    <string name="exception_message_resync">正在同步…</string>
 </resources>

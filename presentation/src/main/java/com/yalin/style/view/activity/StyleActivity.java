@@ -57,10 +57,11 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     private int mUiMode = MODE_UNKNOWN;
 
     private boolean mWindowHasFocus;
-    private boolean mOverflowMenuVisible = false;
     private boolean mPaused = false;
 
     private boolean mStyleActive = false;
+
+    WallpaperDetailFragment wallpaperDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +92,7 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         super.onStart();
         if (BuildConfig.ENABLE_EXTERNAL_LOG &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+                        != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_PERMISSION_CODE);
@@ -239,8 +240,7 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
             FragmentManager fragmentManager = getFragmentManager();
             Fragment detailFragment = fragmentManager.findFragmentById(R.id.detail_container);
             if (detailFragment == null) {
-                WallpaperDetailFragment wallpaperDetailFragment
-                        = WallpaperDetailFragment.createInstance();
+                wallpaperDetailFragment = WallpaperDetailFragment.createInstance();
                 mMainContainer.setOnSystemUiVisibilityChangeListener(wallpaperDetailFragment);
                 fragmentManager.beginTransaction()
                         .add(R.id.detail_container, wallpaperDetailFragment)
@@ -261,10 +261,14 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         }
 
         boolean shouldBeOpened = false;
-        if (mUiMode == MODE_DETAIL
-                && (mWindowHasFocus || mOverflowMenuVisible)
-                && !mPaused) {
-            shouldBeOpened = true;
+
+        if (mUiMode == MODE_DETAIL) {
+            boolean overflowMenuVisible = wallpaperDetailFragment != null
+                    && wallpaperDetailFragment.isOverflowMenuVisible();
+            if ((mWindowHasFocus || overflowMenuVisible)
+                    && !mPaused) {
+                shouldBeOpened = true;
+            }
         }
 
         if (currentlyOpened != shouldBeOpened) {

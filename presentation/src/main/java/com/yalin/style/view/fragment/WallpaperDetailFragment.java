@@ -1,16 +1,20 @@
 package com.yalin.style.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.yalin.style.WallpaperDetailViewport;
@@ -52,6 +56,9 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     TextView tvTitle;
     TextView tvByline;
     ImageButton btnNext;
+    ImageButton btnOverflow;
+
+    PopupMenu overflowMenu;
 
     private int currentViewportId = 0;
     private float systemWallpaperAspectRatio;
@@ -59,6 +66,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     private boolean deferResetViewport;
 
     private boolean mGuardViewportChangeListener = false;
+    private boolean mOverflowMenuVisible = false;
 
     public static WallpaperDetailFragment createInstance() {
         return new WallpaperDetailFragment();
@@ -85,6 +93,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         tvTitle = (TextView) rootView.findViewById(R.id.title);
         tvByline = (TextView) rootView.findViewById(R.id.byline);
         btnNext = (ImageButton) rootView.findViewById(R.id.next_button);
+        btnOverflow = (ImageButton) rootView.findViewById(R.id.overflow_button);
         setupDetailViews();
         return rootView;
     }
@@ -124,6 +133,45 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
                 presenter.getNextWallpaper();
             }
         });
+        setupOverflowButton();
+    }
+
+    private void setupOverflowButton() {
+        overflowMenu = new PopupMenu(getActivity(), btnOverflow);
+        btnOverflow.setOnTouchListener(overflowMenu.getDragToOpenListener());
+        btnOverflow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOverflowMenuVisible = true;
+                overflowMenu.show();
+            }
+        });
+        overflowMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu popupMenu) {
+                mOverflowMenuVisible = false;
+            }
+        });
+        overflowMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_refresh:
+                        presenter.refreshWallpapers();
+                        return true;
+                    case R.id.action_share:
+                        presenter.shareWallpaper();
+                        return true;
+                    case R.id.action_settings:
+                        return true;
+                }
+                return false;
+            }
+        });
+        overflowMenu.getMenu().clear();
+        overflowMenu.inflate(R.menu.style_overflow);
+        overflowMenu.getMenu().add(0, R.id.action_refresh, 0, R.string.action_refresh);
+        overflowMenu.getMenu().add(0, R.id.action_share, 0, R.string.action_share);
     }
 
     @Override
@@ -338,5 +386,9 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
                         }
                     });
         }
+    }
+
+    public boolean isOverflowMenuVisible() {
+        return mOverflowMenuVisible;
     }
 }

@@ -19,4 +19,6 @@ public interface WallpaperDataStore {
     Observable<InputStream> openInputStream(String wallpaperId);
 
     Observable<Integer> getWallpaperCount();
+
+    Observable<Void> refreshWallpapers();
 }

@@ -1,5 +1,6 @@
 package com.yalin.style.data.repository;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.net.Uri;
@@ -7,6 +8,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 
 import com.fernandocejas.arrow.checks.Preconditions;
+import com.yalin.style.data.R;
 import com.yalin.style.data.entity.mapper.WallpaperEntityMapper;
 import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.WallpaperDataStore;
@@ -94,6 +96,12 @@ public class WallpaperDataRepository implements WallpaperRepository {
     public Observable<Integer> getWallpaperCount() {
         final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
         return dataStore.getWallpaperCount();
+    }
+
+    @Override
+    public Observable<Void> refreshWallpapers() {
+        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createCloudDataStore();
+        return dataStore.refreshWallpapers();
     }
 
     @Override

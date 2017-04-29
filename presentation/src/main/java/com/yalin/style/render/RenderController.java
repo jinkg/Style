@@ -45,10 +45,10 @@ public class RenderController {
         this.openWallpaperInputStreamUseCase = openWallpaperInputStream;
     }
 
-    public void setComponent(StyleBlurRenderer renderer,Callbacks callbacks){
+    public void setComponent(StyleBlurRenderer renderer, Callbacks callbacks) {
         this.mRenderer = renderer;
         this.mCallbacks = callbacks;
-//        reloadCurrentWallpaper();
+        reloadCurrentWallpaper();
     }
 
     public void destroy() {

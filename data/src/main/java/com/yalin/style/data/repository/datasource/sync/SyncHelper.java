@@ -34,10 +34,11 @@ public class SyncHelper {
   public boolean performSync(SyncResult syncResult, Bundle extras) {
     try {
       doStyleSync();
+      return true;
     } catch (IOException e) {
       e.printStackTrace();
     }
-    return true;
+    return false;
   }
 
   private boolean doStyleSync() throws IOException {

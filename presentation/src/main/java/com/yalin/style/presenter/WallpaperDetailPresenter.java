@@ -1,12 +1,13 @@
 package com.yalin.style.presenter;
 
-import com.fernandocejas.arrow.checks.Preconditions;
 import com.yalin.style.domain.Wallpaper;
 import com.yalin.style.domain.interactor.DefaultObserver;
 import com.yalin.style.domain.interactor.GetWallpaper;
 import com.yalin.style.domain.interactor.GetWallpaperCount;
+import com.yalin.style.domain.interactor.RefreshWallpapers;
 import com.yalin.style.domain.interactor.SwitchWallpaper;
 import com.yalin.style.event.WallpaperSwitchEvent;
+import com.yalin.style.exception.ErrorMessageFactory;
 import com.yalin.style.injection.PerActivity;
 import com.yalin.style.mapper.WallpaperItemMapper;
 import com.yalin.style.model.WallpaperItem;
@@ -25,19 +26,26 @@ public class WallpaperDetailPresenter implements Presenter {
     private final GetWallpaper getWallpaperUseCase;
     private final GetWallpaperCount getWallpaperCountUseCase;
     private final SwitchWallpaper switchWallpaperUseCase;
+    private final RefreshWallpapers refreshWallpapersUseCase;
     private final WallpaperItemMapper wallpaperItemMapper;
 
     private WallpaperDetailView wallpaperDetailView;
+
+    private WallpaperRefreshObserver wallpaperRefreshObserver = new WallpaperRefreshObserver();
 
     @Inject
     public WallpaperDetailPresenter(GetWallpaper getWallpaperUseCase,
                                     GetWallpaperCount getWallpaperCountUseCase,
                                     SwitchWallpaper switchWallpaperUseCase,
+                                    RefreshWallpapers refreshWallpapersUseCase,
                                     WallpaperItemMapper itemMapper) {
         this.getWallpaperUseCase = getWallpaperUseCase;
         this.getWallpaperCountUseCase = getWallpaperCountUseCase;
         this.switchWallpaperUseCase = switchWallpaperUseCase;
+        this.refreshWallpapersUseCase = refreshWallpapersUseCase;
         this.wallpaperItemMapper = itemMapper;
+
+        getWallpaperUseCase.registerObserver(wallpaperRefreshObserver);
     }
 
     public void setView(WallpaperDetailView wallpaperDetailView) {
@@ -53,6 +61,21 @@ public class WallpaperDetailPresenter implements Presenter {
         switchWallpaperUseCase.execute(new WallpaperObserver(true), null);
     }
 
+    public void refreshWallpapers() {
+        refreshWallpapersUseCase.execute(new DefaultObserver<Void>() {
+            @Override
+            public void onError(Throwable exception) {
+                wallpaperDetailView.showError(
+                        ErrorMessageFactory.create(wallpaperDetailView.context(),
+                                (Exception) exception));
+            }
+        }, null);
+    }
+
+    public void shareWallpaper() {
+
+    }
+
     @Override
     public void resume() {
 
@@ -66,6 +89,7 @@ public class WallpaperDetailPresenter implements Presenter {
     @Override
     public void destroy() {
         getWallpaperUseCase.dispose();
+        getWallpaperUseCase.unregisterObserver(wallpaperRefreshObserver);
         wallpaperDetailView = null;
     }
 
@@ -120,6 +144,13 @@ public class WallpaperDetailPresenter implements Presenter {
         @Override
         public void onError(Throwable exception) {
             showOrHideNextView(false);
+        }
+    }
+
+    private final class WallpaperRefreshObserver extends DefaultObserver<Void> {
+        @Override
+        public void onComplete() {
+            initialize();
         }
     }
 }
