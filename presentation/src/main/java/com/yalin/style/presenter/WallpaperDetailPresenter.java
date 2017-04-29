@@ -1,5 +1,7 @@
 package com.yalin.style.presenter;
 
+import android.content.Intent;
+
 import com.yalin.style.domain.Wallpaper;
 import com.yalin.style.domain.interactor.DefaultObserver;
 import com.yalin.style.domain.interactor.GetWallpaper;
@@ -28,6 +30,8 @@ public class WallpaperDetailPresenter implements Presenter {
     private final SwitchWallpaper switchWallpaperUseCase;
     private final RefreshWallpapers refreshWallpapersUseCase;
     private final WallpaperItemMapper wallpaperItemMapper;
+
+    private WallpaperItem currentShowItem;
 
     private WallpaperDetailView wallpaperDetailView;
 
@@ -73,7 +77,21 @@ public class WallpaperDetailPresenter implements Presenter {
     }
 
     public void shareWallpaper() {
+        if (currentShowItem == null) {
+            return;
+        }
+        String detailUrl = "www.kinglloy.com";
+        String artist = currentShowItem.byline.replaceFirst("\\.\\s*($|\\n).*", "").trim();
 
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "My Android wallpaper today is '"
+                + currentShowItem.title.trim()
+                + "' by " + artist
+                + ". #StyleWallpaper\n\n"
+                + detailUrl);
+        shareIntent = Intent.createChooser(shareIntent, "Share wallpaper");
+        wallpaperDetailView.shareWallpaper(shareIntent);
     }
 
     @Override
@@ -95,6 +113,7 @@ public class WallpaperDetailPresenter implements Presenter {
 
     private void showWallpaperDetailInView(Wallpaper wallpaper) {
         final WallpaperItem wallpaperItem = wallpaperItemMapper.transform(wallpaper);
+        currentShowItem = wallpaperItem;
         wallpaperDetailView.renderWallpaper(wallpaperItem);
     }
 

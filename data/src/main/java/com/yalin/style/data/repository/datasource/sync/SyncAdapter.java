@@ -17,6 +17,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private static final String TAG = "SyncAdapter";
 
+    public static final String SYNC_MANUALLY = "syn_manually";
+
     private final Context mContext;
 
     public SyncAdapter(Context context, boolean autoInitialize) {
@@ -32,8 +34,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
-        LogUtil.F(TAG, "PerformSync");
-
+        LogUtil.F(TAG, "PerformSync.");
+        if (extras.getBoolean(SYNC_MANUALLY)) {
+            LogUtil.D(TAG, "Manually sync.");
+        }
         new SyncHelper(mContext).performSync(syncResult, extras);
     }
 }

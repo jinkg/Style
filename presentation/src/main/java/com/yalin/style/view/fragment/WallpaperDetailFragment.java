@@ -3,7 +3,6 @@ package com.yalin.style.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -232,6 +231,12 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        overflowMenu.dismiss();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.destroy();
@@ -323,6 +328,12 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     }
 
     @Override
+    public void shareWallpaper(Intent shareIntent) {
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(shareIntent);
+    }
+
+    @Override
     public void showLoading() {
 
     }
@@ -391,4 +402,5 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     public boolean isOverflowMenuVisible() {
         return mOverflowMenuVisible;
     }
+
 }

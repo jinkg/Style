@@ -10,6 +10,7 @@ import com.yalin.style.data.entity.WallpaperEntity;
 import com.yalin.style.data.exception.NetworkConnectionException;
 import com.yalin.style.data.exception.ResyncException;
 import com.yalin.style.data.log.LogUtil;
+import com.yalin.style.data.repository.datasource.sync.SyncAdapter;
 import com.yalin.style.data.repository.datasource.sync.account.Account;
 import com.yalin.style.data.utils.NetworkUtil;
 
@@ -89,6 +90,7 @@ public class CloudWallpaperDataStore implements WallpaperDataStore {
             Bundle b = new Bundle();
             b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
             b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+            b.putBoolean(SyncAdapter.SYNC_MANUALLY, true);
             LogUtil.D(TAG, "Requesting sync now.");
 
             ContentResolver.requestSync(account, authority, b);
