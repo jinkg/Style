@@ -79,7 +79,7 @@ public class WallpaperDataRepository implements WallpaperRepository {
 
     @Override
     public Observable<Wallpaper> switchWallpaper() {
-        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
+        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.create();
         return dataStore.switchWallPaperEntity().map(wallpaperEntityMapper::transform);
     }
 
@@ -92,7 +92,7 @@ public class WallpaperDataRepository implements WallpaperRepository {
 
     @Override
     public Observable<Integer> getWallpaperCount() {
-        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
+        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.create();
         return dataStore.getWallpaperCount();
     }
 

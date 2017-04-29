@@ -2,6 +2,8 @@ package com.yalin.style.data.cache;
 
 import com.yalin.style.data.entity.WallpaperEntity;
 
+import java.util.Queue;
+
 import io.reactivex.Observable;
 
 /**
@@ -12,9 +14,11 @@ import io.reactivex.Observable;
 public interface WallpaperCache {
     Observable<WallpaperEntity> get();
 
-    int getCachedId();
+    Observable<WallpaperEntity> getNext();
 
-    void put(WallpaperEntity wallpaperEntity);
+    Observable<Integer> getWallpaperCount();
+
+    void put(Queue<WallpaperEntity> wallpaperEntities);
 
     boolean isCached();
 

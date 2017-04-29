@@ -3,6 +3,8 @@ package com.yalin.style.data.cache;
 import com.fernandocejas.arrow.checks.Preconditions;
 import com.yalin.style.data.entity.WallpaperEntity;
 
+import java.util.Queue;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -14,7 +16,7 @@ import io.reactivex.Observable;
  */
 @Singleton
 public class WallpaperCacheImpl implements WallpaperCache {
-    private WallpaperEntity wallpaperEntity;
+    private Queue<WallpaperEntity> wallpaperEntities;
 
     @Inject
     public WallpaperCacheImpl() {
@@ -22,36 +24,55 @@ public class WallpaperCacheImpl implements WallpaperCache {
 
     @Override
     public Observable<WallpaperEntity> get() {
-        Preconditions.checkNotNull(wallpaperEntity, "There is not cached wallpaper.");
+        Preconditions.checkNotNull(wallpaperEntities, "There is not cached wallpaper.");
+        Preconditions.checkArgument(!wallpaperEntities.isEmpty(), "There is not cached wallpaper.");
         return Observable.create(emitter -> {
-            emitter.onNext(new WallpaperEntity(wallpaperEntity));
+            emitter.onNext(wallpaperEntities.peek());
             emitter.onComplete();
         });
     }
 
     @Override
-    public int getCachedId() {
-        Preconditions.checkNotNull(wallpaperEntity, "There is not cached wallpaper.");
-        return wallpaperEntity.id;
+    public Observable<WallpaperEntity> getNext() {
+        Preconditions.checkNotNull(wallpaperEntities, "There is not cached wallpaper.");
+        Preconditions.checkArgument(!wallpaperEntities.isEmpty(), "There is not cached wallpaper.");
+        return Observable.create(emitter -> {
+            WallpaperEntity entity = wallpaperEntities.poll();
+            wallpaperEntities.offer(entity);
+            emitter.onNext(wallpaperEntities.peek());
+            emitter.onComplete();
+        });
     }
 
     @Override
-    public void put(WallpaperEntity wallpaperEntity) {
-        this.wallpaperEntity = wallpaperEntity;
+    public Observable<Integer> getWallpaperCount() {
+        Preconditions.checkNotNull(wallpaperEntities, "There is not cached wallpaper.");
+        return Observable.create(emitter -> {
+            emitter.onNext(wallpaperEntities.size());
+            emitter.onComplete();
+        });
+    }
+
+    @Override
+    public void put(Queue<WallpaperEntity> wallpaperEntities) {
+        this.wallpaperEntities = wallpaperEntities;
     }
 
     @Override
     public boolean isCached() {
-        return wallpaperEntity != null;
+        return wallpaperEntities != null && !wallpaperEntities.isEmpty();
     }
 
     @Override
     public boolean isDirty() {
-        return wallpaperEntity == null;
+        return wallpaperEntities == null;
     }
 
     @Override
     public void evictAll() {
-        wallpaperEntity = null;
+        if (wallpaperEntities != null) {
+            wallpaperEntities.clear();
+        }
+        wallpaperEntities = null;
     }
 }

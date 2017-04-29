@@ -29,7 +29,7 @@ public class CacheWallpaperDataStore implements WallpaperDataStore {
 
     @Override
     public Observable<WallpaperEntity> switchWallPaperEntity() {
-        throw new UnsupportedOperationException("Cache data store not support get entity.");
+        return wallpaperCache.getNext();
     }
 
     @Override
@@ -39,6 +39,6 @@ public class CacheWallpaperDataStore implements WallpaperDataStore {
 
     @Override
     public Observable<Integer> getWallpaperCount() {
-        throw new UnsupportedOperationException("Cache data store not support get count.");
+        return wallpaperCache.getWallpaperCount();
     }
 }
