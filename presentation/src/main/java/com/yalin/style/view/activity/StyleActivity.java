@@ -112,6 +112,8 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
             onEventMainThread(new WallpaperActivateEvent(false));
         }
 
+        updateUi();
+
         View decorView = getWindow().getDecorView();
         decorView.setAlpha(0f);
         decorView.animate().cancel();

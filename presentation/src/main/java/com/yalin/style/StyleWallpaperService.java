@@ -142,12 +142,15 @@ public class StyleWallpaperService extends GLWallpaperService {
                 }
             }
 
+            setTouchEventsEnabled(true);
+            setOffsetNotificationsEnabled(true);
             EventBus.getDefault().register(this);
         }
 
         @Override
         public void onDestroy() {
             EventBus.getDefault().unregister(this);
+            deactivateWallpaper();
             queueEvent(new Runnable() {
                 @Override
                 public void run() {
@@ -157,13 +160,6 @@ public class StyleWallpaperService extends GLWallpaperService {
                 }
             });
             mRenderController.destroy();
-
-            if (!isPreview()) {
-                deactivateWallpaper();
-                if (mEngineUnlockReceiver != null) {
-                    unregisterReceiver(mEngineUnlockReceiver);
-                }
-            }
             super.onDestroy();
         }
 

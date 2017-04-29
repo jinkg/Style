@@ -48,7 +48,7 @@ public class RenderController {
     public void setComponent(StyleBlurRenderer renderer,Callbacks callbacks){
         this.mRenderer = renderer;
         this.mCallbacks = callbacks;
-        reloadCurrentWallpaper();
+//        reloadCurrentWallpaper();
     }
 
     public void destroy() {
