@@ -110,10 +110,12 @@ public class WallpapersHandler extends JSONHandler {
                 os.flush();
                 return true;
             } else {
+                LogUtil.E(TAG, "Download wallpaper " + wallpaper.title + " failed.");
                 return false;
             }
         } catch (IOException e) {
             e.printStackTrace();
+            LogUtil.E(TAG, "Download wallpaper " + wallpaper.title + " failed.", e);
             return false;
         } finally {
             try {
