@@ -13,4 +13,8 @@
         <attr name="sideInsetBackground" format="reference|color" />
         <attr name="insetBackground" format="reference|color" />
     </declare-styleable>
+
+    <declare-styleable name="TintableImageButton">
+        <attr name="tint" format="reference|color" />
+    </declare-styleable>
 </resources>

@@ -87,7 +87,7 @@
             </LinearLayout>
         </FrameLayout>
 
-        <ImageButton
+        <com.yalin.style.view.component.TintableImageButton
             android:id="@+id/next_button"
             android:layout_width="@dimen/wallpaper_detail_button_width"
             android:layout_height="@dimen/wallpaper_detail_button_height"
@@ -95,8 +95,8 @@
             android:contentDescription="@string/app_name"
             android:scaleType="center"
             android:src="@drawable/ic_skip"
-            android:tint="@color/selector_skip_tint"
-            android:visibility="gone" />
+            android:visibility="gone"
+            app:tint="@color/selector_skip_tint" />
 
         <ImageButton
             android:id="@+id/overflow_button"
