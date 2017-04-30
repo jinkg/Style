@@ -37,6 +37,8 @@ public class WallpaperDetailPresenter implements Presenter {
 
   private WallpaperDetailView wallpaperDetailView;
 
+  private WallpaperRefreshObserver wallpaperRefreshObserver;
+
   @Inject
   public WallpaperDetailPresenter(GetWallpaper getWallpaperUseCase,
       GetWallpaperCount getWallpaperCountUseCase,
@@ -48,6 +50,9 @@ public class WallpaperDetailPresenter implements Presenter {
     this.switchWallpaperUseCase = switchWallpaperUseCase;
     this.keepWallpaperUseCase = keepWallpaperUseCase;
     this.wallpaperItemMapper = itemMapper;
+
+    wallpaperRefreshObserver = new WallpaperRefreshObserver();
+    getWallpaperUseCase.registerObserver(wallpaperRefreshObserver);
   }
 
   public void setView(WallpaperDetailView wallpaperDetailView) {
@@ -102,13 +107,18 @@ public class WallpaperDetailPresenter implements Presenter {
   @Override
   public void destroy() {
     getWallpaperUseCase.dispose();
+    getWallpaperUseCase.unregisterObserver(wallpaperRefreshObserver);
     wallpaperDetailView = null;
   }
 
   private void showWallpaperDetailInView(Wallpaper wallpaper) {
     final WallpaperItem wallpaperItem = wallpaperItemMapper.transform(wallpaper);
     currentShowItem = wallpaperItem;
-    wallpaperDetailView.renderWallpaper(wallpaperItem, !wallpaperItem.isDefault);
+    wallpaperDetailView.renderWallpaper(wallpaperItem);
+    wallpaperDetailView.validKeepAction(!wallpaper.isDefault);
+    if(!wallpaper.isDefault) {
+      wallpaperDetailView.updateKeepState(wallpaper.keep);
+    }
   }
 
   private void showOrHideNextView(boolean show) {
@@ -171,7 +181,14 @@ public class WallpaperDetailPresenter implements Presenter {
 
     @Override
     public void onNext(Boolean keeped) {
-      wallpaperDetailView.updateKeepWallpaper(keeped);
+      wallpaperDetailView.updateKeepState(keeped);
+    }
+  }
+
+  private final class WallpaperRefreshObserver extends DefaultObserver<Void> {
+    @Override
+    public void onComplete() {
+      initialize();
     }
   }
 }

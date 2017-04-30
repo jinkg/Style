@@ -11,11 +11,13 @@ import com.yalin.style.model.WallpaperItem;
 
 public interface WallpaperDetailView extends LoadingDataView {
 
-  void renderWallpaper(WallpaperItem wallpaperItem, boolean canKeep);
+    void renderWallpaper(WallpaperItem wallpaperItem);
 
-  void showNextButton(boolean show);
+    void showNextButton(boolean show);
 
-  void shareWallpaper(Intent shareIntent);
+    void shareWallpaper(Intent shareIntent);
 
-  void updateKeepWallpaper(boolean keeped);
+    void validKeepAction(boolean valid);
+
+    void updateKeepState(boolean keeped);
 }

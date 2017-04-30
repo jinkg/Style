@@ -95,6 +95,7 @@
             android:contentDescription="@string/app_name"
             android:scaleType="center"
             android:src="@drawable/ic_skip"
+            android:tint="@color/selector_skip_tint"
             android:visibility="gone" />
 
         <ImageButton

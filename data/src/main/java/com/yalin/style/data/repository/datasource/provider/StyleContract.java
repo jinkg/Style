@@ -43,6 +43,10 @@ public class StyleContract {
      * Type: SHORT
      */
     String COLUMN_NAME_KEEP = "keep";
+    /**
+     * Type: TEXT
+     */
+    String COLUMN_NAME_CHECKSUM = "checksum";
   }
 
   public static final Uri BASE_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY);
