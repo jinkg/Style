@@ -39,6 +39,10 @@ public class StyleContract {
          * Type: long
          */
         String COLUMN_NAME_ADD_DATE = "add_date";
+        /**
+         * Type: SHORT
+         */
+        String COLUMN_NAME_KEEP = "keep";
     }
 
     public static final Uri BASE_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY);

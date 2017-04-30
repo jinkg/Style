@@ -7,7 +7,8 @@
 
     <string name="action_activate">开启</string>
     <string name="action_settings">设置</string>
-    <string name="action_refresh">刷新</string>
+    <string name="action_keep">收藏</string>
+    <string name="action_unkeep">取消收藏</string>
     <string name="action_share">分享</string>
 
     <string name="exception_message_generic">操作出现了一个错误。</string>

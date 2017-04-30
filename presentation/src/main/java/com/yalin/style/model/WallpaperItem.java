@@ -11,4 +11,6 @@ public class WallpaperItem {
     public String title;
     public String byline;
     public String attribution;
+
+    public boolean keep;
 }

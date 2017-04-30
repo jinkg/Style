@@ -6,26 +6,30 @@ package com.yalin.style.data.entity;
  */
 
 public class WallpaperEntity {
-    public int id;
-    public String wallpaperId;
-    public String imageUri;
-    public String title;
-    public String byline;
-    public String attribution;
 
-    public String checksum;
+  public int id;
+  public String wallpaperId;
+  public String imageUri;
+  public String title;
+  public String byline;
+  public String attribution;
 
-    public WallpaperEntity() {
-    }
+  public boolean keep;
 
-    public WallpaperEntity(WallpaperEntity entity) {
-        this.id = entity.id;
-        this.wallpaperId = entity.wallpaperId;
-        this.imageUri = entity.imageUri;
-        this.title = entity.title;
-        this.byline = entity.byline;
-        this.attribution = entity.attribution;
+  public String checksum;
 
-        this.checksum = entity.checksum;
-    }
+  public WallpaperEntity() {
+  }
+
+  public WallpaperEntity(WallpaperEntity entity) {
+    this.id = entity.id;
+    this.wallpaperId = entity.wallpaperId;
+    this.imageUri = entity.imageUri;
+    this.title = entity.title;
+    this.byline = entity.byline;
+    this.attribution = entity.attribution;
+    this.keep = entity.keep;
+
+    this.checksum = entity.checksum;
+  }
 }

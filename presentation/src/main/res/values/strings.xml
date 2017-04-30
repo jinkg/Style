@@ -6,7 +6,8 @@
 
     <string name="action_activate">Active</string>
     <string name="action_settings">Customize</string>
-    <string name="action_refresh">Refresh</string>
+    <string name="action_keep">Keep</string>
+    <string name="action_unkeep">Unkeep</string>
     <string name="action_share">Share</string>
 
     <string name="exception_message_generic">There was some error.</string>

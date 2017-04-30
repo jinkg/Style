@@ -10,6 +10,7 @@ import com.yalin.style.data.lock.OpenInputStreamLock;
 import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.provider.StyleContract;
 
+import com.yalin.style.data.repository.datasource.provider.StyleContract.Wallpaper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -139,17 +140,19 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
     WallpaperEntity wallpaperEntity = new WallpaperEntity();
 
     wallpaperEntity.id = cursor.getInt(cursor.getColumnIndex(
-        StyleContract.Wallpaper._ID));
+        Wallpaper._ID));
     wallpaperEntity.title = cursor.getString(cursor.getColumnIndex(
-        StyleContract.Wallpaper.COLUMN_NAME_TITLE));
+        Wallpaper.COLUMN_NAME_TITLE));
     wallpaperEntity.wallpaperId = cursor.getString(cursor.getColumnIndex(
-        StyleContract.Wallpaper.COLUMN_NAME_WALLPAPER_ID));
+        Wallpaper.COLUMN_NAME_WALLPAPER_ID));
     wallpaperEntity.imageUri = cursor.getString(cursor.getColumnIndex(
-        StyleContract.Wallpaper.COLUMN_NAME_IMAGE_URI));
+        Wallpaper.COLUMN_NAME_IMAGE_URI));
     wallpaperEntity.byline = cursor.getString(cursor.getColumnIndex(
-        StyleContract.Wallpaper.COLUMN_NAME_BYLINE));
+        Wallpaper.COLUMN_NAME_BYLINE));
     wallpaperEntity.attribution = cursor.getString(cursor.getColumnIndex(
-        StyleContract.Wallpaper.COLUMN_NAME_ATTRIBUTION));
+        Wallpaper.COLUMN_NAME_ATTRIBUTION));
+    wallpaperEntity.keep = cursor.getInt(cursor.getColumnIndex(
+        Wallpaper.COLUMN_NAME_KEEP)) == 1;
 
     return wallpaperEntity;
   }
