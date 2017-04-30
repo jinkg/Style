@@ -27,6 +27,7 @@ public class WallpaperItemMapper {
     wallpaperItem.imageUri = wallpaper.imageUri;
     wallpaperItem.wallpaperId = wallpaper.wallpaperId;
     wallpaperItem.keep = wallpaper.keep;
+    wallpaperItem.isDefault = wallpaper.isDefault;
     return wallpaperItem;
   }
 }

@@ -6,11 +6,13 @@ package com.yalin.style.domain;
  */
 
 public class Wallpaper {
-    public String wallpaperId;
-    public String imageUri;
-    public String title;
-    public String byline;
-    public String attribution;
 
-    public boolean keep;
+  public String wallpaperId;
+  public String imageUri;
+  public String title;
+  public String byline;
+  public String attribution;
+
+  public boolean keep;
+  public boolean isDefault;
 }

@@ -74,7 +74,7 @@ public class StyleDatabase extends SQLiteOpenHelper {
 
   private void upgradeFrom20161230to20170430(SQLiteDatabase db) {
     db.execSQL("ALTER TABLE " + Tables.WALLPAPER
-        + " ADD COLUMN " + Wallpaper.COLUMN_NAME_KEEP + " INTEGER NOT NULL DEFAULT 1");
+        + " ADD COLUMN " + Wallpaper.COLUMN_NAME_KEEP + " INTEGER NOT NULL DEFAULT 0");
   }
 
   public static void deleteDatabase(Context context) {

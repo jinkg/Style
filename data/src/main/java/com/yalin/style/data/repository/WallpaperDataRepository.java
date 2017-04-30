@@ -97,6 +97,13 @@ public class WallpaperDataRepository implements WallpaperRepository {
     }
 
     @Override
+    public Observable<Boolean> keepWallpaper(String wallpaperId) {
+        Preconditions.checkArgument(!TextUtils.isEmpty(wallpaperId), "WallpaperId cannot be null");
+        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
+        return dataStore.keepWallpaper(wallpaperId);
+    }
+
+    @Override
     public void registerObserver(DefaultObserver<Void> observer) {
         synchronized (mObserverSet) {
             mObserverSet.add(observer);

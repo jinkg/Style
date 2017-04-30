@@ -13,4 +13,5 @@ public class WallpaperItem {
     public String attribution;
 
     public boolean keep;
+    public boolean isDefault;
 }

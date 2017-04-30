@@ -53,4 +53,9 @@ public class CacheWallpaperDataStore implements WallpaperDataStore {
   public Observable<Integer> getWallpaperCount() {
     return wallpaperCache.getWallpaperCount();
   }
+
+  @Override
+  public Observable<Boolean> keepWallpaper(String wallpaperId) {
+    throw new UnsupportedOperationException("Cache data store not support open input stream.");
+  }
 }

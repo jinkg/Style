@@ -13,15 +13,18 @@ import io.reactivex.Observable;
  */
 
 public interface WallpaperRepository {
-    Observable<Wallpaper> getWallpaper();
 
-    Observable<Wallpaper> switchWallpaper();
+  Observable<Wallpaper> getWallpaper();
 
-    Observable<InputStream> openInputStream(String wallpaperId);
+  Observable<Wallpaper> switchWallpaper();
 
-    Observable<Integer> getWallpaperCount();
+  Observable<InputStream> openInputStream(String wallpaperId);
 
-    void registerObserver(DefaultObserver<Void> observer);
+  Observable<Integer> getWallpaperCount();
 
-    void unregisterObserver(DefaultObserver<Void> observer);
+  Observable<Boolean> keepWallpaper(String wallpaperId);
+
+  void registerObserver(DefaultObserver<Void> observer);
+
+  void unregisterObserver(DefaultObserver<Void> observer);
 }

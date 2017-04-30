@@ -12,11 +12,14 @@ import io.reactivex.Observable;
  */
 
 public interface WallpaperDataStore {
-    Observable<WallpaperEntity> getWallPaperEntity();
 
-    Observable<WallpaperEntity> switchWallPaperEntity();
+  Observable<WallpaperEntity> getWallPaperEntity();
 
-    Observable<InputStream> openInputStream(String wallpaperId);
+  Observable<WallpaperEntity> switchWallPaperEntity();
 
-    Observable<Integer> getWallpaperCount();
+  Observable<InputStream> openInputStream(String wallpaperId);
+
+  Observable<Integer> getWallpaperCount();
+
+  Observable<Boolean> keepWallpaper(String wallpaperId);
 }

@@ -12,17 +12,27 @@ import io.reactivex.Observable;
  */
 
 public interface WallpaperCache {
-    Observable<WallpaperEntity> get();
 
-    Observable<WallpaperEntity> getNext();
+  /**
+   * return the first
+   *
+   * @return wallpaperEntity
+   */
+  Observable<WallpaperEntity> get();
 
-    Observable<Integer> getWallpaperCount();
+  Observable<WallpaperEntity> getNext();
 
-    void put(Queue<WallpaperEntity> wallpaperEntities);
+  Observable<Integer> getWallpaperCount();
 
-    boolean isCached();
+  void keepWallpaper(String wallpaperId);
 
-    boolean isDirty();
+  void put(Queue<WallpaperEntity> wallpaperEntities);
 
-    void evictAll();
+  boolean isCached();
+
+  boolean isCached(String wallpaperId);
+
+  boolean isDirty();
+
+  void evictAll();
 }

@@ -7,6 +7,7 @@ import com.yalin.style.domain.Wallpaper;
 import com.yalin.style.domain.interactor.DefaultObserver;
 import com.yalin.style.domain.interactor.GetWallpaper;
 import com.yalin.style.domain.interactor.GetWallpaperCount;
+import com.yalin.style.domain.interactor.KeepWallpaper;
 import com.yalin.style.domain.interactor.SwitchWallpaper;
 import com.yalin.style.event.WallpaperSwitchEvent;
 import com.yalin.style.exception.ErrorMessageFactory;
@@ -29,6 +30,7 @@ public class WallpaperDetailPresenter implements Presenter {
   private final GetWallpaper getWallpaperUseCase;
   private final GetWallpaperCount getWallpaperCountUseCase;
   private final SwitchWallpaper switchWallpaperUseCase;
+  private final KeepWallpaper keepWallpaperUseCase;
   private final WallpaperItemMapper wallpaperItemMapper;
 
   private WallpaperItem currentShowItem;
@@ -39,10 +41,12 @@ public class WallpaperDetailPresenter implements Presenter {
   public WallpaperDetailPresenter(GetWallpaper getWallpaperUseCase,
       GetWallpaperCount getWallpaperCountUseCase,
       SwitchWallpaper switchWallpaperUseCase,
+      KeepWallpaper keepWallpaperUseCase,
       WallpaperItemMapper itemMapper) {
     this.getWallpaperUseCase = getWallpaperUseCase;
     this.getWallpaperCountUseCase = getWallpaperCountUseCase;
     this.switchWallpaperUseCase = switchWallpaperUseCase;
+    this.keepWallpaperUseCase = keepWallpaperUseCase;
     this.wallpaperItemMapper = itemMapper;
   }
 
@@ -57,6 +61,14 @@ public class WallpaperDetailPresenter implements Presenter {
 
   public void getNextWallpaper() {
     switchWallpaperUseCase.execute(new WallpaperObserver(true), null);
+  }
+
+  public void keepWallpaper() {
+    if (currentShowItem == null) {
+      return;
+    }
+    keepWallpaperUseCase.execute(new WallpaperKeepObserver(),
+        KeepWallpaper.Params.keepWallpaper(currentShowItem.wallpaperId));
   }
 
   public void shareWallpaper() {
@@ -96,7 +108,7 @@ public class WallpaperDetailPresenter implements Presenter {
   private void showWallpaperDetailInView(Wallpaper wallpaper) {
     final WallpaperItem wallpaperItem = wallpaperItemMapper.transform(wallpaper);
     currentShowItem = wallpaperItem;
-    wallpaperDetailView.renderWallpaper(wallpaperItem);
+    wallpaperDetailView.renderWallpaper(wallpaperItem, !wallpaperItem.isDefault);
   }
 
   private void showOrHideNextView(boolean show) {
@@ -152,6 +164,14 @@ public class WallpaperDetailPresenter implements Presenter {
     @Override
     public void onError(Throwable exception) {
       showOrHideNextView(false);
+    }
+  }
+
+  private final class WallpaperKeepObserver extends DefaultObserver<Boolean> {
+
+    @Override
+    public void onNext(Boolean keeped) {
+      wallpaperDetailView.updateKeepWallpaper(keeped);
     }
   }
 }

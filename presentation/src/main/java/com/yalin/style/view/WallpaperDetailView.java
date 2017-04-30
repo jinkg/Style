@@ -10,9 +10,12 @@ import com.yalin.style.model.WallpaperItem;
  */
 
 public interface WallpaperDetailView extends LoadingDataView {
-    void renderWallpaper(WallpaperItem wallpaperItem);
 
-    void showNextButton(boolean show);
+  void renderWallpaper(WallpaperItem wallpaperItem, boolean canKeep);
 
-    void shareWallpaper(Intent shareIntent);
+  void showNextButton(boolean show);
+
+  void shareWallpaper(Intent shareIntent);
+
+  void updateKeepWallpaper(boolean keeped);
 }

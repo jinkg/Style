@@ -155,6 +155,9 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
       @Override
       public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
+          case R.id.action_keep:
+            presenter.keepWallpaper();
+            return true;
           case R.id.action_share:
             presenter.shareWallpaper();
             return true;
@@ -166,7 +169,6 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     });
     overflowMenu.getMenu().clear();
     overflowMenu.inflate(R.menu.style_overflow);
-    overflowMenu.getMenu().add(0, R.id.action_keep, 0, R.string.action_keep);
     overflowMenu.getMenu().add(0, R.id.action_share, 0, R.string.action_share);
   }
 
@@ -309,7 +311,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
   }
 
   @Override
-  public void renderWallpaper(WallpaperItem wallpaperItem) {
+  public void renderWallpaper(WallpaperItem wallpaperItem, boolean canKeep) {
     String titleFont = "AlegreyaSans-Black.ttf";
     String bylineFont = "AlegreyaSans-Medium.ttf";
     tvTitle.setTypeface(TypefaceUtil.getAndCache(context(), titleFont));
@@ -318,9 +320,18 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     tvByline.setTypeface(TypefaceUtil.getAndCache(context(), bylineFont));
     tvByline.setText(wallpaperItem.byline);
 
-    overflowMenu.getMenu()
-        .findItem(R.id.action_keep)
-        .setTitle(wallpaperItem.keep ? R.string.action_unkeep : R.string.action_keep);
+    if (canKeep) {
+      MenuItem keepItem = overflowMenu.getMenu().findItem(R.id.action_keep);
+      if (keepItem == null) {
+        overflowMenu.getMenu().add(0, R.id.action_keep, 0,
+            wallpaperItem.keep ? R.string.action_unkeep : R.string.action_keep);
+      } else {
+        keepItem.setTitle(wallpaperItem.keep ? R.string.action_unkeep : R.string.action_keep);
+      }
+    } else {
+      overflowMenu.getMenu()
+          .removeItem(R.id.action_keep);
+    }
   }
 
   @Override
@@ -332,6 +343,13 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
   public void shareWallpaper(Intent shareIntent) {
     shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     startActivity(shareIntent);
+  }
+
+  @Override
+  public void updateKeepWallpaper(boolean keeped) {
+    overflowMenu.getMenu()
+        .findItem(R.id.action_keep)
+        .setTitle(keeped ? R.string.action_unkeep : R.string.action_keep);
   }
 
   @Override
