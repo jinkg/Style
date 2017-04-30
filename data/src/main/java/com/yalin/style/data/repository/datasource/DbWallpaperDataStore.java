@@ -90,7 +90,8 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
             cursor = contentResolver.query(StyleContract.Wallpaper.CONTENT_URI,
                     null, null, null, null);
             if (cursor != null) {
-                count = cursor.getCount();
+                // contain default
+                count = cursor.getCount() + 1;
                 cursor.close();
             }
             emitter.onNext(count);

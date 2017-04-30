@@ -4,9 +4,10 @@ import android.util.Base64;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @author jinyalin
@@ -15,23 +16,22 @@ import java.security.MessageDigest;
 
 public class ChecksumUtil {
     public static String getChecksum(File file) {
-        MessageDigest md;
-        InputStream is = null;
         try {
-            md = MessageDigest.getInstance("MD5");
-            is = new FileInputStream(file);
-            byte[] digest = md.digest();
-            return Base64.encodeToString(digest, Base64.URL_SAFE).trim();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (is != null) {
-                    is.close();
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            try (InputStream is = new FileInputStream(file);
+                 DigestInputStream dis = new DigestInputStream(is, md)) {
+                byte[] buffer = new byte[2048];
+                //noinspection StatementWithEmptyBody
+                while (dis.read(buffer) > 0) {
+
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+                byte[] digest = dis.getMessageDigest().digest();
+                return Base64.encodeToString(digest, Base64.URL_SAFE).trim();
+            } catch (Exception e) {
+                return null;
             }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
         return null;
     }
