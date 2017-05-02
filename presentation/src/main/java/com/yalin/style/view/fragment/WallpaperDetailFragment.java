@@ -29,6 +29,7 @@ import com.yalin.style.presenter.WallpaperDetailPresenter;
 import com.yalin.style.util.ScrimUtil;
 import com.yalin.style.util.TypefaceUtil;
 import com.yalin.style.view.WallpaperDetailView;
+import com.yalin.style.view.activity.SettingsActivity;
 import com.yalin.style.view.component.DrawInsetsFrameLayout;
 import com.yalin.style.view.component.PanScaleProxyView;
 
@@ -163,6 +164,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
                         presenter.shareWallpaper();
                         return true;
                     case R.id.action_settings:
+                        startActivity(new Intent(getActivity(), SettingsActivity.class));
                         return true;
                 }
                 return false;

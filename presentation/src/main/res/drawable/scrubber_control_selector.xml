@@ -1,0 +1,6 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/scrubber_control_disabled" android:state_enabled="false" />
+    <item android:drawable="@drawable/scrubber_control_pressed" android:state_pressed="true" />
+    <item android:drawable="@drawable/scrubber_control_focused" android:state_selected="true" />
+    <item android:drawable="@drawable/scrubber_control_normal" />
+</selector>

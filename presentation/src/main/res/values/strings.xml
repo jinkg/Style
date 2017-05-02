@@ -4,11 +4,22 @@
     <string name="app_author">Yalin</string>
     <string name="app_description">Style Live Wallpaper</string>
 
+    <string name="settings_title">Style Settings</string>
+    <string name="settings_blur_amount_title">Blur</string>
+    <string name="settings_dim_amount_title">Dim</string>
+    <string name="settings_grey_amount_title">Grey</string>
+    <string name="settings_blur_on_lockscreen">Apply blur on lockscreen</string>
+    <string name="about_title">About Style</string>
+
     <string name="action_activate">Active</string>
     <string name="action_settings">Customize</string>
     <string name="action_like">Like</string>
     <string name="action_unlike">Unlike</string>
     <string name="action_share">Share</string>
+
+    <string name="done">Done</string>
+
+    <string name="reset_settings_defaults">Reset sliders</string>
 
     <string name="exception_message_generic">There was some error.</string>
     <string name="exception_message_no_connection">There is no internet connection</string>

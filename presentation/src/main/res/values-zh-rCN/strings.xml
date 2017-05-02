@@ -5,11 +5,22 @@
     <string name="app_author">Yalin</string>
     <string name="app_description">Style Live Wallpaper</string>
 
+    <string name="settings_title">Style设置</string>
+    <string name="settings_blur_amount_title">模糊</string>
+    <string name="settings_dim_amount_title">亮度</string>
+    <string name="settings_grey_amount_title">灰度</string>
+    <string name="settings_blur_on_lockscreen">锁屏时应用模糊效果</string>
+    <string name="about_title">关于Style</string>
+
     <string name="action_activate">开启</string>
     <string name="action_settings">设置</string>
     <string name="action_like">收藏</string>
     <string name="action_unlike">取消收藏</string>
     <string name="action_share">分享</string>
+
+    <string name="done">完成</string>
+
+    <string name="reset_settings_defaults">重置设置</string>
 
     <string name="exception_message_generic">操作出现了一个错误。</string>
     <string name="exception_message_no_connection">网络不可用，请检查网络连接。</string>

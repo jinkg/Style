@@ -1,6 +1,9 @@
 package com.yalin.style.render;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 
 import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.domain.Wallpaper;
@@ -9,6 +12,7 @@ import com.yalin.style.domain.interactor.GetWallpaper;
 import com.yalin.style.domain.interactor.OpenWallpaperInputStream;
 import com.yalin.style.mapper.WallpaperItemMapper;
 import com.yalin.style.model.WallpaperItem;
+import com.yalin.style.settings.Prefs;
 
 import java.io.InputStream;
 
@@ -31,6 +35,22 @@ public class RenderController {
     private final OpenWallpaperInputStream openWallpaperInputStreamUseCase;
     private final WallpaperItemMapper wallpaperItemMapper;
     private final WallpaperRefreshObserver wallpaperRefreshObserver;
+    private SharedPreferences.OnSharedPreferenceChangeListener mOnSharedPreferenceChangeListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
+                    if (Prefs.PREF_BLUR_AMOUNT.equals(key)) {
+                        mRenderer.recomputeMaxPrescaledBlurPixels();
+                        throttledForceReloadCurrentArtwork();
+                    } else if (Prefs.PREF_DIM_AMOUNT.equals(key)) {
+                        mRenderer.recomputeMaxDimAmount();
+                        throttledForceReloadCurrentArtwork();
+                    } else if (Prefs.PREF_GREY_AMOUNT.equals(key)) {
+                        mRenderer.recomputeGreyAmount();
+                        throttledForceReloadCurrentArtwork();
+                    }
+                }
+            };
 
     @Inject
     public RenderController(Context context, GetWallpaper getWallpaperUseCase,
@@ -43,6 +63,9 @@ public class RenderController {
         this.getWallpaperUseCase = getWallpaperUseCase;
         this.getWallpaperUseCase.registerObserver(wallpaperRefreshObserver);
         this.openWallpaperInputStreamUseCase = openWallpaperInputStream;
+
+        Prefs.getSharedPreferences(context)
+                .registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
     }
 
     public void setComponent(StyleBlurRenderer renderer, Callbacks callbacks) {
@@ -55,6 +78,8 @@ public class RenderController {
         if (mQueuedBitmapRegionLoader != null) {
             mQueuedBitmapRegionLoader.destroy();
         }
+        Prefs.getSharedPreferences(mContext)
+                .unregisterOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener);
         getWallpaperUseCase.unregisterObserver(wallpaperRefreshObserver);
     }
 
@@ -100,6 +125,18 @@ public class RenderController {
             }
         });
     }
+
+    private void throttledForceReloadCurrentArtwork() {
+        mThrottledForceReloadHandler.removeMessages(0);
+        mThrottledForceReloadHandler.sendEmptyMessageDelayed(0, 250);
+    }
+
+    private Handler mThrottledForceReloadHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            reloadCurrentWallpaper();
+        }
+    };
 
     private final class WallpaperItemObserver extends DefaultObserver<Wallpaper> {
         @Override

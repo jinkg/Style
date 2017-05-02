@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:columnCount="3"
+    android:orientation="horizontal">
+
+    <TextView
+        style="@style/Widget.Style.TextView.SettingsSeekBarLabel"
+        android:layout_gravity="fill_vertical|end"
+        android:text="@string/settings_blur_amount_title" />
+
+    <SeekBar
+        android:id="@+id/blur_amount"
+        style="@style/Settings.Widget.SeekBar.BlurAmount"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_vertical|fill_horizontal"
+        android:max="500" />
+
+    <Space
+        android:layout_height="16dp"
+        android:layout_columnSpan="3" />
+
+    <TextView
+        style="@style/Widget.Style.TextView.SettingsSeekBarLabel"
+        android:layout_gravity="fill_vertical|end"
+        android:text="@string/settings_dim_amount_title" />
+
+    <SeekBar
+        android:id="@+id/dim_amount"
+        style="@style/Settings.Widget.SeekBar.DimAmount"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_vertical|fill_horizontal"
+        android:max="255" />
+
+    <Space
+        android:layout_height="16dp"
+        android:layout_columnSpan="3" />
+
+    <TextView
+        style="@style/Widget.Style.TextView.SettingsSeekBarLabel"
+        android:layout_gravity="fill_vertical|end"
+        android:text="@string/settings_grey_amount_title" />
+
+    <SeekBar
+        android:id="@+id/grey_amount"
+        style="@style/Settings.Widget.SeekBar.GreyAmount"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center_vertical|fill_horizontal"
+        android:max="500" />
+
+    <CheckBox
+        android:id="@+id/blur_on_lockscreen_checkbox"
+        style="@style/Widget.Style.CheckBox.Settings"
+        android:layout_column="@integer/settings_checkbox_column"
+        android:layout_columnSpan="@integer/settings_checkbox_column_span"
+        android:layout_marginStart="@dimen/settings_checkbox_margin_start"
+        android:layout_marginTop="16dp"
+        android:text="@string/settings_blur_on_lockscreen" />
+
+</GridLayout>

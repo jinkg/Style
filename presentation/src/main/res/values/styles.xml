@@ -1,23 +1,74 @@
 <resources>
 
-  <!-- Base application theme. -->
-  <style name="Theme.Style.Base" parent="Theme.AppCompat.NoActionBar">
-    <item name="android:windowBackground">@android:color/black</item>
-    <item name="android:windowContentOverlay">@null</item>
+    <!-- Base application theme. -->
+    <style name="Theme.Style.Base" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowContentOverlay">@null</item>
 
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorAccent">@color/colorAccent</item>
-  </style>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 
-  <style name="Theme.Style" parent="Theme.Style.Base" />
+    <style name="Theme.Style" parent="Theme.Style.Base" />
 
-  <style name="Theme.Style.Wallpaper" parent="Theme.Style">
-    <item name="android:windowBackground">@android:color/transparent</item>
-    <item name="android:windowShowWallpaper">true</item>
-  </style>
+    <style name="Theme.Style.Wallpaper" parent="Theme.Style">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowShowWallpaper">true</item>
+    </style>
 
-  <style name="Theme.StyleActivity" parent="Theme.Style.Wallpaper">
+    <style name="Theme.StyleActivity" parent="Theme.Style.Wallpaper">
 
-  </style>
+    </style>
+
+    <style name="Theme.Style.Settings" parent="Theme.Style.Wallpaper">
+        <item name="colorControlActivated">#fff</item>
+    </style>
+
+    <style name="Style.SimpleFadeFragmentAnimation" parent="">
+        <item name="android:fragmentFadeEnterAnimation">@animator/fade_in</item>
+        <item name="android:fragmentFadeExitAnimation">@animator/fade_out</item>
+    </style>
+
+    <style name="Widget.Style.PopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/popup_background</item>
+    </style>
+
+    <style name="ThemeOverlay.Style.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:popupMenuStyle">@style/Widget.Style.PopupMenu</item>
+    </style>
+
+    <style name="Widget.Style.TextView.SettingsSeekBarLabel" parent="">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.Style.CheckBox.Settings" parent="">
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
+
+    <style name="Settings.Widget.SeekBar.BlurAmount" parent="Widget.Style.SeekBar">
+        <item name="android:progressDrawable">@drawable/scrubber_progress_blur_amount</item>
+    </style>
+
+    <style name="Settings.Widget.SeekBar.DimAmount" parent="Widget.Style.SeekBar">
+        <item name="android:progressDrawable">@drawable/scrubber_progress_dim_amount</item>
+    </style>
+
+    <style name="Settings.Widget.SeekBar.GreyAmount" parent="Widget.Style.SeekBar">
+        <item name="android:progressDrawable">@drawable/scrubber_progress_grey_amount</item>
+    </style>
+
+    <style name="Widget.Style.SeekBar" parent="android:Widget.Holo.SeekBar">
+        <item name="android:progressDrawable">@drawable/scrubber_progress_horizontal</item>
+        <item name="android:indeterminateDrawable">@drawable/scrubber_progress_horizontal</item>
+        <item name="android:thumb">@drawable/scrubber_control_selector</item>
+    </style>
 
 </resources>

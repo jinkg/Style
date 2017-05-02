@@ -18,6 +18,7 @@ import android.view.animation.Interpolator;
 import com.yalin.style.WallpaperDetailViewport;
 import com.yalin.style.event.StyleWallpaperSizeChangedEvent;
 import com.yalin.style.event.SwitchingPhotosStateChangedEvent;
+import com.yalin.style.settings.Prefs;
 import com.yalin.style.util.MathUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -104,7 +105,8 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
         // Compute blur sizes
         int blurAmount = mDemoMode
                 ? DEMO_BLUR
-                : DEFAULT_BLUR;
+                : Prefs.getSharedPreferences(mContext)
+                .getInt(Prefs.PREF_BLUR_AMOUNT, DEFAULT_BLUR);
         float maxBlurRadiusOverScreenHeight = blurAmount * 0.0001f;
         DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
         int maxBlurPx = (int) (dm.heightPixels * maxBlurRadiusOverScreenHeight);
@@ -116,13 +118,15 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
     }
 
     public void recomputeMaxDimAmount() {
-        mMaxDim = DEFAULT_MAX_DIM;
+        mMaxDim = Prefs.getSharedPreferences(mContext).getInt(
+                Prefs.PREF_DIM_AMOUNT, DEFAULT_MAX_DIM);
     }
 
     public void recomputeGreyAmount() {
         mMaxGrey = mDemoMode
                 ? DEMO_GREY
-                : DEFAULT_GREY;
+                : Prefs.getSharedPreferences(mContext)
+                .getInt(Prefs.PREF_GREY_AMOUNT, DEFAULT_GREY);
     }
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
