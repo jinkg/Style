@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 
 import com.yalin.style.R;
@@ -117,6 +119,20 @@ public class SettingsFragment extends BaseFragment implements
 
             }
         });
+        CheckBox mBlurOnLockScreenCheckBox = (CheckBox) rootView.findViewById(
+                R.id.blur_on_lockscreen_checkbox);
+        mBlurOnLockScreenCheckBox.setOnCheckedChangeListener(
+                new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton button, boolean checked) {
+                        Prefs.getSharedPreferences(getActivity()).edit()
+                                .putBoolean(Prefs.PREF_DISABLE_BLUR_WHEN_LOCKED, !checked)
+                                .apply();
+                    }
+                }
+        );
+        mBlurOnLockScreenCheckBox.setChecked(!Prefs.getSharedPreferences(getActivity())
+                .getBoolean(Prefs.PREF_DISABLE_BLUR_WHEN_LOCKED, false));
     }
 
     private Runnable mUpdateBlurRunnable = new Runnable() {

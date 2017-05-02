@@ -1,10 +1,12 @@
 package com.yalin.style;
 
+import android.app.KeyguardManager;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import com.yalin.style.event.WallpaperDetailOpenedEvent;
 import com.yalin.style.event.WallpaperSwitchEvent;
 import com.yalin.style.render.RenderController;
 import com.yalin.style.render.StyleBlurRenderer;
+import com.yalin.style.settings.Prefs;
 
 import net.rbgrn.android.glwallpaperservice.GLWallpaperService;
 
@@ -105,6 +108,50 @@ public class StyleWallpaperService extends GLWallpaperService {
 
         private boolean mWallpaperActivate = false;
 
+        private boolean mIsLockScreenVisibleReceiverRegistered = false;
+        private SharedPreferences.OnSharedPreferenceChangeListener
+                mLockScreenPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(final SharedPreferences sp, final String key) {
+                if (Prefs.PREF_DISABLE_BLUR_WHEN_LOCKED.equals(key)) {
+                    if (sp.getBoolean(Prefs.PREF_DISABLE_BLUR_WHEN_LOCKED, false)) {
+                        IntentFilter intentFilter = new IntentFilter();
+                        intentFilter.addAction(Intent.ACTION_USER_PRESENT);
+                        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+                        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+                        registerReceiver(mLockScreenVisibleReceiver, intentFilter);
+                        mIsLockScreenVisibleReceiverRegistered = true;
+                        // If the user is not yet unlocked (i.e., using Direct Boot), we should
+                        // immediately send the lock screen visible callback
+                        if (!UserManagerCompat.isUserUnlocked(StyleWallpaperService.this)) {
+                            lockScreenVisibleChanged(true);
+                        }
+                    } else if (mIsLockScreenVisibleReceiverRegistered) {
+                        unregisterReceiver(mLockScreenVisibleReceiver);
+                        mIsLockScreenVisibleReceiverRegistered = false;
+                    }
+                }
+            }
+        };
+        private BroadcastReceiver mLockScreenVisibleReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(final Context context, final Intent intent) {
+                if (intent != null) {
+                    if (Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
+                        lockScreenVisibleChanged(false);
+                    } else if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
+                        lockScreenVisibleChanged(true);
+                    } else if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+                        KeyguardManager kgm = (KeyguardManager)
+                                context.getSystemService(Context.KEYGUARD_SERVICE);
+                        if (!kgm.inKeyguardRestrictedInputMode()) {
+                            lockScreenVisibleChanged(false);
+                        }
+                    }
+                }
+            }
+        };
+
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
@@ -125,6 +172,12 @@ public class StyleWallpaperService extends GLWallpaperService {
 
             mGestureDetector
                     = new GestureDetectorCompat(StyleWallpaperService.this, mGestureListener);
+
+            SharedPreferences sp = Prefs.getSharedPreferences(StyleWallpaperService.this);
+            sp.registerOnSharedPreferenceChangeListener(mLockScreenPreferenceChangeListener);
+            // Trigger the initial registration if needed
+            mLockScreenPreferenceChangeListener.onSharedPreferenceChanged(sp,
+                    Prefs.PREF_DISABLE_BLUR_WHEN_LOCKED);
 
             if (!isPreview()) {
                 if (UserManagerCompat.isUserUnlocked(getApplicationContext())) {
@@ -151,6 +204,12 @@ public class StyleWallpaperService extends GLWallpaperService {
         public void onDestroy() {
             EventBus.getDefault().unregister(this);
             deactivateWallpaper();
+            if (mIsLockScreenVisibleReceiverRegistered) {
+                unregisterReceiver(mLockScreenVisibleReceiver);
+            }
+            Prefs.getSharedPreferences(StyleWallpaperService.this)
+                    .unregisterOnSharedPreferenceChangeListener(
+                            mLockScreenPreferenceChangeListener);
             queueEvent(new Runnable() {
                 @Override
                 public void run() {
@@ -257,6 +316,16 @@ public class StyleWallpaperService extends GLWallpaperService {
             if (mVisible) {
                 super.requestRender();
             }
+        }
+
+        private void lockScreenVisibleChanged(final boolean isLockScreenVisible) {
+            cancelDelayedBlur();
+            queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    mRenderer.setIsBlurred(!isLockScreenVisible, false);
+                }
+            });
         }
 
         private void cancelDelayedBlur() {

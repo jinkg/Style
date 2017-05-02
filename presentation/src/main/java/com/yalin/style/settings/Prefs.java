@@ -21,7 +21,7 @@ public class Prefs {
 
     public synchronized static SharedPreferences getSharedPreferences(Context context) {
         Context deviceProtectedContext =
-                ContextCompat.createDeviceProtectedStorageContext(context);
+                ContextCompat.createDeviceProtectedStorageContext(context.getApplicationContext());
 
         Context contextToUse = deviceProtectedContext != null ? deviceProtectedContext : context;
         return contextToUse.getSharedPreferences(WALLPAPER_PREFERENCES_NAME, Context.MODE_PRIVATE);
