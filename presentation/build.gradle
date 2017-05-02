@@ -7,8 +7,8 @@ def alias = properties.get('alias')
 def _keyPassword = properties.get('keyPassword')
 def _storePassword = properties.get('storePassword')
 def keystorePath = properties.get('keystorePath')
+def buglyAppId = properties.get('buglyAppId')
 
-println(alias + " " + _keyPassword + " " + _storePassword + " " + keystorePath)
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
     buildToolsVersion BUILD_TOOLS_VERSION as String
@@ -20,6 +20,8 @@ android {
         versionName APP_VERSION_NAME as String
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "BUGLY_APP_ID", "\"${buglyAppId}\"")
     }
     signingConfigs {
         release {
@@ -32,9 +34,10 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            signingConfig signingConfigs.release
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -60,6 +63,7 @@ dependencies {
     compile "io.reactivex.rxjava2:rxandroid:${RXANDROID_VERSION}"
     compile "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
     compile "org.greenrobot:eventbus:${EVENT_BUS_VERSION}"
+    compile "com.tencent.bugly:crashreport:${BUGLY_VERSION}"
 
     annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
 
