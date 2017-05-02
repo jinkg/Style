@@ -1,5 +1,7 @@
 package com.yalin.style.data.entity;
 
+import com.yalin.style.data.BuildConfig;
+
 /**
  * @author jinyalin
  * @since 2017/4/25.
@@ -11,13 +13,18 @@ public class DeviceInfo {
     private String manufacturer;
     private String model;
     private String type;
+    private String versionName;
+    private int versionCode;
 
-    public DeviceInfo(int sdkVersion, String androidId, String manufacturer, String model) {
+    public DeviceInfo(int sdkVersion, String androidId, String manufacturer,
+                      String model) {
         this.sdkVersion = sdkVersion;
         this.androidId = androidId;
         this.manufacturer = manufacturer;
         this.model = model;
         type = "Android";
+        versionName = BuildConfig.VERSION_NAME;
+        versionCode = BuildConfig.VERSION_CODE;
     }
 
     public int getSdkVersion() {
