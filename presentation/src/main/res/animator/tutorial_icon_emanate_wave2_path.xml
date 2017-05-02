@@ -1,0 +1,22 @@
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <objectAnimator
+        android:duration="@integer/tutorial_icon_emanate_duration"
+        android:interpolator="@anim/tutorial_icon_emanate_interpolator"
+        android:propertyName="strokeAlpha"
+        android:repeatCount="-1"
+        android:repeatMode="restart"
+        android:startOffset="@integer/tutorial_icon_emanate_wave2_delay"
+        android:valueFrom="0.6"
+        android:valueTo="0"
+        android:valueType="floatType" />
+    <objectAnimator
+        android:duration="@integer/tutorial_icon_emanate_duration"
+        android:interpolator="@anim/tutorial_icon_emanate_interpolator"
+        android:propertyName="strokeWidth"
+        android:repeatCount="-1"
+        android:repeatMode="restart"
+        android:startOffset="0"
+        android:valueFrom="5"
+        android:valueTo="0"
+        android:valueType="floatType" />
+</set>

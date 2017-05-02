@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tutorial_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/tutorial_content_margin"
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/tutorial_icon_emanate"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            android:layout_centerInParent="true" />
+
+        <FrameLayout
+            android:id="@+id/tutorial_icon_affordance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/tutorial_icon" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:duplicateParentState="true"
+                android:src="@drawable/tutorial_icon_on_overlay"
+                android:stateListAnimator="@animator/tutorial_icon_overlay_state_list" />
+        </FrameLayout>
+
+        <com.yalin.style.view.component.ShadowDipsTextView
+            android:id="@+id/tutorial_icon_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tutorial_icon_affordance"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="sans-serif-condensed"
+            android:paddingBottom="16dp"
+            android:paddingTop="4dp"
+            android:text="@string/app_name"
+            android:textColor="#fff"
+            android:textSize="@dimen/text_size_large"
+            app:shadowColor="#8000"
+            app:shadowDx="0dp"
+            app:shadowDy="1dp"
+            app:shadowRadius="3dp" />
+
+    </RelativeLayout>
+
+    <com.yalin.style.view.component.ShadowDipsTextView
+        android:id="@+id/tutorial_main_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:paddingBottom="8dp"
+        android:paddingEnd="@dimen/tutorial_content_margin"
+        android:paddingStart="@dimen/tutorial_content_margin"
+        android:paddingTop="4dp"
+        android:text="@string/tutorial_main"
+        android:textColor="#fff"
+        android:textSize="22sp"
+        app:shadowColor="#8000"
+        app:shadowDx="0dp"
+        app:shadowDy="1dp"
+        app:shadowRadius="3dp" />
+
+    <com.yalin.style.view.component.ShadowDipsTextView
+        android:id="@+id/tutorial_sub_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:paddingBottom="@dimen/tutorial_content_margin"
+        android:paddingEnd="@dimen/tutorial_content_margin"
+        android:paddingStart="@dimen/tutorial_content_margin"
+        android:text="@string/tutorial_subtitle"
+        android:textColor="#afff"
+        android:textSize="@dimen/text_size_large"
+        app:shadowColor="#8000"
+        app:shadowDx="0dp"
+        app:shadowDy="1dp"
+        app:shadowRadius="3dp" />
+
+</LinearLayout>

@@ -8,5 +8,7 @@
 
     <include layout="@layout/layout_include_wallpaper_detail" />
 
+    <include layout="@layout/layout_include_wallpaper_tutorial" />
+
     <include layout="@layout/layout_include_active" />
 </com.yalin.style.view.component.DrawInsetsFrameLayout>

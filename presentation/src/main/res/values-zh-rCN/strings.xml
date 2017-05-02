@@ -25,4 +25,7 @@
     <string name="exception_message_generic">操作出现了一个错误。</string>
     <string name="exception_message_no_connection">网络不可用，请检查网络连接。</string>
     <string name="exception_message_resync">正在同步…</string>
+
+    <string name="tutorial_main">打开Style以预览当前作品</string>
+    <string name="tutorial_subtitle">在桌面双击空白模糊位置，临时查看清晰作品</string>
 </resources>

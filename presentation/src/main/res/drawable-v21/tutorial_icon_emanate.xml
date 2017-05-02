@@ -1,0 +1,30 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportHeight="64"
+    android:viewportWidth="64">
+    <group
+        android:name="wave1"
+        android:pivotX="32"
+        android:pivotY="32"
+        android:scaleX="0"
+        android:scaleY="0">
+        <path
+            android:name="wave1_path"
+            android:pathData="M64 32A32 32 0 0 1 32 64 32 32 0 0 1 0 32 32 32 0 0 1 32 0 32 32 0 0 1 64 32Z"
+            android:strokeColor="#fff"
+            android:strokeWidth="1" />
+    </group>
+    <group
+        android:name="wave2"
+        android:pivotX="32"
+        android:pivotY="32"
+        android:scaleX="0"
+        android:scaleY="0">
+        <path
+            android:name="wave2_path"
+            android:pathData="M64 32A32 32 0 0 1 32 64 32 32 0 0 1 0 32 32 32 0 0 1 32 0 32 32 0 0 1 64 32Z"
+            android:strokeColor="#fff"
+            android:strokeWidth="1" />
+    </group>
+</vector>

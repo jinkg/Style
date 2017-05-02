@@ -1,0 +1,24 @@
+<!-- animate the translationZ property of a view when pressed -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <objectAnimator
+            android:duration="100"
+            android:propertyName="alpha"
+            android:valueTo="1"
+            android:valueType="floatType" />
+    </item>
+    <item android:state_focused="true">
+        <objectAnimator
+            android:duration="100"
+            android:propertyName="alpha"
+            android:valueTo="1"
+            android:valueType="floatType" />
+    </item>
+    <item>
+        <objectAnimator
+            android:duration="100"
+            android:propertyName="alpha"
+            android:valueTo="0"
+            android:valueType="floatType" />
+    </item>
+</selector>

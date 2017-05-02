@@ -7,10 +7,12 @@ import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.yalin.style.R;
 import com.yalin.style.StyleWallpaperService;
 import com.yalin.style.data.BuildConfig;
 import com.yalin.style.event.MainContainerInsetsChangedEvent;
+import com.yalin.style.event.SeenTutorialEvent;
 import com.yalin.style.event.WallpaperActivateEvent;
 import com.yalin.style.event.WallpaperDetailOpenedEvent;
 import com.yalin.style.injection.HasComponent;
@@ -31,6 +34,7 @@ import com.yalin.style.view.component.DrawInsetsFrameLayout;
 import com.yalin.style.view.component.PanScaleProxyView;
 import com.yalin.style.view.fragment.AnimatedStyleLogoFragment;
 import com.yalin.style.view.fragment.StyleRenderFragment;
+import com.yalin.style.view.fragment.TutorialFragment;
 import com.yalin.style.view.fragment.WallpaperDetailFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,12 +46,16 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     private static final int MODE_UNKNOWN = -1;
     private static final int MODE_ACTIVATE = 0;
     private static final int MODE_DETAIL = 1;
+    private static final int MODE_TUTORIAL = 2;
+
+    private static final String PREF_SEEN_TUTORIAL = "seen_tutorial";
 
     private static final int REQUEST_PERMISSION_CODE = 10000;
 
     private DrawInsetsFrameLayout mMainContainer;
     private View mActiveContainer;
     private View mDetailContainer;
+    private View mTutorialContainer;
     private Button mActiveButton;
 
     private Handler mHandler = new Handler();
@@ -61,6 +69,8 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
 
     private boolean mStyleActive = false;
 
+    private boolean mSeenTutorial = false;
+
     WallpaperDetailFragment wallpaperDetailFragment;
 
     @Override
@@ -71,8 +81,9 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
 
         setContentView(R.layout.activity_main);
 
-        setUpActiveView();
-        setUpDetailView();
+        setupActiveView();
+        setupDetailView();
+        setupTutorialView();
 
         mMainContainer = (DrawInsetsFrameLayout) findViewById(R.id.main_container);
         mMainContainer.setOnInsetsCallback(new DrawInsetsFrameLayout.OnInsetsCallback() {
@@ -85,6 +96,9 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         showHideChrome(true);
 
         EventBus.getDefault().register(this);
+
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        mSeenTutorial = sp.getBoolean(PREF_SEEN_TUTORIAL, false);
     }
 
     @Override
@@ -152,20 +166,26 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         mMainContainer.setSystemUiVisibility(flags);
     }
 
-    private void setUpActiveView() {
+    private void setupActiveView() {
         mActiveContainer = findViewById(R.id.active_container);
         mActiveButton = (Button) findViewById(R.id.activate_style_button);
         mActiveButton.setOnClickListener(this);
     }
 
-    private void setUpDetailView() {
+    private void setupDetailView() {
         mDetailContainer = findViewById(R.id.detail_container);
+    }
+
+    private void setupTutorialView() {
+        mTutorialContainer = findViewById(R.id.tutorial_container);
     }
 
     private View getContainerFromMode(int uiMode) {
         switch (uiMode) {
             case MODE_DETAIL:
                 return mDetailContainer;
+            case MODE_TUTORIAL:
+                return mTutorialContainer;
             case MODE_ACTIVATE:
             default:
                 return mActiveContainer;
@@ -176,7 +196,10 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         // default activate mode
         int newMode = MODE_ACTIVATE;
         if (mStyleActive) {
-            newMode = MODE_DETAIL;
+            newMode = MODE_TUTORIAL;
+            if (mSeenTutorial) {
+                newMode = MODE_DETAIL;
+            }
         }
         if (mUiMode == newMode) {
             return;
@@ -247,6 +270,22 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
                         .commit();
             }
         }
+
+        if (mUiMode == MODE_TUTORIAL || newMode == MODE_TUTORIAL) {
+            FragmentManager fragmentManager = getFragmentManager();
+            Fragment tutorialFragment = fragmentManager.findFragmentById(R.id.main_container);
+            if (newMode == MODE_TUTORIAL && tutorialFragment == null) {
+                tutorialFragment = TutorialFragment.newInstance();
+                fragmentManager.beginTransaction()
+                        .add(R.id.main_container, tutorialFragment)
+                        .commit();
+            } else if (mUiMode == MODE_TUTORIAL && tutorialFragment != null) {
+                fragmentManager.beginTransaction()
+                        .remove(tutorialFragment)
+                        .commit();
+            }
+        }
+
         mUiMode = newMode;
 
         maybeUpdateWallpaperDetailOpenedClosed();
@@ -283,6 +322,15 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         }
 
         mStyleActive = e.isWallpaperActivate();
+        updateUi();
+    }
+
+    @Subscribe
+    public void onEventMainThread(final SeenTutorialEvent e) {
+        mSeenTutorial = true;
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putBoolean(PREF_SEEN_TUTORIAL, true)
+                .apply();
         updateUi();
     }
 
