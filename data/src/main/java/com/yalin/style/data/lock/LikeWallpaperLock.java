@@ -17,10 +17,10 @@ import io.reactivex.schedulers.Schedulers;
  * On 2017/4/30.
  */
 @Singleton
-public class KeepWallpaperLock extends ResourceLock {
+public class LikeWallpaperLock extends ResourceLock {
 
     @Inject
-    public KeepWallpaperLock(ThreadExecutor threadExecutor) {
+    public LikeWallpaperLock(ThreadExecutor threadExecutor) {
         super(threadExecutor);
     }
 

@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.yalin.style.data.cache.WallpaperCache;
 
-import com.yalin.style.data.lock.KeepWallpaperLock;
+import com.yalin.style.data.lock.LikeWallpaperLock;
 import com.yalin.style.data.lock.OpenInputStreamLock;
 
 import javax.inject.Inject;
@@ -22,16 +22,16 @@ public class WallpaperDataStoreFactory {
     private final Context context;
     private final WallpaperCache wallpaperCache;
     private final OpenInputStreamLock openInputStreamLock;
-    private final KeepWallpaperLock keepWallpaperLock;
+    private final LikeWallpaperLock likeWallpaperLock;
 
     @Inject
     WallpaperDataStoreFactory(Context context, WallpaperCache wallpaperCache,
                               OpenInputStreamLock openInputStreamLock,
-                              KeepWallpaperLock keepWallpaperLock) {
+                              LikeWallpaperLock likeWallpaperLock) {
         this.context = context;
         this.wallpaperCache = wallpaperCache;
         this.openInputStreamLock = openInputStreamLock;
-        this.keepWallpaperLock = keepWallpaperLock;
+        this.likeWallpaperLock = likeWallpaperLock;
     }
 
     public WallpaperDataStore create() {
@@ -46,7 +46,7 @@ public class WallpaperDataStoreFactory {
 
     public WallpaperDataStore createDbDataStore() {
         return new DbWallpaperDataStore(context, wallpaperCache,
-                openInputStreamLock, keepWallpaperLock);
+                openInputStreamLock, likeWallpaperLock);
     }
 
     public void onDataRefresh() {

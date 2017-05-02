@@ -8,7 +8,7 @@ import android.database.Cursor;
 import com.yalin.style.data.cache.WallpaperCache;
 import com.yalin.style.data.entity.WallpaperEntity;
 import com.yalin.style.data.exception.KeepException;
-import com.yalin.style.data.lock.KeepWallpaperLock;
+import com.yalin.style.data.lock.LikeWallpaperLock;
 import com.yalin.style.data.lock.OpenInputStreamLock;
 import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.provider.StyleContract;
@@ -37,15 +37,15 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
 
     private final WallpaperCache wallpaperCache;
     private final OpenInputStreamLock openInputStreamLock;
-    private final KeepWallpaperLock keepWallpaperLock;
+    private final LikeWallpaperLock likeWallpaperLock;
 
     public DbWallpaperDataStore(Context context, WallpaperCache wallpaperCache,
                                 OpenInputStreamLock openInputStreamLock,
-                                KeepWallpaperLock keepWallpaperLock) {
+                                LikeWallpaperLock likeWallpaperLock) {
         this.context = context;
         this.wallpaperCache = wallpaperCache;
         this.openInputStreamLock = openInputStreamLock;
-        this.keepWallpaperLock = keepWallpaperLock;
+        this.likeWallpaperLock = likeWallpaperLock;
     }
 
     @Override
@@ -101,7 +101,7 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
 
     @Override
     public Observable<Boolean> keepWallpaper(String wallpaperId) {
-        if (!keepWallpaperLock.obtain()) {
+        if (!likeWallpaperLock.obtain()) {
             return Observable.create(emitter -> emitter.onError(new KeepException()));
         }
         wallpaperCache.keepWallpaper(wallpaperId);
@@ -128,7 +128,7 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
             } catch (Exception e) {
                 emitter.onError(e);
             } finally {
-                keepWallpaperLock.release();
+                likeWallpaperLock.release();
                 if (cursor != null) {
                     cursor.close();
                 }

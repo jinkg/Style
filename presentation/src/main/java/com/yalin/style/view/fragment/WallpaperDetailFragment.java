@@ -339,7 +339,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
             MenuItem keepItem = overflowMenu.getMenu().findItem(R.id.action_keep);
             if (keepItem == null) {
                 overflowMenu.getMenu().add(0, R.id.action_keep, Menu.FIRST,
-                        R.string.action_keep);
+                        R.string.action_like);
             }
         } else {
             overflowMenu.getMenu().removeItem(R.id.action_keep);
@@ -351,7 +351,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     public void updateKeepState(boolean keeped) {
         overflowMenu.getMenu()
                 .findItem(R.id.action_keep)
-                .setTitle(keeped ? R.string.action_unkeep : R.string.action_keep);
+                .setTitle(keeped ? R.string.action_unlike : R.string.action_like);
         btnNext.setActivated(keeped);
     }
 
