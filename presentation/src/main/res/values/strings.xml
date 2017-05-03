@@ -9,7 +9,6 @@
     <string name="settings_dim_amount_title">Dim</string>
     <string name="settings_grey_amount_title">Grey</string>
     <string name="settings_blur_on_lockscreen">Apply blur on lockscreen</string>
-    <string name="about_title">About Style</string>
 
     <string name="action_activate">Active</string>
     <string name="action_settings">Customize</string>
@@ -27,4 +26,11 @@
 
     <string name="tutorial_main">Open the Style app to see your wallpaper</string>
     <string name="tutorial_subtitle">Double touch the blurred wallpaper on your home screen to temporarily focus</string>
+
+    <string name="about_title">About Style</string>
+    <string name="about_body"><![CDATA[
+        Hello world!
+    ]]></string>
+    <string name="about_version_template">v%1$s</string>
+
 </resources>

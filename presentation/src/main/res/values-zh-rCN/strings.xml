@@ -10,7 +10,6 @@
     <string name="settings_dim_amount_title">亮度</string>
     <string name="settings_grey_amount_title">灰度</string>
     <string name="settings_blur_on_lockscreen">锁屏时应用模糊效果</string>
-    <string name="about_title">关于Style</string>
 
     <string name="action_activate">开启</string>
     <string name="action_settings">设置</string>
@@ -28,4 +27,11 @@
 
     <string name="tutorial_main">打开Style以预览当前作品</string>
     <string name="tutorial_subtitle">在桌面双击空白模糊位置，临时查看清晰作品</string>
+
+    <string name="about_title">关于Style</string>
+    <string name="about_body"><![CDATA[
+        免费软件，简单易用。
+        开发者邮箱jinkg@live.cn
+    ]]></string>
+    <string name="about_version_template">v%1$s</string>
 </resources>

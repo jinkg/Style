@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 import com.yalin.style.R;
 import com.yalin.style.StyleWallpaperService;
+import com.yalin.style.analytics.Analytics;
+import com.yalin.style.analytics.Event;
 import com.yalin.style.data.BuildConfig;
 import com.yalin.style.event.MainContainerInsetsChangedEvent;
 import com.yalin.style.event.SeenTutorialEvent;
@@ -80,6 +82,8 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
         initializeInjector();
 
         setContentView(R.layout.activity_main);
+
+        Analytics.setUserProperty(this, "device_type", "Android");
 
         setupActiveView();
         setupDetailView();
@@ -275,11 +279,13 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
             FragmentManager fragmentManager = getFragmentManager();
             Fragment tutorialFragment = fragmentManager.findFragmentById(R.id.main_container);
             if (newMode == MODE_TUTORIAL && tutorialFragment == null) {
+                Analytics.logEvent(this, Event.TUTORIAL_BEGIN, null);
                 tutorialFragment = TutorialFragment.newInstance();
                 fragmentManager.beginTransaction()
                         .add(R.id.main_container, tutorialFragment)
                         .commit();
             } else if (mUiMode == MODE_TUTORIAL && tutorialFragment != null) {
+                Analytics.logEvent(this, Event.TUTORIAL_COMPLETE, null);
                 fragmentManager.beginTransaction()
                         .remove(tutorialFragment)
                         .commit();
@@ -361,6 +367,7 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activate_style_button:
+                Analytics.logEvent(this, Event.ACTIVATE, null);
                 setWallpaper();
                 break;
         }

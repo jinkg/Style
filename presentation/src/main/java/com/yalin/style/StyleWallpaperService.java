@@ -18,6 +18,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.ViewConfiguration;
 
+import com.yalin.style.analytics.Analytics;
+import com.yalin.style.analytics.Event;
 import com.yalin.style.event.SystemWallpaperSizeChangedEvent;
 import com.yalin.style.event.WallpaperActivateEvent;
 import com.yalin.style.event.WallpaperDetailOpenedEvent;
@@ -224,11 +226,13 @@ public class StyleWallpaperService extends GLWallpaperService {
 
         private void activateWallpaper() {
             mWallpaperActivate = true;
+            Analytics.logEvent(StyleWallpaperService.this, Event.WALLPAPER_CREATED, null);
             EventBus.getDefault().postSticky(new WallpaperActivateEvent(true));
         }
 
         private void deactivateWallpaper() {
             if (mWallpaperActivate) {
+                Analytics.logEvent(StyleWallpaperService.this, Event.WALLPAPER_DESTROYED, null);
                 EventBus.getDefault().postSticky(new WallpaperActivateEvent(false));
             }
         }

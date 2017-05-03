@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.yalin.style.WallpaperDetailViewport;
 import com.yalin.style.R;
+import com.yalin.style.analytics.Analytics;
+import com.yalin.style.analytics.Event;
 import com.yalin.style.event.MainContainerInsetsChangedEvent;
 import com.yalin.style.event.StyleWallpaperSizeChangedEvent;
 import com.yalin.style.event.SwitchingPhotosStateChangedEvent;
@@ -164,6 +166,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
                         presenter.shareWallpaper();
                         return true;
                     case R.id.action_settings:
+                        Analytics.logEvent(getActivity(), Event.SETTINGS_OPEN, null);
                         startActivity(new Intent(getActivity(), SettingsActivity.class));
                         return true;
                 }

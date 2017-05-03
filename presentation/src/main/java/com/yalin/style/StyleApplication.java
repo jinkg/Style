@@ -3,6 +3,7 @@ package com.yalin.style;
 import android.app.Application;
 
 import com.tencent.bugly.crashreport.CrashReport;
+import com.yalin.style.analytics.Analytics;
 import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.injection.component.ApplicationComponent;
 import com.yalin.style.injection.component.DaggerApplicationComponent;
@@ -31,6 +32,7 @@ public class StyleApplication extends Application {
 
         resetExceptionHandler();
 
+        Analytics.init(this);
         CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APP_ID, true);
     }
 
