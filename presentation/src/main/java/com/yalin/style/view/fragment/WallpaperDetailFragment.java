@@ -133,6 +133,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Analytics.logEvent(getActivity(), Event.SWITCH, null);
                 presenter.getNextWallpaper();
             }
         });
@@ -159,10 +160,11 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.action_keep:
+                    case R.id.action_like:
                         presenter.keepWallpaper();
                         return true;
                     case R.id.action_share:
+                        Analytics.logEvent(getActivity(), Event.SHARE, null);
                         presenter.shareWallpaper();
                         return true;
                     case R.id.action_settings:
@@ -339,25 +341,27 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     }
 
     @Override
-    public void validKeepAction(boolean valid) {
+    public void validLikeAction(boolean valid) {
         if (valid) {
-            MenuItem keepItem = overflowMenu.getMenu().findItem(R.id.action_keep);
+            MenuItem keepItem = overflowMenu.getMenu().findItem(R.id.action_like);
             if (keepItem == null) {
-                overflowMenu.getMenu().add(0, R.id.action_keep, Menu.FIRST,
+                overflowMenu.getMenu().add(0, R.id.action_like, Menu.FIRST,
                         R.string.action_like);
             }
         } else {
-            overflowMenu.getMenu().removeItem(R.id.action_keep);
+            overflowMenu.getMenu().removeItem(R.id.action_like);
             btnNext.setActivated(false);
         }
     }
 
     @Override
-    public void updateKeepState(boolean keeped) {
+    public void updateLikeState(boolean liked) {
         overflowMenu.getMenu()
-                .findItem(R.id.action_keep)
-                .setTitle(keeped ? R.string.action_unlike : R.string.action_like);
-        btnNext.setActivated(keeped);
+                .findItem(R.id.action_like)
+                .setTitle(liked ? R.string.action_unlike : R.string.action_like);
+        btnNext.setActivated(liked);
+
+        Analytics.logEvent(getActivity(), liked ? Event.LIKE : Event.UN_LIKE, null);
     }
 
     @Override

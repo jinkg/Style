@@ -17,7 +17,7 @@ public interface WallpaperDetailView extends LoadingDataView {
 
     void shareWallpaper(Intent shareIntent);
 
-    void validKeepAction(boolean valid);
+    void validLikeAction(boolean valid);
 
-    void updateKeepState(boolean keeped);
+    void updateLikeState(boolean keeped);
 }

@@ -115,9 +115,9 @@ public class WallpaperDetailPresenter implements Presenter {
     final WallpaperItem wallpaperItem = wallpaperItemMapper.transform(wallpaper);
     currentShowItem = wallpaperItem;
     wallpaperDetailView.renderWallpaper(wallpaperItem);
-    wallpaperDetailView.validKeepAction(!wallpaper.isDefault);
+    wallpaperDetailView.validLikeAction(!wallpaper.isDefault);
     if(!wallpaper.isDefault) {
-      wallpaperDetailView.updateKeepState(wallpaper.keep);
+      wallpaperDetailView.updateLikeState(wallpaper.keep);
     }
   }
 
@@ -181,7 +181,7 @@ public class WallpaperDetailPresenter implements Presenter {
 
     @Override
     public void onNext(Boolean keeped) {
-      wallpaperDetailView.updateKeepState(keeped);
+      wallpaperDetailView.updateLikeState(keeped);
     }
   }
 
