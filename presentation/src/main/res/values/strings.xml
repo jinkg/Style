@@ -29,7 +29,14 @@
 
     <string name="about_title">About Style</string>
     <string name="about_body"><![CDATA[
-        Hello world!
+        Make the most of your desktop and give it the artistic flavor.<br><br>
+
+        Use your famous works of art to easily refresh your screen.<br>Style will make these artwork back into the background to keep your icon in the spotlight.<br><br>
+
+        Style is free and easy to use.<br>You can also feedback to the developer&#39;s mailbox:<br>
+        <b><a href="mailto:jinkg@live.cn">jinkg@live.cn</a></b><br><br>
+
+        <b><a href="http://www.kinglloy.com/">Visit home page</a></b>
     ]]></string>
     <string name="about_version_template">v%1$s</string>
 

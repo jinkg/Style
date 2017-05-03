@@ -30,8 +30,15 @@
 
     <string name="about_title">关于Style</string>
     <string name="about_body"><![CDATA[
-        免费软件，简单易用。
-        开发者邮箱jinkg@live.cn
+        充分利用您的桌面，赋予其艺术气息。<br><br>
+
+        用著名的艺术作品轻轻松松的刷新您的屏幕。<br>
+        Style会让这些艺术作品隐退到背景之中，以保证您的图标更加醒目。<br><br>
+
+        Style免费、简单易用。<br>
+        您也可以反馈意见到开发者邮箱：<b><a href="mailto:jinkg@live.cn">jinkg@live.cn</a></b><br><br>
+
+        <b><a href="http://www.kinglloy.com/">访问官方网站</a></b>
     ]]></string>
     <string name="about_version_template">v%1$s</string>
 </resources>
