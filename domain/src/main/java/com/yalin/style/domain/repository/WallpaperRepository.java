@@ -22,7 +22,7 @@ public interface WallpaperRepository {
 
   Observable<Integer> getWallpaperCount();
 
-  Observable<Boolean> keepWallpaper(String wallpaperId);
+  Observable<Boolean> likeWallpaper(String wallpaperId);
 
   void registerObserver(DefaultObserver<Void> observer);
 

@@ -21,5 +21,5 @@ public interface WallpaperDataStore {
 
   Observable<Integer> getWallpaperCount();
 
-  Observable<Boolean> keepWallpaper(String wallpaperId);
+  Observable<Boolean> likeWallpaper(String wallpaperId);
 }

@@ -97,10 +97,10 @@ public class WallpaperDataRepository implements WallpaperRepository {
     }
 
     @Override
-    public Observable<Boolean> keepWallpaper(String wallpaperId) {
+    public Observable<Boolean> likeWallpaper(String wallpaperId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(wallpaperId), "WallpaperId cannot be null");
         final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
-        return dataStore.keepWallpaper(wallpaperId);
+        return dataStore.likeWallpaper(wallpaperId);
     }
 
     @Override

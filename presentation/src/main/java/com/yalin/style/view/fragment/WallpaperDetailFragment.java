@@ -161,7 +161,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_like:
-                        presenter.keepWallpaper();
+                        presenter.likeWallpaper();
                         return true;
                     case R.id.action_share:
                         Analytics.logEvent(getActivity(), Event.SHARE, null);

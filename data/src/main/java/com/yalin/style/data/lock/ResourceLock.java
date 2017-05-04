@@ -14,7 +14,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public abstract class ResourceLock {
-    private AtomicBoolean keeping = new AtomicBoolean(false);
+    private AtomicBoolean lock = new AtomicBoolean(false);
 
     private final ThreadExecutor threadExecutor;
 
@@ -25,10 +25,10 @@ public abstract class ResourceLock {
     }
 
     public synchronized boolean obtain() {
-        if (keeping.get()) {
+        if (lock.get()) {
             return false;
         } else {
-            keeping.set(true);
+            lock.set(true);
             return true;
         }
     }
@@ -39,7 +39,7 @@ public abstract class ResourceLock {
         }
         releaseObserver = new DefaultObserver<>();
         Observable<Void> observable = Observable.create(e -> {
-            keeping.set(false);
+            lock.set(false);
             e.onComplete();
         });
         observable = appendDelay(observable);

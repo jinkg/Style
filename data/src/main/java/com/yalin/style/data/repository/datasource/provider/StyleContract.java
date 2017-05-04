@@ -42,7 +42,7 @@ public class StyleContract {
     /**
      * Type: SHORT
      */
-    String COLUMN_NAME_LIKED = "liked";
+    String COLUMN_NAME_LIKED = "keep";
     /**
      * Type: TEXT
      */

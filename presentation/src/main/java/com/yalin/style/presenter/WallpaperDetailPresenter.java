@@ -7,7 +7,7 @@ import com.yalin.style.domain.Wallpaper;
 import com.yalin.style.domain.interactor.DefaultObserver;
 import com.yalin.style.domain.interactor.GetWallpaper;
 import com.yalin.style.domain.interactor.GetWallpaperCount;
-import com.yalin.style.domain.interactor.KeepWallpaper;
+import com.yalin.style.domain.interactor.LikeWallpaper;
 import com.yalin.style.domain.interactor.SwitchWallpaper;
 import com.yalin.style.event.WallpaperSwitchEvent;
 import com.yalin.style.exception.ErrorMessageFactory;
@@ -30,7 +30,7 @@ public class WallpaperDetailPresenter implements Presenter {
   private final GetWallpaper getWallpaperUseCase;
   private final GetWallpaperCount getWallpaperCountUseCase;
   private final SwitchWallpaper switchWallpaperUseCase;
-  private final KeepWallpaper keepWallpaperUseCase;
+  private final LikeWallpaper likeWallpaperUseCase;
   private final WallpaperItemMapper wallpaperItemMapper;
 
   private WallpaperItem currentShowItem;
@@ -43,12 +43,12 @@ public class WallpaperDetailPresenter implements Presenter {
   public WallpaperDetailPresenter(GetWallpaper getWallpaperUseCase,
       GetWallpaperCount getWallpaperCountUseCase,
       SwitchWallpaper switchWallpaperUseCase,
-      KeepWallpaper keepWallpaperUseCase,
+      LikeWallpaper likeWallpaperUseCase,
       WallpaperItemMapper itemMapper) {
     this.getWallpaperUseCase = getWallpaperUseCase;
     this.getWallpaperCountUseCase = getWallpaperCountUseCase;
     this.switchWallpaperUseCase = switchWallpaperUseCase;
-    this.keepWallpaperUseCase = keepWallpaperUseCase;
+    this.likeWallpaperUseCase = likeWallpaperUseCase;
     this.wallpaperItemMapper = itemMapper;
 
     wallpaperRefreshObserver = new WallpaperRefreshObserver();
@@ -68,12 +68,12 @@ public class WallpaperDetailPresenter implements Presenter {
     switchWallpaperUseCase.execute(new WallpaperObserver(true), null);
   }
 
-  public void keepWallpaper() {
+  public void likeWallpaper() {
     if (currentShowItem == null) {
       return;
     }
-    keepWallpaperUseCase.execute(new WallpaperKeepObserver(),
-        KeepWallpaper.Params.keepWallpaper(currentShowItem.wallpaperId));
+    likeWallpaperUseCase.execute(new WallpaperLikeObserver(),
+        LikeWallpaper.Params.likeWallpaper(currentShowItem.wallpaperId));
   }
 
   public void shareWallpaper() {
@@ -177,11 +177,11 @@ public class WallpaperDetailPresenter implements Presenter {
     }
   }
 
-  private final class WallpaperKeepObserver extends DefaultObserver<Boolean> {
+  private final class WallpaperLikeObserver extends DefaultObserver<Boolean> {
 
     @Override
-    public void onNext(Boolean keeped) {
-      wallpaperDetailView.updateLikeState(keeped);
+    public void onNext(Boolean liked) {
+      wallpaperDetailView.updateLikeState(liked);
     }
   }
 

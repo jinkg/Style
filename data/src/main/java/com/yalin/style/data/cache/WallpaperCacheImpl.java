@@ -56,7 +56,7 @@ public class WallpaperCacheImpl implements WallpaperCache {
   }
 
   @Override
-  public void keepWallpaper(String wallpaperId) {
+  public void likeWallpaper(String wallpaperId) {
     Preconditions.checkNotNull(wallpaperId, "There is not cached wallpaper.");
     if (isCached(wallpaperId)) {
       WallpaperEntity entity = get(wallpaperId);

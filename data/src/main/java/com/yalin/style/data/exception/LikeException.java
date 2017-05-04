@@ -5,12 +5,12 @@ package com.yalin.style.data.exception;
  * @since 2017/4/29.
  */
 
-public class KeepException extends Exception {
-    public KeepException() {
+public class LikeException extends Exception {
+    public LikeException() {
         super();
     }
 
-    public KeepException(final Throwable cause) {
+    public LikeException(final Throwable cause) {
         super(cause);
     }
 }

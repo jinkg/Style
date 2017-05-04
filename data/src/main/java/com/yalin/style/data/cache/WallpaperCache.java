@@ -24,7 +24,7 @@ public interface WallpaperCache {
 
   Observable<Integer> getWallpaperCount();
 
-  void keepWallpaper(String wallpaperId);
+  void likeWallpaper(String wallpaperId);
 
   void put(Queue<WallpaperEntity> wallpaperEntities);
 

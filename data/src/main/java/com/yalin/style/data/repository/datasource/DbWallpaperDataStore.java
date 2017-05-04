@@ -7,7 +7,7 @@ import android.database.Cursor;
 
 import com.yalin.style.data.cache.WallpaperCache;
 import com.yalin.style.data.entity.WallpaperEntity;
-import com.yalin.style.data.exception.KeepException;
+import com.yalin.style.data.exception.LikeException;
 import com.yalin.style.data.lock.LikeWallpaperLock;
 import com.yalin.style.data.lock.OpenInputStreamLock;
 import com.yalin.style.data.log.LogUtil;
@@ -100,11 +100,11 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
     }
 
     @Override
-    public Observable<Boolean> keepWallpaper(String wallpaperId) {
+    public Observable<Boolean> likeWallpaper(String wallpaperId) {
         if (!likeWallpaperLock.obtain()) {
-            return Observable.create(emitter -> emitter.onError(new KeepException()));
+            return Observable.create(emitter -> emitter.onError(new LikeException()));
         }
-        wallpaperCache.keepWallpaper(wallpaperId);
+        wallpaperCache.likeWallpaper(wallpaperId);
         return Observable.create(emitter -> {
             Cursor cursor = null;
             try {
@@ -120,10 +120,10 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
                     if (columnCount > 0) {
                         emitter.onNext(entity.liked);
                     } else {
-                        throw new KeepException();
+                        throw new LikeException();
                     }
                 } else {
-                    throw new KeepException();
+                    throw new LikeException();
                 }
             } catch (Exception e) {
                 emitter.onError(e);
