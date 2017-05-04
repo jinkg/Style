@@ -133,7 +133,7 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Analytics.logEvent(getActivity(), Event.SWITCH, null);
+                Analytics.logEvent(getActivity(), Event.SWITCH);
                 presenter.getNextWallpaper();
             }
         });
@@ -164,11 +164,11 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
                         presenter.likeWallpaper();
                         return true;
                     case R.id.action_share:
-                        Analytics.logEvent(getActivity(), Event.SHARE, null);
+                        Analytics.logEvent(getActivity(), Event.SHARE);
                         presenter.shareWallpaper();
                         return true;
                     case R.id.action_settings:
-                        Analytics.logEvent(getActivity(), Event.SETTINGS_OPEN, null);
+                        Analytics.logEvent(getActivity(), Event.SETTINGS_OPEN);
                         startActivity(new Intent(getActivity(), SettingsActivity.class));
                         return true;
                 }
@@ -362,8 +362,6 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
                 .findItem(R.id.action_like)
                 .setTitle(liked ? R.string.action_unlike : R.string.action_like);
         btnNext.setActivated(liked);
-
-        Analytics.logEvent(getActivity(), liked ? Event.LIKE : Event.UN_LIKE, item.title);
     }
 
     @Override

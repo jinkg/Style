@@ -226,13 +226,13 @@ public class StyleWallpaperService extends GLWallpaperService {
 
         private void activateWallpaper() {
             mWallpaperActivate = true;
-            Analytics.logEvent(StyleWallpaperService.this, Event.WALLPAPER_CREATED, null);
+            Analytics.logEvent(StyleWallpaperService.this, Event.WALLPAPER_CREATED);
             EventBus.getDefault().postSticky(new WallpaperActivateEvent(true));
         }
 
         private void deactivateWallpaper() {
             if (mWallpaperActivate) {
-                Analytics.logEvent(StyleWallpaperService.this, Event.WALLPAPER_DESTROYED, null);
+                Analytics.logEvent(StyleWallpaperService.this, Event.WALLPAPER_DESTROYED);
                 EventBus.getDefault().postSticky(new WallpaperActivateEvent(false));
             }
         }

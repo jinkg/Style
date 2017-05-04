@@ -279,13 +279,13 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
             FragmentManager fragmentManager = getFragmentManager();
             Fragment tutorialFragment = fragmentManager.findFragmentById(R.id.main_container);
             if (newMode == MODE_TUTORIAL && tutorialFragment == null) {
-                Analytics.logEvent(this, Event.TUTORIAL_BEGIN, null);
+                Analytics.logEvent(this, Event.TUTORIAL_BEGIN);
                 tutorialFragment = TutorialFragment.newInstance();
                 fragmentManager.beginTransaction()
                         .add(R.id.main_container, tutorialFragment)
                         .commit();
             } else if (mUiMode == MODE_TUTORIAL && tutorialFragment != null) {
-                Analytics.logEvent(this, Event.TUTORIAL_COMPLETE, null);
+                Analytics.logEvent(this, Event.TUTORIAL_COMPLETE);
                 fragmentManager.beginTransaction()
                         .remove(tutorialFragment)
                         .commit();
@@ -360,7 +360,7 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
             } catch (ActivityNotFoundException e2) {
                 Toast.makeText(StyleActivity.this,
                         R.string.exception_message_device_unsupported, Toast.LENGTH_LONG).show();
-                Analytics.logEvent(this, Event.DEVICE_UNSUPPORTED, null);
+                Analytics.logEvent(this, Event.DEVICE_UNSUPPORTED);
             }
         }
     }
@@ -369,7 +369,7 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activate_style_button:
-                Analytics.logEvent(this, Event.ACTIVATE, null);
+                Analytics.logEvent(this, Event.ACTIVATE);
                 setWallpaper();
                 break;
         }

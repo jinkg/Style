@@ -87,7 +87,7 @@ public class SettingsActivity extends BaseActivity {
                         }
                         return true;
                     case R.id.action_about:
-                        Analytics.logEvent(SettingsActivity.this, Event.ABOUT_OPEN, null);
+                        Analytics.logEvent(SettingsActivity.this, Event.ABOUT_OPEN);
                         startActivity(new Intent(SettingsActivity.this, AboutActivity.class));
                         return true;
                 }

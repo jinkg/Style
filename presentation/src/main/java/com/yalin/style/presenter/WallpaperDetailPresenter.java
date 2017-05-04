@@ -2,6 +2,8 @@ package com.yalin.style.presenter;
 
 import android.content.Intent;
 
+import com.yalin.style.analytics.Analytics;
+import com.yalin.style.analytics.Event;
 import com.yalin.style.data.exception.ReswitchException;
 import com.yalin.style.domain.Wallpaper;
 import com.yalin.style.domain.interactor.DefaultObserver;
@@ -74,6 +76,9 @@ public class WallpaperDetailPresenter implements Presenter {
     }
     likeWallpaperUseCase.execute(new WallpaperLikeObserver(),
         LikeWallpaper.Params.likeWallpaper(currentShowItem.wallpaperId));
+
+    Analytics.logEvent(wallpaperDetailView.context(),
+            !currentShowItem.liked ? Event.LIKE : Event.UN_LIKE, currentShowItem.title);
   }
 
   public void shareWallpaper() {
