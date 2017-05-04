@@ -19,5 +19,5 @@ public interface WallpaperDetailView extends LoadingDataView {
 
     void validLikeAction(boolean valid);
 
-    void updateLikeState(boolean liked);
+    void updateLikeState(WallpaperItem item, boolean liked);
 }

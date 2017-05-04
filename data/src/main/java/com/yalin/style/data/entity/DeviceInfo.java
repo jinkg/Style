@@ -15,6 +15,7 @@ public class DeviceInfo {
     private String type;
     private String versionName;
     private int versionCode;
+    private String channel;
 
     public DeviceInfo(int sdkVersion, String androidId, String manufacturer,
                       String model) {
@@ -25,6 +26,7 @@ public class DeviceInfo {
         type = "Android";
         versionName = BuildConfig.VERSION_NAME;
         versionCode = BuildConfig.VERSION_CODE;
+        channel = BuildConfig.CHANNEL;
     }
 
     public int getSdkVersion() {

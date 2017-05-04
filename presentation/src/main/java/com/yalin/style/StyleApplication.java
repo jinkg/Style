@@ -33,7 +33,9 @@ public class StyleApplication extends Application {
         resetExceptionHandler();
 
         Analytics.init(this);
-        CrashReport.initCrashReport(getApplicationContext(), BuildConfig.BUGLY_APP_ID, true);
+        CrashReport.initCrashReport(getApplicationContext(),
+                BuildConfig.BUGLY_APP_ID, LogUtil.LOG_ENABLE);
+        CrashReport.setAppChannel(getApplicationContext(), com.yalin.style.data.BuildConfig.CHANNEL);
     }
 
     private void initializeInjector() {

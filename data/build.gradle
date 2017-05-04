@@ -16,6 +16,8 @@ properties.load(project.rootProject.file('switch.properties').newDataInputStream
 def ENABLE_EXTERNAL_LOG = properties.get('ENABLE_EXTERNAL_LOG')
 def LOG_ENABLE = properties.get('LOG_ENABLE')
 
+def CHANNEL = System.getProperty("channel", "default")
+
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
     buildToolsVersion BUILD_TOOLS_VERSION as String
@@ -33,6 +35,7 @@ android {
             }
         }
         buildConfigField("boolean", "LOG_ENABLE", "${LOG_ENABLE}")
+        buildConfigField("String", "CHANNEL", "\"${CHANNEL}\"")
     }
     buildTypes {
         release {

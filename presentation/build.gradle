@@ -10,6 +10,8 @@ def keystorePath = properties.get('keystorePath')
 def buglyAppId = properties.get('buglyAppId')
 def flurryApiKey = properties.get('flurryApiKey')
 
+def CHANNEL = System.getProperty("channel", "default")
+
 android {
     compileSdkVersion COMPILE_SDK_VERSION as int
     buildToolsVersion BUILD_TOOLS_VERSION as String
@@ -74,10 +76,19 @@ dependencies {
     demoCompile project(path: ':data', configuration: 'demoDebug')
     productionCompile project(path: ':data', configuration: 'productionRelease')
 
-    compile files('../third_party/volley/libs/volley.jar')
-
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+}
+
+project.afterEvaluate {
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def oldFile = output.outputFile
+
+            output.outputFile = new File(oldFile.parent,
+                    oldFile.name.replace(".apk", "-" + CHANNEL + ".apk"))
+        }
+    }
 }

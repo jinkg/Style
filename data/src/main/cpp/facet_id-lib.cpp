@@ -5,11 +5,14 @@
 #define LOG_TAG ("facet_id_check")
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 
+int LOG_ENABLE = 0;
 const char *LOG = "LOG";
 
 int check_facet_id(JNIEnv *, jstring);
 
 jstring get_facet_id(JNIEnv *, jobject, jint);
+
+void printLog(const char *);
 
 extern "C"
 jboolean
@@ -35,7 +38,7 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
                                                            "()Landroid/content/pm/PackageManager;");
     jobject packageManager = env->CallObjectMethod(context, getPackageManagerMethodId);
 
-    LOGI("PackageManager obtained.");
+    printLog("PackageManager obtained.");
 
     jclass packageManagerClazz = env->FindClass("android/content/pm/PackageManager");
     jmethodID getPackageForUidMethodId = env->GetMethodID(packageManagerClazz, "getPackagesForUid",
@@ -46,7 +49,7 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
                                                                               uId);
     jstring packageName = (jstring) env->GetObjectArrayElement(packageNames, 0);
 
-    LOGI("packageName obtained.");
+    printLog("packageName obtained.");
 
     jmethodID getPackageInfoMethodId = env->GetMethodID(packageManagerClazz, "getPackageInfo",
                                                         "(Ljava/lang/String;I)Landroid/content/pm/PackageInfo;");
@@ -57,7 +60,7 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
     jobject packageInfo = env->CallObjectMethod(packageManager, getPackageInfoMethodId,
                                                 packageName, signaturesFlag);
 
-    LOGI("packageInfo obtained.");
+    printLog("packageInfo obtained.");
 
     jclass packageInfoClazz = env->FindClass("android/content/pm/PackageInfo");
 
@@ -65,7 +68,7 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
                                                 "[Landroid/content/pm/Signature;");
     jobjectArray signatures = (jobjectArray) env->GetObjectField(packageInfo, signatureFieldId);
 
-    LOGI("signatures obtained.");
+    printLog("signatures obtained.");
 
     jclass signatureClazz = env->FindClass("android/content/pm/Signature");
     jmethodID toByteArrayMethodId = env->GetMethodID(signatureClazz, "toByteArray", "()[B");
@@ -73,14 +76,14 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
     jbyteArray cert = (jbyteArray) env->CallObjectMethod(env->GetObjectArrayElement(signatures, 0),
                                                          toByteArrayMethodId);
 
-    LOGI("cert obtained.");
+    printLog("cert obtained.");
 
     jclass inputStreamClazz = env->FindClass("java/io/ByteArrayInputStream");
     jmethodID inputStreamConstructorMethodId = env->GetMethodID(inputStreamClazz, "<init>",
                                                                 "([B)V");
     jobject inputStream = env->NewObject(inputStreamClazz, inputStreamConstructorMethodId, cert);
 
-    LOGI("inputStream obtained.");
+    printLog("inputStream obtained.");
 
     jclass certificateFactoryClazz = env->FindClass("java/security/cert/CertificateFactory");
     jmethodID certificateFactoryGetInstanceMethodId = env->GetStaticMethodID(
@@ -92,7 +95,7 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
                                                              certificateFactoryGetInstanceMethodId,
                                                              x509String);
 
-    LOGI("certificateFactory obtained.");
+    printLog("certificateFactory obtained.");
 
     jmethodID generateCertificateMethodId = env->GetMethodID(certificateFactoryClazz,
                                                              "generateCertificate",
@@ -102,7 +105,7 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
     jobject x509Certificate = env->CallObjectMethod(certificateFactory, generateCertificateMethodId,
                                                     inputStream);
 
-    LOGI("x509Certificate obtained.");
+    printLog("x509Certificate obtained.");
 
     jclass messageDigestClazz = env->FindClass("java/security/MessageDigest");
     jmethodID messageDigestInstanceMethodId = env->GetStaticMethodID(messageDigestClazz,
@@ -113,21 +116,21 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
     jobject messageDigest = env->CallStaticObjectMethod(messageDigestClazz,
                                                         messageDigestInstanceMethodId, sha1);
 
-    LOGI("messageDigest obtained.");
+    printLog("messageDigest obtained.");
 
     jmethodID certificateEncodeMethodId = env->GetMethodID(x509CertificateClazz, "getEncoded",
                                                            "()[B");
     jbyteArray certEncode = (jbyteArray) env->CallObjectMethod(x509Certificate,
                                                                certificateEncodeMethodId);
 
-    LOGI("certEncode obtained.");
+    printLog("certEncode obtained.");
 
     jmethodID messageDigestMethodId = env->GetMethodID(messageDigestClazz, "digest", "([B)[B");
     jbyteArray digestArray = (jbyteArray) env->CallObjectMethod(messageDigest,
                                                                 messageDigestMethodId,
                                                                 certEncode);
 
-    LOGI("digestArray obtained.");
+    printLog("digestArray obtained.");
 
     jclass base64Clazz = env->FindClass("android/util/Base64");
     jmethodID encodeToStringMethodId = env->GetStaticMethodID(base64Clazz, "encodeToString",
@@ -140,7 +143,7 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
     jstring result = (jstring) env->CallStaticObjectMethod(base64Clazz, encodeToStringMethodId,
                                                            digestArray, base64DefaultFlag);
 
-    LOGI("result obtained.");
+    printLog("result obtained.");
 
     env->DeleteLocalRef(packageManager);
     env->DeleteLocalRef(packageNames);
@@ -166,15 +169,23 @@ int check_facet_id(JNIEnv *env, jstring facet_id) {
 
 //    target_facet_id[strcspn(target_facet_id, "\r\n")] = '\0';
 
-    LOGI(target_facet_id, LOG);
-    LOGI(valid_facet_id, LOG);
+    printLog(target_facet_id);
+    printLog(valid_facet_id);
 
     int result = strcmp(target_facet_id, valid_facet_id);
 
     char tmp[128];
     sprintf(tmp, "check complete: result=%d", result);
-    LOGI(tmp, LOG);
+    printLog(tmp);
 
     env->DeleteLocalRef(valid_facet_id_string);
     return result;
+}
+
+void printLog(const char *str) {
+    if (LOG_ENABLE == 0) {
+        return;
+    }
+
+    LOGI(str, LOG);
 }

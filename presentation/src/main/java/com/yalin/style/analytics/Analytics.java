@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.flurry.android.FlurryAgent;
 import com.yalin.style.BuildConfig;
+import com.yalin.style.data.log.LogUtil;
 
 /**
  * @author jinyalin
@@ -12,7 +13,8 @@ import com.yalin.style.BuildConfig;
 
 public class Analytics {
     public static void init(Context context) {
-        new FlurryAgent.Builder().withLogEnabled(true).build(context, BuildConfig.FLURRY_API_KEY);
+        new FlurryAgent.Builder().withLogEnabled(LogUtil.LOG_ENABLE)
+                .build(context, BuildConfig.FLURRY_API_KEY);
     }
 
 

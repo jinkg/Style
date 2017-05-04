@@ -117,7 +117,7 @@ public class WallpaperDetailPresenter implements Presenter {
     wallpaperDetailView.renderWallpaper(wallpaperItem);
     wallpaperDetailView.validLikeAction(!wallpaper.isDefault);
     if(!wallpaper.isDefault) {
-      wallpaperDetailView.updateLikeState(wallpaper.liked);
+        wallpaperDetailView.updateLikeState(wallpaperItem, wallpaper.liked);
     }
   }
 
@@ -181,7 +181,7 @@ public class WallpaperDetailPresenter implements Presenter {
 
     @Override
     public void onNext(Boolean liked) {
-      wallpaperDetailView.updateLikeState(liked);
+      wallpaperDetailView.updateLikeState(currentShowItem, liked);
     }
   }
 

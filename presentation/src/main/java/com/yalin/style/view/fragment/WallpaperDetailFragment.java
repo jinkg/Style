@@ -327,6 +327,8 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         tvAttribution.setText(wallpaperItem.attribution);
         tvByline.setTypeface(TypefaceUtil.getAndCache(context(), bylineFont));
         tvByline.setText(wallpaperItem.byline);
+
+        Analytics.logEvent(getActivity(), Event.PRESENT_WALLPAPER, wallpaperItem.title);
     }
 
     @Override
@@ -355,13 +357,13 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
     }
 
     @Override
-    public void updateLikeState(boolean liked) {
+    public void updateLikeState(WallpaperItem item, boolean liked) {
         overflowMenu.getMenu()
                 .findItem(R.id.action_like)
                 .setTitle(liked ? R.string.action_unlike : R.string.action_like);
         btnNext.setActivated(liked);
 
-        Analytics.logEvent(getActivity(), liked ? Event.LIKE : Event.UN_LIKE, null);
+        Analytics.logEvent(getActivity(), liked ? Event.LIKE : Event.UN_LIKE, item.title);
     }
 
     @Override

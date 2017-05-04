@@ -18,4 +18,6 @@ public class Event {
     public static final String SWITCH = "switch";
     public static final String TUTORIAL_BEGIN = "tutorial_begin";
     public static final String TUTORIAL_COMPLETE = "tutorial_complete";
+    public static final String PRESENT_WALLPAPER = "present_wallpaper";
+    public static final String DEVICE_UNSUPPORTED = "device_unsupported";
 }

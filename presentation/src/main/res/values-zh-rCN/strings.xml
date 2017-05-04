@@ -21,6 +21,7 @@
 
     <string name="reset_settings_defaults">重置设置</string>
 
+    <string name="exception_message_device_unsupported">您的设备不支持动态壁纸。</string>
     <string name="exception_message_generic">操作出现了一个错误。</string>
     <string name="exception_message_no_connection">网络不可用，请检查网络连接。</string>
     <string name="exception_message_resync">正在同步…</string>

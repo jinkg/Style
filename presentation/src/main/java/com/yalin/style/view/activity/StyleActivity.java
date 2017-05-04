@@ -358,7 +358,9 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
                 startActivity(new Intent(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             } catch (ActivityNotFoundException e2) {
-                Toast.makeText(StyleActivity.this, "xxx", Toast.LENGTH_LONG).show();
+                Toast.makeText(StyleActivity.this,
+                        R.string.exception_message_device_unsupported, Toast.LENGTH_LONG).show();
+                Analytics.logEvent(this, Event.DEVICE_UNSUPPORTED, null);
             }
         }
     }
