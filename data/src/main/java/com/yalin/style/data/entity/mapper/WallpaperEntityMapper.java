@@ -26,7 +26,7 @@ public class WallpaperEntityMapper {
     wallpaper.byline = wallpaperEntity.byline;
     wallpaper.imageUri = wallpaperEntity.imageUri;
     wallpaper.wallpaperId = wallpaperEntity.wallpaperId;
-    wallpaper.keep = wallpaperEntity.keep;
+    wallpaper.liked = wallpaperEntity.liked;
     wallpaper.isDefault = wallpaperEntity.isDefault;
     return wallpaper;
   }

@@ -13,6 +13,6 @@ public class Wallpaper {
   public String byline;
   public String attribution;
 
-  public boolean keep;
+  public boolean liked;
   public boolean isDefault;
 }

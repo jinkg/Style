@@ -105,7 +105,7 @@ public class WallpapersHandler extends JSONHandler {
         builder.withValue(Wallpaper.COLUMN_NAME_BYLINE, wallpaper.byline);
         builder.withValue(Wallpaper.COLUMN_NAME_ATTRIBUTION, wallpaper.attribution);
         builder.withValue(Wallpaper.COLUMN_NAME_ADD_DATE, TimeUtil.getCurrentTime(mContext));
-        builder.withValue(Wallpaper.COLUMN_NAME_KEEP, wallpaper.keep ? 1 : 0);
+        builder.withValue(Wallpaper.COLUMN_NAME_LIKED, wallpaper.liked ? 1 : 0);
         builder.withValue(Wallpaper.COLUMN_NAME_CHECKSUM, wallpaper.checksum);
 
         list.add(builder.build());

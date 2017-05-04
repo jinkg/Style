@@ -28,7 +28,7 @@ public class WallpaperEntity {
     public String byline;
     public String attribution;
 
-    public boolean keep;
+    public boolean liked;
     public boolean isDefault;
 
     public String checksum;
@@ -72,8 +72,8 @@ public class WallpaperEntity {
                 Wallpaper.COLUMN_NAME_BYLINE));
         wallpaperEntity.attribution = cursor.getString(cursor.getColumnIndex(
                 Wallpaper.COLUMN_NAME_ATTRIBUTION));
-        wallpaperEntity.keep = cursor.getInt(cursor.getColumnIndex(
-                Wallpaper.COLUMN_NAME_KEEP)) == 1;
+        wallpaperEntity.liked = cursor.getInt(cursor.getColumnIndex(
+                Wallpaper.COLUMN_NAME_LIKED)) == 1;
         wallpaperEntity.checksum = cursor.getString(cursor.getColumnIndex(
                 Wallpaper.COLUMN_NAME_CHECKSUM));
 

@@ -83,7 +83,7 @@ public class StyleProvider extends ContentProvider {
         switch (uriEnum) {
             case WALLPAPER:
             case WALLPAPER_ID:
-            case WALLPAPER_KEEPED: {
+            case WALLPAPER_LIKED: {
                 final SelectionBuilder builder = buildSimpleSelection(uri);
                 return builder.query(db, projection, Wallpaper._ID + " DESC");
             }
@@ -133,7 +133,7 @@ public class StyleProvider extends ContentProvider {
         final SelectionBuilder builder = buildSimpleSelection(uri);
         switch (uriEnum) {
             case WALLPAPER:
-                builder.where(Wallpaper.COLUMN_NAME_KEEP + " = ?", "0");
+                builder.where(Wallpaper.COLUMN_NAME_LIKED + " = ?", "0");
                 break;
         }
         return builder.where(selection, selectionArgs).delete(db);
@@ -200,14 +200,14 @@ public class StyleProvider extends ContentProvider {
                 return builder.table(StyleDatabase.Tables.WALLPAPER)
                         .where(Wallpaper.COLUMN_NAME_WALLPAPER_ID + " = ?", wallpaperId);
             }
-            case WALLPAPER_KEEP: {
-                String wallpaperId = StyleContract.Wallpaper.getWallpaperKeepId(uri);
+            case WALLPAPER_LIKE: {
+                String wallpaperId = StyleContract.Wallpaper.getWallpaperLikeId(uri);
                 return builder.table(StyleDatabase.Tables.WALLPAPER)
                         .where(Wallpaper.COLUMN_NAME_WALLPAPER_ID + " = ?", wallpaperId);
             }
-            case WALLPAPER_KEEPED: {
+            case WALLPAPER_LIKED: {
                 return builder.table(StyleDatabase.Tables.WALLPAPER)
-                        .where(Wallpaper.COLUMN_NAME_KEEP + " = ?", "1");
+                        .where(Wallpaper.COLUMN_NAME_LIKED + " = ?", "1");
             }
             default: {
                 throw new UnsupportedOperationException("Unknown uri for " + uri);

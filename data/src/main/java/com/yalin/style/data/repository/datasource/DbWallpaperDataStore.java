@@ -113,12 +113,12 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
                         null, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
                     WallpaperEntity entity = WallpaperEntity.readEntityFromCursor(cursor);
-                    entity.keep = !entity.keep;
+                    entity.liked = !entity.liked;
                     int columnCount = contentResolver
-                            .update(StyleContract.Wallpaper.buildWallpaperKeepUri(wallpaperId),
+                            .update(StyleContract.Wallpaper.buildWallpaperLikeUri(wallpaperId),
                                     buildKeepContentValue(entity), null, null);
                     if (columnCount > 0) {
-                        emitter.onNext(entity.keep);
+                        emitter.onNext(entity.liked);
                     } else {
                         throw new KeepException();
                     }
@@ -167,14 +167,14 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
         wallpaperEntity.imageUri = "imageUri";
         wallpaperEntity.title = "Painterly Architectonic";
         wallpaperEntity.wallpaperId = DEFAULT_WALLPAPER_ID;
-        wallpaperEntity.keep = false;
+        wallpaperEntity.liked = false;
         wallpaperEntity.isDefault = true;
         return wallpaperEntity;
     }
 
     private ContentValues buildKeepContentValue(WallpaperEntity entity) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Wallpaper.COLUMN_NAME_KEEP, entity.keep ? 1 : 0);
+        contentValues.put(Wallpaper.COLUMN_NAME_LIKED, entity.liked ? 1 : 0);
         return contentValues;
     }
 }

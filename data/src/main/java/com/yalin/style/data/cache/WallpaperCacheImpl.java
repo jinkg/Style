@@ -61,7 +61,7 @@ public class WallpaperCacheImpl implements WallpaperCache {
     if (isCached(wallpaperId)) {
       WallpaperEntity entity = get(wallpaperId);
       if (entity != null) {
-        entity.keep = !entity.keep;
+        entity.liked = !entity.liked;
       }
     }
   }

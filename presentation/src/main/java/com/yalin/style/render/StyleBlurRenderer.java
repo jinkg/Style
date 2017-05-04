@@ -408,7 +408,7 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
             }
 
             // Ensure the bitmap is wider than the screen relatively by applying zoom
-            // if necessary. Vary width but keep height the same.
+            // if necessary. Vary width but liked height the same.
             float zoom = Math.max(1f, 1.15f * screenToBitmapAspectRatio);
 
             // Total scale factors in both zoom and scale due to aspect ratio.

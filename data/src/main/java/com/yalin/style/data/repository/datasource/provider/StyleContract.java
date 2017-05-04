@@ -42,7 +42,7 @@ public class StyleContract {
     /**
      * Type: SHORT
      */
-    String COLUMN_NAME_KEEP = "keep";
+    String COLUMN_NAME_LIKED = "liked";
     /**
      * Type: TEXT
      */
@@ -61,8 +61,8 @@ public class StyleContract {
 
     public static final String TABLE_NAME = "wallpaper";
 
-    public static final String PATH_KEEP_WALLPAPER = "keep";
-    public static final String PATH_KEEPED_WALLPAPER = "keeped";
+    public static final String PATH_LIKE_WALLPAPER = "like";
+    public static final String PATH_LIKED_WALLPAPER = "liked";
     public static final String PATH_SAVE_WALLPAPER = "save";
 
     public static final Uri CONTENT_URI =
@@ -70,7 +70,7 @@ public class StyleContract {
 
     public static final Uri CONTENT_KEEPED_URI =
         BASE_CONTENT_URI.buildUpon().appendPath(PATH_WALLPAPER)
-            .appendPath(PATH_KEEPED_WALLPAPER).build();
+            .appendPath(PATH_LIKED_WALLPAPER).build();
 
     public static Uri buildWallpaperUri(String wallpaperId) {
       return CONTENT_URI.buildUpon().appendPath(wallpaperId).build();
@@ -81,9 +81,9 @@ public class StyleContract {
           .appendPath(PATH_SAVE_WALLPAPER).appendPath(wallpaperId).build();
     }
 
-    public static Uri buildWallpaperKeepUri(String wallpaperId) {
+    public static Uri buildWallpaperLikeUri(String wallpaperId) {
       return CONTENT_URI.buildUpon()
-          .appendPath(PATH_KEEP_WALLPAPER).appendPath(wallpaperId).build();
+          .appendPath(PATH_LIKE_WALLPAPER).appendPath(wallpaperId).build();
     }
 
 
@@ -95,7 +95,7 @@ public class StyleContract {
       return uri.getPathSegments().get(2);
     }
 
-    public static String getWallpaperKeepId(Uri uri) {
+    public static String getWallpaperLikeId(Uri uri) {
       return uri.getPathSegments().get(2);
     }
   }

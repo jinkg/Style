@@ -2,11 +2,9 @@ package com.yalin.style.mapper;
 
 import com.fernandocejas.arrow.checks.Preconditions;
 import com.yalin.style.domain.Wallpaper;
-import com.yalin.style.injection.PerActivity;
 import com.yalin.style.model.WallpaperItem;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * @author jinyalin
@@ -26,7 +24,7 @@ public class WallpaperItemMapper {
     wallpaperItem.byline = wallpaper.byline;
     wallpaperItem.imageUri = wallpaper.imageUri;
     wallpaperItem.wallpaperId = wallpaper.wallpaperId;
-    wallpaperItem.keep = wallpaper.keep;
+    wallpaperItem.liked = wallpaper.liked;
     wallpaperItem.isDefault = wallpaper.isDefault;
     return wallpaperItem;
   }

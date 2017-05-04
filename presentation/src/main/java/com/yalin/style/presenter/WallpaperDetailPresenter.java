@@ -117,7 +117,7 @@ public class WallpaperDetailPresenter implements Presenter {
     wallpaperDetailView.renderWallpaper(wallpaperItem);
     wallpaperDetailView.validLikeAction(!wallpaper.isDefault);
     if(!wallpaper.isDefault) {
-      wallpaperDetailView.updateLikeState(wallpaper.keep);
+      wallpaperDetailView.updateLikeState(wallpaper.liked);
     }
   }
 
