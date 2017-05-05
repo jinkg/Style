@@ -5,5 +5,6 @@ call gradlew clean
 call gradlew assembleProduction -Dchannel=yingyongbao
 call gradlew assembleProduction -Dchannel=360
 call gradlew assembleProduction -Dchannel=vivo,pc6
+call gradlew assembleProduction -Dchannel=flyme
 
 echo Build Apk Complete
