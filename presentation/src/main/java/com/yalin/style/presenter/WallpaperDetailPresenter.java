@@ -1,6 +1,7 @@
 package com.yalin.style.presenter;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.yalin.style.analytics.Analytics;
 import com.yalin.style.analytics.Event;
@@ -28,172 +29,194 @@ import javax.inject.Inject;
  */
 @PerActivity
 public class WallpaperDetailPresenter implements Presenter {
+    private static final String CURRENT_ITEM = "current_item";
+    private static final String WALLPAPER_COUNT = "wallpaper_count";
 
-  private final GetWallpaper getWallpaperUseCase;
-  private final GetWallpaperCount getWallpaperCountUseCase;
-  private final SwitchWallpaper switchWallpaperUseCase;
-  private final LikeWallpaper likeWallpaperUseCase;
-  private final WallpaperItemMapper wallpaperItemMapper;
+    private final GetWallpaper getWallpaperUseCase;
+    private final GetWallpaperCount getWallpaperCountUseCase;
+    private final SwitchWallpaper switchWallpaperUseCase;
+    private final LikeWallpaper likeWallpaperUseCase;
+    private final WallpaperItemMapper wallpaperItemMapper;
 
-  private WallpaperItem currentShowItem;
+    private WallpaperItem currentShowItem;
+    private int wallpaperCount;
 
-  private WallpaperDetailView wallpaperDetailView;
+    private WallpaperDetailView wallpaperDetailView;
 
-  private WallpaperRefreshObserver wallpaperRefreshObserver;
+    private WallpaperRefreshObserver wallpaperRefreshObserver;
 
-  @Inject
-  public WallpaperDetailPresenter(GetWallpaper getWallpaperUseCase,
-      GetWallpaperCount getWallpaperCountUseCase,
-      SwitchWallpaper switchWallpaperUseCase,
-      LikeWallpaper likeWallpaperUseCase,
-      WallpaperItemMapper itemMapper) {
-    this.getWallpaperUseCase = getWallpaperUseCase;
-    this.getWallpaperCountUseCase = getWallpaperCountUseCase;
-    this.switchWallpaperUseCase = switchWallpaperUseCase;
-    this.likeWallpaperUseCase = likeWallpaperUseCase;
-    this.wallpaperItemMapper = itemMapper;
+    @Inject
+    public WallpaperDetailPresenter(GetWallpaper getWallpaperUseCase,
+                                    GetWallpaperCount getWallpaperCountUseCase,
+                                    SwitchWallpaper switchWallpaperUseCase,
+                                    LikeWallpaper likeWallpaperUseCase,
+                                    WallpaperItemMapper itemMapper) {
+        this.getWallpaperUseCase = getWallpaperUseCase;
+        this.getWallpaperCountUseCase = getWallpaperCountUseCase;
+        this.switchWallpaperUseCase = switchWallpaperUseCase;
+        this.likeWallpaperUseCase = likeWallpaperUseCase;
+        this.wallpaperItemMapper = itemMapper;
 
-    wallpaperRefreshObserver = new WallpaperRefreshObserver();
-    getWallpaperUseCase.registerObserver(wallpaperRefreshObserver);
-  }
-
-  public void setView(WallpaperDetailView wallpaperDetailView) {
-    this.wallpaperDetailView = wallpaperDetailView;
-  }
-
-  public void initialize() {
-    getWallpaperUseCase.execute(new WallpaperObserver(), null);
-    getWallpaperCountUseCase.execute(new WallpaperCountObserver(), null);
-  }
-
-  public void getNextWallpaper() {
-    switchWallpaperUseCase.execute(new WallpaperObserver(true), null);
-  }
-
-  public void likeWallpaper() {
-    if (currentShowItem == null) {
-      return;
-    }
-    likeWallpaperUseCase.execute(new WallpaperLikeObserver(),
-        LikeWallpaper.Params.likeWallpaper(currentShowItem.wallpaperId));
-
-    Analytics.logEvent(wallpaperDetailView.context(),
-            !currentShowItem.liked ? Event.LIKE : Event.UN_LIKE, currentShowItem.title);
-  }
-
-  public void shareWallpaper() {
-    if (currentShowItem == null) {
-      return;
-    }
-    String detailUrl = "www.kinglloy.com";
-    String artist = currentShowItem.byline.replaceFirst("\\.\\s*($|\\n).*", "").trim();
-
-    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-    shareIntent.setType("text/plain");
-    shareIntent.putExtra(Intent.EXTRA_TEXT, "My Android wallpaper today is '"
-        + currentShowItem.title.trim()
-        + "' by " + artist
-        + ". #StyleWallpaper\n\n"
-        + detailUrl);
-    shareIntent = Intent.createChooser(shareIntent, "Share wallpaper");
-    wallpaperDetailView.shareWallpaper(shareIntent);
-  }
-
-  @Override
-  public void resume() {
-
-  }
-
-  @Override
-  public void pause() {
-
-  }
-
-  @Override
-  public void destroy() {
-    getWallpaperUseCase.dispose();
-    getWallpaperUseCase.unregisterObserver(wallpaperRefreshObserver);
-    wallpaperDetailView = null;
-  }
-
-  private void showWallpaperDetailInView(Wallpaper wallpaper) {
-    final WallpaperItem wallpaperItem = wallpaperItemMapper.transform(wallpaper);
-    currentShowItem = wallpaperItem;
-    wallpaperDetailView.renderWallpaper(wallpaperItem);
-    wallpaperDetailView.validLikeAction(!wallpaper.isDefault);
-    if(!wallpaper.isDefault) {
-        wallpaperDetailView.updateLikeState(wallpaperItem, wallpaper.liked);
-    }
-  }
-
-  private void showOrHideNextView(boolean show) {
-    wallpaperDetailView.showNextButton(show);
-  }
-
-  private final class WallpaperObserver extends DefaultObserver<Wallpaper> {
-
-    private boolean isSwitch;
-
-    public WallpaperObserver() {
-      this(false);
+        wallpaperRefreshObserver = new WallpaperRefreshObserver();
+        getWallpaperUseCase.registerObserver(wallpaperRefreshObserver);
     }
 
-    public WallpaperObserver(boolean isSwitch) {
-      this.isSwitch = isSwitch;
+    public void setView(WallpaperDetailView wallpaperDetailView) {
+        this.wallpaperDetailView = wallpaperDetailView;
+    }
+
+    public void initialize() {
+        getWallpaperUseCase.execute(new WallpaperObserver(), null);
+        getWallpaperCountUseCase.execute(new WallpaperCountObserver(), null);
+    }
+
+    public void getNextWallpaper() {
+        switchWallpaperUseCase.execute(new WallpaperObserver(true), null);
+    }
+
+    public void likeWallpaper() {
+        if (currentShowItem == null) {
+            return;
+        }
+        likeWallpaperUseCase.execute(new WallpaperLikeObserver(),
+                LikeWallpaper.Params.likeWallpaper(currentShowItem.wallpaperId));
+
+        Analytics.logEvent(wallpaperDetailView.context(),
+                !currentShowItem.liked ? Event.LIKE : Event.UN_LIKE, currentShowItem.title);
+    }
+
+    public void shareWallpaper() {
+        if (currentShowItem == null) {
+            return;
+        }
+        String detailUrl = "www.kinglloy.com";
+        String artist = currentShowItem.byline.replaceFirst("\\.\\s*($|\\n).*", "").trim();
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "My Android wallpaper today is '"
+                + currentShowItem.title.trim()
+                + "' by " + artist
+                + ". #StyleWallpaper\n\n"
+                + detailUrl);
+        shareIntent = Intent.createChooser(shareIntent, "Share wallpaper");
+        wallpaperDetailView.shareWallpaper(shareIntent);
+    }
+
+    public void restoreInstanceState(Bundle instanceState) {
+        if (instanceState != null && instanceState.containsKey(CURRENT_ITEM)) {
+            currentShowItem = instanceState.getParcelable(CURRENT_ITEM);
+            wallpaperCount = instanceState.getInt(WALLPAPER_COUNT);
+            showWallpaperDetailInView(currentShowItem);
+            showOrHideNextView(wallpaperCount);
+        } else {
+            initialize();
+        }
+    }
+
+    public void saveInstanceState(Bundle outState) {
+        if (currentShowItem != null) {
+            outState.putParcelable(CURRENT_ITEM, currentShowItem);
+            outState.putInt(WALLPAPER_COUNT, wallpaperCount);
+        }
     }
 
     @Override
-    public void onNext(Wallpaper wallpaper) {
-      showWallpaperDetailInView(wallpaper);
+    public void resume() {
+
     }
 
     @Override
-    public void onComplete() {
-      if (isSwitch) {
-        EventBus.getDefault().post(new WallpaperSwitchEvent());
-      }
+    public void pause() {
+
     }
 
     @Override
-    public void onError(Throwable exception) {
-      if (exception instanceof ReswitchException) {
-        return;
-      }
-      wallpaperDetailView
-          .showError(ErrorMessageFactory.create(wallpaperDetailView.context(),
-              (Exception) exception));
-    }
-  }
-
-  private final class WallpaperCountObserver extends DefaultObserver<Integer> {
-
-    @Override
-    public void onNext(Integer count) {
-      showOrHideNextView(count > 1);
+    public void destroy() {
+        getWallpaperUseCase.dispose();
+        getWallpaperUseCase.unregisterObserver(wallpaperRefreshObserver);
+        wallpaperDetailView = null;
     }
 
-    @Override
-    public void onComplete() {
+    private void showWallpaperDetailInView(WallpaperItem wallpaperItem) {
+        wallpaperDetailView.renderWallpaper(wallpaperItem);
+        wallpaperDetailView.validLikeAction(!wallpaperItem.isDefault);
+        if (!wallpaperItem.isDefault) {
+            wallpaperDetailView.updateLikeState(wallpaperItem, wallpaperItem.liked);
+        }
     }
 
-    @Override
-    public void onError(Throwable exception) {
-      showOrHideNextView(false);
+    private void showOrHideNextView(int count) {
+        wallpaperDetailView.showNextButton(count > 1);
     }
-  }
 
-  private final class WallpaperLikeObserver extends DefaultObserver<Boolean> {
+    private final class WallpaperObserver extends DefaultObserver<Wallpaper> {
 
-    @Override
-    public void onNext(Boolean liked) {
-      wallpaperDetailView.updateLikeState(currentShowItem, liked);
+        private boolean isSwitch;
+
+        public WallpaperObserver() {
+            this(false);
+        }
+
+        public WallpaperObserver(boolean isSwitch) {
+            this.isSwitch = isSwitch;
+        }
+
+        @Override
+        public void onNext(Wallpaper wallpaper) {
+            final WallpaperItem wallpaperItem = wallpaperItemMapper.transform(wallpaper);
+            currentShowItem = wallpaperItem;
+            showWallpaperDetailInView(wallpaperItem);
+        }
+
+        @Override
+        public void onComplete() {
+            if (isSwitch) {
+                EventBus.getDefault().post(new WallpaperSwitchEvent());
+            }
+        }
+
+        @Override
+        public void onError(Throwable exception) {
+            if (exception instanceof ReswitchException) {
+                return;
+            }
+            wallpaperDetailView
+                    .showError(ErrorMessageFactory.create(wallpaperDetailView.context(),
+                            (Exception) exception));
+        }
     }
-  }
 
-  private final class WallpaperRefreshObserver extends DefaultObserver<Void> {
-    @Override
-    public void onComplete() {
-      initialize();
+    private final class WallpaperCountObserver extends DefaultObserver<Integer> {
+
+        @Override
+        public void onNext(Integer count) {
+            wallpaperCount = count;
+            showOrHideNextView(count);
+        }
+
+        @Override
+        public void onComplete() {
+        }
+
+        @Override
+        public void onError(Throwable exception) {
+            showOrHideNextView(0);
+        }
     }
-  }
+
+    private final class WallpaperLikeObserver extends DefaultObserver<Boolean> {
+
+        @Override
+        public void onNext(Boolean liked) {
+            wallpaperDetailView.updateLikeState(currentShowItem, liked);
+        }
+    }
+
+    private final class WallpaperRefreshObserver extends DefaultObserver<Void> {
+        @Override
+        public void onComplete() {
+            initialize();
+        }
+    }
 }

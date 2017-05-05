@@ -222,6 +222,8 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
 
         if (savedInstanceState == null) {
             loadWallpaper();
+        } else {
+            presenter.restoreInstanceState(savedInstanceState);
         }
     }
 
@@ -248,6 +250,12 @@ public class WallpaperDetailFragment extends BaseFragment implements WallpaperDe
         super.onDestroy();
         presenter.destroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        presenter.saveInstanceState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     private void loadWallpaper() {
