@@ -77,13 +77,14 @@ public class StyleActivity extends BaseActivity implements OnClickListener,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         initializeInjector();
+
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
         Analytics.setUserProperty(this, "device_type", "Android");
+        Analytics.logEvent(this, Event.APP_OPEN);
 
         setupActiveView();
         setupDetailView();

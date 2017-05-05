@@ -6,5 +6,6 @@ echo "Start Build Apk"
 ./gradlew assembleProduction -Dchannel=360
 ./gradlew assembleProduction -Dchannel=vivo,pc6
 ./gradlew assembleProduction -Dchannel=flyme
+./gradlew assembleProduction -Dchannel=wandoujia
 
 echo "Build Apk Complete"

@@ -7,6 +7,7 @@ package com.yalin.style.analytics;
  */
 
 public class Event {
+    public static final String APP_OPEN = "app_open";
     public static final String SETTINGS_OPEN = "settings_open";
     public static final String WALLPAPER_CREATED = "wallpaper_created";
     public static final String WALLPAPER_DESTROYED = "wallpaper_destroyed";

@@ -27,7 +27,8 @@
     <string name="exception_message_resync">正在同步…</string>
 
     <string name="tutorial_main">打开Style以预览当前作品</string>
-    <string name="tutorial_subtitle">在桌面双击空白模糊位置，临时查看清晰作品</string>
+    <string name="tutorial_subtitle">在桌面双击空白模糊位置，临时查看清晰作品
+        \nStyle将每天为您带来新的艺术体验</string>
 
     <string name="about_title">关于Style</string>
     <string name="about_body"><![CDATA[

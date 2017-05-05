@@ -26,7 +26,8 @@
     <string name="exception_message_resync">Sync is processing</string>
 
     <string name="tutorial_main">Open the Style app to see your wallpaper</string>
-    <string name="tutorial_subtitle">Double touch the blurred wallpaper on your home screen to temporarily focus</string>
+    <string name="tutorial_subtitle">Double touch the blurred wallpaper on your home screen to temporarily focus
+    \nStyle will update your wallpaper everyday</string>
 
     <string name="about_title">About Style</string>
     <string name="about_body"><![CDATA[
