@@ -7,5 +7,6 @@ call gradlew assembleProduction -Dchannel=360
 call gradlew assembleProduction -Dchannel=vivo,pc6
 call gradlew assembleProduction -Dchannel=flyme
 call gradlew assembleProduction -Dchannel=wandoujia
+call gradlew assembleProduction -Dchannel=baidu
 
 echo Build Apk Complete
