@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/active_container"
+    android:id="@+id/activeContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:alpha="0"
     android:visibility="gone">
 
     <FrameLayout
-        android:id="@+id/demo_container_layout"
+        android:id="@+id/demoContainerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -17,17 +17,17 @@
         android:background="@drawable/intro_background_protection" />
 
     <fragment
-        android:id="@+id/animated_logo_fragment"
+        android:id="@+id/animatedLogoFragment"
         android:name="com.yalin.style.view.fragment.AnimatedStyleLogoFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
     <Button
-        android:id="@+id/activate_style_button"
+        android:id="@+id/activateStyleButton"
         android:layout_width="@dimen/activate_button_size"
         android:layout_height="@dimen/activate_button_size"
-        android:layout_below="@+id/animated_logo_fragment"
+        android:layout_below="@+id/animatedLogoFragment"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="48dp"
         android:background="@drawable/white_circle_button"

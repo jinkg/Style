@@ -167,7 +167,7 @@ public class StyleWallpaperService extends GLWallpaperService {
             setRenderMode(RENDERMODE_WHEN_DIRTY);
             requestRender();
 
-            StyleApplication.getInstance().getApplicationComponent()
+            StyleApplication.Companion.getInstance().getApplicationComponent()
                     .inject(this);
 
             mRenderController.setComponent(mRenderer, this);

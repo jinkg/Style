@@ -188,7 +188,7 @@ public class StyleRenderFragment extends Fragment implements RenderController.Ca
 
             mRenderer.setDemoMode(mDemoMode);
 
-            StyleApplication.getInstance().getApplicationComponent().inject(this);
+            StyleApplication.Companion.getInstance().getApplicationComponent().inject(this);
             mRenderController.setComponent(mRenderer, StyleRenderFragment.this);
 
             mRenderController.setVisible(true);

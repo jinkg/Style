@@ -57,7 +57,7 @@ public class TutorialFragment extends BaseFragment {
                     }
                 });
 
-        mTutorialContainer = root.findViewById(R.id.tutorial_container);
+        mTutorialContainer = root.findViewById(R.id.tutorialContainer);
         return root;
     }
 

@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -70,7 +73,8 @@ dependencies {
     compile "com.tencent.bugly:crashreport:${BUGLY_VERSION}"
     compile "com.flurry.android:analytics:${FLURRY_VERSION}"
 
-    annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
+//    annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
+    kapt "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
 
     compile project(':domain')
     demoCompile project(path: ':data', configuration: 'demoDebug')
@@ -90,5 +94,14 @@ project.afterEvaluate {
             output.outputFile = new File(oldFile.parent,
                     oldFile.name.replace(".apk", "-" + CHANNEL + ".apk"))
         }
+    }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:${KOTLIN_VERSION}"
     }
 }
