@@ -79,7 +79,7 @@ class StyleActivity : BaseActivity(), HasComponent<WallpaperComponent>,
         setContentView(R.layout.activity_main)
 
         Analytics.setUserProperty(this, "device_type", "Android")
-        Analytics.logEvent(this, Event.APP_OPEN)
+        Analytics.onStartSession(this)
 
         setupActiveView()
         setupDetailView()
@@ -143,6 +143,7 @@ class StyleActivity : BaseActivity(), HasComponent<WallpaperComponent>,
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+        Analytics.onEndSession(this)
     }
 
     private fun showHideChrome(show: Boolean) {
