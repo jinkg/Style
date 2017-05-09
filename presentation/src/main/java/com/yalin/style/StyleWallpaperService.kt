@@ -284,12 +284,12 @@ class StyleWallpaperService : GLWallpaperService() {
 
         override fun onTouchEvent(event: MotionEvent) {
             super.onTouchEvent(event)
-            mGestureDetector!!.onTouchEvent(event)
+            mGestureDetector.onTouchEvent(event)
             delayBlur()
         }
 
-        override fun onCommand(action: String, x: Int, y: Int, z: Int, extras: Bundle,
-                               resultRequested: Boolean): Bundle {
+        override fun onCommand(action: String, x: Int, y: Int, z: Int, extras: Bundle?,
+                               resultRequested: Boolean): Bundle? {
             if (WallpaperManager.COMMAND_TAP == action && mValidDoubleTap) {
                 queueEvent {
                     mRenderer!!.setIsBlurred(!mRenderer!!.isBlurred, false)
