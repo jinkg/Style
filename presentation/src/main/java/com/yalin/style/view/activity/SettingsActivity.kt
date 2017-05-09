@@ -35,12 +35,12 @@ class SettingsActivity : BaseActivity() {
         setupAppBar()
 
         drawInsetsFrameLayout.setOnInsetsCallback { insets ->
-            val lp = container.layoutParams as ViewGroup.MarginLayoutParams
+            val lp = mainContainer.layoutParams as ViewGroup.MarginLayoutParams
             lp.leftMargin = insets.left
             lp.topMargin = insets.top
             lp.rightMargin = insets.right
             lp.bottomMargin = insets.bottom
-            container.layoutParams = lp
+            mainContainer.layoutParams = lp
         }
 
         if (mBackgroundAnimator != null) {

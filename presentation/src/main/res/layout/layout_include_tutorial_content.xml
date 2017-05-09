@@ -15,13 +15,13 @@
         android:layout_weight="1">
 
         <ImageView
-            android:id="@+id/tutorial_icon_emanate"
+            android:id="@+id/tutorialIconEmanate"
             android:layout_width="144dp"
             android:layout_height="144dp"
             android:layout_centerInParent="true" />
 
         <FrameLayout
-            android:id="@+id/tutorial_icon_affordance"
+            android:id="@+id/tutorialIconAffordance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -44,10 +44,10 @@
         </FrameLayout>
 
         <com.yalin.style.view.component.ShadowDipsTextView
-            android:id="@+id/tutorial_icon_text"
+            android:id="@+id/tutorialIconText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tutorial_icon_affordance"
+            android:layout_below="@id/tutorialIconAffordance"
             android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif-condensed"
             android:paddingBottom="16dp"
@@ -63,7 +63,7 @@
     </RelativeLayout>
 
     <com.yalin.style.view.component.ShadowDipsTextView
-        android:id="@+id/tutorial_main_text"
+        android:id="@+id/tutorialMainText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed"
@@ -80,7 +80,7 @@
         app:shadowRadius="3dp" />
 
     <com.yalin.style.view.component.ShadowDipsTextView
-        android:id="@+id/tutorial_sub_text"
+        android:id="@+id/tutorialSubText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-condensed"

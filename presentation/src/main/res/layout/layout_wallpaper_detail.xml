@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.yalin.style.view.component.DrawInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/container"
+    android:id="@+id/mainContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.yalin.style.view.component.PanScaleProxyView
-        android:id="@+id/pan_scale_proxy"
+        android:id="@+id/panScaleProxyView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <View
-        android:id="@+id/statusbar_scrim"
+        android:id="@+id/statusBarScrimView"
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:layout_gravity="top"
         android:background="@android:color/transparent" />
 
     <LinearLayout
-        android:id="@+id/chrome_container"
+        android:id="@+id/chromeContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -40,7 +40,7 @@
                 android:orientation="vertical">
 
                 <com.yalin.style.view.component.ShadowDipsTextView
-                    android:id="@+id/attribution"
+                    android:id="@+id/tvAttribution"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/wallpaper_detail_attribution_title_margin"
@@ -56,7 +56,7 @@
                     app:shadowRadius="3dp" />
 
                 <com.yalin.style.view.component.ShadowDipsTextView
-                    android:id="@+id/title"
+                    android:id="@+id/tvTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/wallpaper_detail_title_byline_margin"
@@ -72,7 +72,7 @@
                     app:shadowRadius="3dp" />
 
                 <com.yalin.style.view.component.ShadowDipsTextView
-                    android:id="@+id/byline"
+                    android:id="@+id/tvByline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/wallpaper_detail_metadata_margin_bottom"
@@ -88,7 +88,7 @@
         </FrameLayout>
 
         <com.yalin.style.view.component.TintableImageButton
-            android:id="@+id/next_button"
+            android:id="@+id/btnNext"
             android:layout_width="@dimen/wallpaper_detail_button_width"
             android:layout_height="@dimen/wallpaper_detail_button_height"
             android:background="?selectableItemBackgroundBorderless"
@@ -99,7 +99,7 @@
             app:tint="@color/selector_skip_tint" />
 
         <ImageButton
-            android:id="@+id/overflow_button"
+            android:id="@+id/btnOverflow"
             android:layout_width="@dimen/wallpaper_detail_button_width"
             android:layout_height="@dimen/wallpaper_detail_button_height"
             android:background="?selectableItemBackgroundBorderless"
