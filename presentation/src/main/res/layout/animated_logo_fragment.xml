@@ -14,7 +14,7 @@
   <!--android:layout_marginBottom="16dp" />-->
 
   <ImageView
-    android:id="@+id/logo_view"
+    android:id="@+id/logoView"
     android:layout_width="250dp"
     android:layout_height="80dp"
     android:layout_marginBottom="16dp"
@@ -22,7 +22,7 @@
     android:src="@drawable/logo" />
 
   <ImageView
-    android:id="@+id/logo_subtitle"
+    android:id="@+id/logoSubtitle"
     android:layout_width="250dp"
     android:layout_height="wrap_content"
     android:contentDescription="@string/app_name"

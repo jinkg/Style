@@ -12,7 +12,7 @@
         android:text="@string/settings_blur_amount_title" />
 
     <SeekBar
-        android:id="@+id/blur_amount"
+        android:id="@+id/blurAmount"
         style="@style/Settings.Widget.SeekBar.BlurAmount"
         android:layout_columnSpan="2"
         android:layout_gravity="center_vertical|fill_horizontal"
@@ -28,7 +28,7 @@
         android:text="@string/settings_dim_amount_title" />
 
     <SeekBar
-        android:id="@+id/dim_amount"
+        android:id="@+id/dimAmount"
         style="@style/Settings.Widget.SeekBar.DimAmount"
         android:layout_columnSpan="2"
         android:layout_gravity="center_vertical|fill_horizontal"
@@ -44,14 +44,14 @@
         android:text="@string/settings_grey_amount_title" />
 
     <SeekBar
-        android:id="@+id/grey_amount"
+        android:id="@+id/greyAmount"
         style="@style/Settings.Widget.SeekBar.GreyAmount"
         android:layout_columnSpan="2"
         android:layout_gravity="center_vertical|fill_horizontal"
         android:max="500" />
 
     <CheckBox
-        android:id="@+id/blur_on_lockscreen_checkbox"
+        android:id="@+id/blurOnLockscreen"
         style="@style/Widget.Style.CheckBox.Settings"
         android:layout_column="@integer/settings_checkbox_column"
         android:layout_columnSpan="@integer/settings_checkbox_column_span"

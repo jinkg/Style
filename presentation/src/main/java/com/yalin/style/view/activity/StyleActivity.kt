@@ -178,7 +178,6 @@ class StyleActivity : BaseActivity(), HasComponent<WallpaperComponent>,
         when (uiMode) {
             MODE_DETAIL -> return detailContainer
             MODE_TUTORIAL -> return tutorialContainer
-            MODE_ACTIVATE -> return activeContainer
             else -> return activeContainer
         }
     }

@@ -36,6 +36,8 @@ class TutorialFragment : BaseFragment() {
         }
     }
 
+    private var animatorSet: AnimatorSet? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         EventBus.getDefault().register(this)
@@ -67,38 +69,41 @@ class TutorialFragment : BaseFragment() {
             tutorialIconText.alpha = 0f
             tutorialIconText.translationY = animateDistance
 
-            var set = AnimatorSet()
-            set.startDelay = 500
-            set.duration = 250
-            set.playTogether(
-                    ObjectAnimator.ofFloat(tutorialMainText, View.ALPHA, 1f),
-                    ObjectAnimator.ofFloat(tutorialSubText, View.ALPHA, 1f))
-            set.start()
-
-            set = AnimatorSet()
-            set.startDelay = 2000
-            // Bug in older versions where set.setInterpolator didn't work
-            val interpolator = OvershootInterpolator()
-            val a1 = ObjectAnimator.ofFloat<View>(tutorialIconAffordance, View.TRANSLATION_Y, 0f)
-            val a2 = ObjectAnimator.ofFloat<View>(tutorialIconText, View.TRANSLATION_Y, 0f)
-            val a3 = ObjectAnimator.ofFloat<View>(tutorialMainText, View.TRANSLATION_Y, 0f)
-            val a4 = ObjectAnimator.ofFloat<View>(tutorialSubText, View.TRANSLATION_Y, 0f)
-            a1.interpolator = interpolator
-            a2.interpolator = interpolator
-            a3.interpolator = interpolator
-            a4.interpolator = interpolator
-            set.setDuration(500).playTogether(
-                    ObjectAnimator.ofFloat(tutorialIconAffordance, View.ALPHA, 1f),
-                    ObjectAnimator.ofFloat(tutorialIconText, View.ALPHA, 1f),
-                    a1, a2, a3, a4)
-            if (Build.VERSION.SDK_INT >= 21) {
-                set.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        playImageAvd(tutorialIconEmanate)
-                    }
-                })
+            AnimatorSet().apply {
+                startDelay = 500
+                duration = 250
+                playTogether(
+                        ObjectAnimator.ofFloat(tutorialMainText, View.ALPHA, 1f),
+                        ObjectAnimator.ofFloat(tutorialSubText, View.ALPHA, 1f))
+                start()
             }
-            set.start()
+
+            animatorSet = AnimatorSet().apply {
+                startDelay = 2000
+                // Bug in older versions where set.setInterpolator didn't work
+                val interpolator = OvershootInterpolator()
+                val a1 = ObjectAnimator.ofFloat<View>(tutorialIconAffordance, View.TRANSLATION_Y, 0f)
+                val a2 = ObjectAnimator.ofFloat<View>(tutorialIconText, View.TRANSLATION_Y, 0f)
+                val a3 = ObjectAnimator.ofFloat<View>(tutorialMainText, View.TRANSLATION_Y, 0f)
+                val a4 = ObjectAnimator.ofFloat<View>(tutorialSubText, View.TRANSLATION_Y, 0f)
+                a1.interpolator = interpolator
+                a2.interpolator = interpolator
+                a3.interpolator = interpolator
+                a4.interpolator = interpolator
+                duration = 500
+                playTogether(
+                        ObjectAnimator.ofFloat(tutorialIconAffordance, View.ALPHA, 1f),
+                        ObjectAnimator.ofFloat(tutorialIconText, View.ALPHA, 1f),
+                        a1, a2, a3, a4)
+                if (Build.VERSION.SDK_INT >= 21) {
+                    addListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            playImageAvd(tutorialIconEmanate)
+                        }
+                    })
+                }
+                start()
+            }
         } else {
             playImageAvd(tutorialIconEmanate)
         }
@@ -118,6 +123,11 @@ class TutorialFragment : BaseFragment() {
             emanateView.setImageDrawable(avd)
             avd.start()
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        animatorSet?.cancel()
     }
 
     override fun onDestroy() {

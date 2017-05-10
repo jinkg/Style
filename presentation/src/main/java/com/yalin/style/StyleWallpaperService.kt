@@ -170,8 +170,9 @@ class StyleWallpaperService : GLWallpaperService() {
         override fun onCreate(surfaceHolder: SurfaceHolder) {
             super.onCreate(surfaceHolder)
 
-            mRenderer = StyleBlurRenderer(this@StyleWallpaperService, this)
-            mRenderer!!.setIsPreview(isPreview)
+            mRenderer = StyleBlurRenderer(this@StyleWallpaperService, this).apply {
+                setIsPreview(isPreview)
+            }
 
             setEGLContextClientVersion(2)
             setEGLConfigChooser(8, 8, 8, 0, 0, 0)
@@ -219,9 +220,7 @@ class StyleWallpaperService : GLWallpaperService() {
                     .unregisterOnSharedPreferenceChangeListener(
                             mLockScreenPreferenceChangeListener)
             queueEvent {
-                if (mRenderer != null) {
-                    mRenderer!!.destroy()
-                }
+                mRenderer?.destroy()
             }
             mRenderController.destroy()
             super.onDestroy()
@@ -248,7 +247,7 @@ class StyleWallpaperService : GLWallpaperService() {
 
             mWallpaperDetailMode = e.isWallpaperDetailOpened
             cancelDelayedBlur()
-            queueEvent { mRenderer!!.setIsBlurred(!e.isWallpaperDetailOpened, true) }
+            queueEvent { mRenderer?.setIsBlurred(!e.isWallpaperDetailOpened, true) }
         }
 
         @Subscribe
@@ -279,7 +278,7 @@ class StyleWallpaperService : GLWallpaperService() {
                                       yOffsetStep: Float, xPixelOffset: Int, yPixelOffset: Int) {
             super.onOffsetsChanged(xOffset, yOffset, xOffsetStep,
                     yOffsetStep, xPixelOffset, yPixelOffset)
-            mRenderer!!.setNormalOffsetX(xOffset)
+            mRenderer?.setNormalOffsetX(xOffset)
         }
 
         override fun onTouchEvent(event: MotionEvent) {
@@ -292,7 +291,7 @@ class StyleWallpaperService : GLWallpaperService() {
                                resultRequested: Boolean): Bundle? {
             if (WallpaperManager.COMMAND_TAP == action && mValidDoubleTap) {
                 queueEvent {
-                    mRenderer!!.setIsBlurred(!mRenderer!!.isBlurred, false)
+                    mRenderer?.setIsBlurred(!mRenderer!!.isBlurred, false)
                     delayBlur()
                 }
                 mValidDoubleTap = false
@@ -312,7 +311,7 @@ class StyleWallpaperService : GLWallpaperService() {
 
         private fun lockScreenVisibleChanged(isLockScreenVisible: Boolean) {
             cancelDelayedBlur()
-            queueEvent { mRenderer!!.setIsBlurred(!isLockScreenVisible, false) }
+            queueEvent { mRenderer?.setIsBlurred(!isLockScreenVisible, false) }
         }
 
         private fun cancelDelayedBlur() {
@@ -329,7 +328,7 @@ class StyleWallpaperService : GLWallpaperService() {
 
         private val mBlurRunnable = Runnable {
             queueEvent {
-                mRenderer!!.setIsBlurred(true, false)
+                mRenderer?.setIsBlurred(true, false)
             }
         }
 
