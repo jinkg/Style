@@ -74,6 +74,8 @@ class StyleActivity : BaseActivity(), HasComponent<WallpaperComponent>,
 
     private var wallpaperDetailFragment: WallpaperDetailFragment? = null
 
+    private var startLogAnim: Runnable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -144,6 +146,8 @@ class StyleActivity : BaseActivity(), HasComponent<WallpaperComponent>,
         super.onDestroy()
         EventBus.getDefault().unregister(this)
         Analytics.onEndSession(this)
+
+        if (startLogAnim != null) mHandler.removeCallbacks(startLogAnim)
     }
 
     private fun showHideChrome(show: Boolean) {
@@ -218,7 +222,8 @@ class StyleActivity : BaseActivity(), HasComponent<WallpaperComponent>,
             logoFragment.setOnFillStartedCallback {
                 activateStyleButton.animate().alpha(1f).duration = 500
             }
-            mHandler.postDelayed({ logoFragment.start() }, 1000)
+            startLogAnim = Runnable { logoFragment.start() }
+            mHandler.postDelayed(startLogAnim, 1000)
         }
 
         if (mUiMode == MODE_ACTIVATE || newMode == MODE_ACTIVATE) {

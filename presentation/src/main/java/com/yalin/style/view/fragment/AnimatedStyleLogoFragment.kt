@@ -1,13 +1,12 @@
 package com.yalin.style.view.fragment
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.app.Fragment
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
 import android.view.animation.OvershootInterpolator
 import com.yalin.style.R
 import kotlinx.android.synthetic.main.animated_logo_fragment.*
@@ -20,6 +19,7 @@ class AnimatedStyleLogoFragment : Fragment() {
 
     private var mOnFillStartedCallback: (() -> Unit)? = null
     private var mInitialLogoOffset: Float = 0.toFloat()
+    private var mAnimator: ViewPropertyAnimator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,21 +38,29 @@ class AnimatedStyleLogoFragment : Fragment() {
     }
 
     fun start() {
-        logoView.animate().translationY(0f).setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                logoSubtitle.visibility = View.VISIBLE
-                logoSubtitle.translationY = (-logoSubtitle.height).toFloat()
-                val interpolator = OvershootInterpolator()
-                logoSubtitle.animate()
-                        .translationY(0f)
-                        .setInterpolator(interpolator).setDuration(500)
-                        .start()
+        mAnimator = logoView.animate().translationY(0f)
+                .withEndAction {
+                    with(logoSubtitle) {
+                        visibility = View.VISIBLE
+                        translationY = (-height).toFloat()
+                        val interpolator = OvershootInterpolator()
+                        animate()
+                                .translationY(0f)
+                                .setInterpolator(interpolator).setDuration(500)
+                                .start()
+                    }
 
-                mOnFillStartedCallback?.invoke()
+                    mOnFillStartedCallback?.invoke()
+                }.setDuration(500)
+        mAnimator!!.start()
 
-            }
-        }).setDuration(500).start()
+    }
 
+    override fun onDetach() {
+        super.onDetach()
+        if (mAnimator != null) {
+            mAnimator!!.cancel()
+        }
     }
 
     fun setOnFillStartedCallback(fillStartedCallback: () -> Unit) {

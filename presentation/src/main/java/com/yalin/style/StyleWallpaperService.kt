@@ -182,7 +182,7 @@ class StyleWallpaperService : GLWallpaperService() {
 
             StyleApplication.instance.applicationComponent.inject(this)
 
-            mRenderController.setComponent(mRenderer, this)
+            mRenderController.setComponent(mRenderer!!, this)
 
             val sp = Prefs.getSharedPreferences(this@StyleWallpaperService)
             sp.registerOnSharedPreferenceChangeListener(mLockScreenPreferenceChangeListener)
