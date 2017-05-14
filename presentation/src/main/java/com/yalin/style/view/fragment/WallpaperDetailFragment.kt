@@ -2,6 +2,7 @@ package com.yalin.style.view.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
@@ -16,6 +17,7 @@ import com.yalin.style.WallpaperDetailViewport
 import com.yalin.style.R
 import com.yalin.style.analytics.Analytics
 import com.yalin.style.analytics.Event
+import com.yalin.style.data.log.LogUtil
 import com.yalin.style.event.MainContainerInsetsChangedEvent
 import com.yalin.style.event.StyleWallpaperSizeChangedEvent
 import com.yalin.style.event.SwitchingPhotosStateChangedEvent
@@ -32,6 +34,7 @@ import kotlinx.android.synthetic.main.layout_wallpaper_detail.*
 
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.jetbrains.anko.toast
 
 import javax.inject.Inject
 
@@ -45,6 +48,7 @@ class WallpaperDetailFragment : BaseFragment(),
         WallpaperDetailView, View.OnSystemUiVisibilityChangeListener {
 
     companion object {
+        val TAG = "WallpaperDetailFragment"
         fun createInstance(): WallpaperDetailFragment {
             return WallpaperDetailFragment()
         }
@@ -150,6 +154,20 @@ class WallpaperDetailFragment : BaseFragment(),
 
 
     private fun setupDetailViews() {
+        metadata.setOnClickListener {
+            val uri = "http://www.kinglloy.com"
+            val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+            viewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+            Analytics.logEvent(context(), Event.VIEW_WALLPAPER_DETAIL)
+            try {
+                startActivity(viewIntent)
+            } catch (e: RuntimeException) {
+                toast(R.string.error_view_details)
+                LogUtil.E(TAG, "Error viewing wallpaper details.", e)
+                Analytics.logEvent(context(), Event.VIEW_WALLPAPER_DETAIL_FAILED)
+            }
+        }
         chromeContainer.background = ScrimUtil.makeCubicGradientScrimDrawable(
                 0xaa000000.toInt(), 8, Gravity.BOTTOM)
 
@@ -166,7 +184,7 @@ class WallpaperDetailFragment : BaseFragment(),
                     if (mGuardViewportChangeListener) {
                         return@OnViewportChangedListener
                     }
-                    WallpaperDetailViewport.getInstance().setViewport(
+                    WallpaperDetailViewport.instance.setViewport(
                             currentViewportId, panScaleProxyView.currentViewport, true)
                 })
         if (activity is PanScaleProxyView.OnOtherGestureListener) {

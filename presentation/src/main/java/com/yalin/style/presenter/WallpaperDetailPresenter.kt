@@ -1,6 +1,5 @@
 package com.yalin.style.presenter
 
-import android.content.Intent
 import android.os.Bundle
 
 import com.yalin.style.analytics.Analytics
@@ -17,6 +16,7 @@ import com.yalin.style.exception.ErrorMessageFactory
 import com.yalin.style.injection.PerActivity
 import com.yalin.style.mapper.WallpaperItemMapper
 import com.yalin.style.model.WallpaperItem
+import com.yalin.style.util.ShareUtil
 import com.yalin.style.view.WallpaperDetailView
 
 import org.greenrobot.eventbus.EventBus
@@ -67,41 +67,28 @@ constructor(private val getWallpaperUseCase: GetWallpaper,
     }
 
     fun likeWallpaper() {
-        if (currentShowItem == null) {
-            return
-        }
-        likeWallpaperUseCase.execute(WallpaperLikeObserver(),
-                LikeWallpaper.Params.likeWallpaper(currentShowItem!!.wallpaperId))
+        currentShowItem?.apply {
+            likeWallpaperUseCase.execute(WallpaperLikeObserver(),
+                    LikeWallpaper.Params.likeWallpaper(wallpaperId))
 
-        Analytics.logEvent(wallpaperDetailView!!.context(),
-                if (!currentShowItem!!.liked) Event.LIKE
-                else Event.UN_LIKE, currentShowItem!!.title)
+            Analytics.logEvent(wallpaperDetailView!!.context(),
+                    if (!liked) Event.LIKE
+                    else Event.UN_LIKE, title)
+        }
     }
 
     fun shareWallpaper() {
-        if (currentShowItem == null) {
-            return
+        currentShowItem?.apply {
+            wallpaperDetailView!!.shareWallpaper(
+                    ShareUtil.createShareIntent(wallpaperDetailView!!.context(), this))
         }
-        val detailUrl = "www.kinglloy.com"
-        val artist = currentShowItem!!.
-                byline.replaceFirst("\\.\\s*($|\\n).*".toRegex(), "").trim { it <= ' ' }
-
-        var shareIntent = Intent(Intent.ACTION_SEND)
-        shareIntent.type = "text/plain"
-        shareIntent.putExtra(Intent.EXTRA_TEXT, "My Android wallpaper today is '"
-                + currentShowItem!!.title.trim { it <= ' ' }
-                + "' by " + artist
-                + ". #StyleWallpaper\n\n"
-                + detailUrl)
-        shareIntent = Intent.createChooser(shareIntent, "Share wallpaper")
-        wallpaperDetailView!!.shareWallpaper(shareIntent)
     }
 
     fun restoreInstanceState(instanceState: Bundle?) {
         if (instanceState != null && instanceState.containsKey(CURRENT_ITEM)) {
             currentShowItem = instanceState.getParcelable<WallpaperItem>(CURRENT_ITEM)
             wallpaperCount = instanceState.getInt(WALLPAPER_COUNT)
-            showWallpaperDetailInView(currentShowItem)
+            showWallpaperDetailInView(currentShowItem!!)
             showOrHideNextView(wallpaperCount)
         } else {
             initialize()
@@ -129,9 +116,9 @@ constructor(private val getWallpaperUseCase: GetWallpaper,
         wallpaperDetailView = null
     }
 
-    private fun showWallpaperDetailInView(wallpaperItem: WallpaperItem?) {
+    private fun showWallpaperDetailInView(wallpaperItem: WallpaperItem) {
         wallpaperDetailView!!.renderWallpaper(wallpaperItem)
-        wallpaperDetailView!!.validLikeAction(!wallpaperItem!!.isDefault)
+        wallpaperDetailView!!.validLikeAction(!wallpaperItem.isDefault)
         if (!wallpaperItem.isDefault) {
             wallpaperDetailView!!.updateLikeState(wallpaperItem, wallpaperItem.liked)
         }
@@ -182,8 +169,8 @@ constructor(private val getWallpaperUseCase: GetWallpaper,
 
     private inner class WallpaperLikeObserver : DefaultObserver<Boolean>() {
 
-        override fun onNext(liked: Boolean?) {
-            wallpaperDetailView!!.updateLikeState(currentShowItem, liked!!)
+        override fun onNext(liked: Boolean) {
+            wallpaperDetailView!!.updateLikeState(currentShowItem!!, liked)
         }
     }
 

@@ -1,42 +1,43 @@
-package com.yalin.style.view;
+package com.yalin.style.view
 
-import android.content.Context;
+import android.content.Context
 
 /**
  * @author jinyalin
+ * *
  * @since 2017/4/20.
  */
 
-public interface LoadingDataView {
+interface LoadingDataView {
     /**
      * Show a view with a progress bar indicating a loading process.
      */
-    void showLoading();
+    fun showLoading()
 
     /**
      * Hide a loading view.
      */
-    void hideLoading();
+    fun hideLoading()
 
     /**
      * Show a retry view in case of an error when retrieving data.
      */
-    void showRetry();
+    fun showRetry()
 
     /**
      * Hide a retry view shown if there was an error when retrieving data.
      */
-    void hideRetry();
+    fun hideRetry()
 
     /**
      * Show an error message
-     *
+
      * @param message A string representing an error.
      */
-    void showError(String message);
+    fun showError(message: String)
 
     /**
-     * Get a {@link android.content.Context}.
+     * Get a [android.content.Context].
      */
-    Context context();
+    fun context(): Context
 }

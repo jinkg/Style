@@ -21,6 +21,8 @@
 
     <string name="reset_settings_defaults">重置设置</string>
 
+    <string name="error_view_details">您的设备不支持查看壁纸详情.</string>
+
     <string name="exception_message_device_unsupported">您的设备不支持动态壁纸。</string>
     <string name="exception_message_generic">操作出现了一个错误。</string>
     <string name="exception_message_no_connection">网络不可用，请检查网络连接。</string>
@@ -43,4 +45,8 @@
         <b><a href="http://www.kinglloy.com/">访问官方网站</a></b>
     ]]></string>
     <string name="about_version_template">v%1$s</string>
+
+    <string name="share_title">分享壁纸</string>
+    <string name="share_text">我今天的壁纸是 \' %1$s \' 由 %2$s 所画.  #StyleWallpaper\n\n
+        %3$s</string>
 </resources>

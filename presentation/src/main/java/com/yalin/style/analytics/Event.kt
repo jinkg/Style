@@ -21,4 +21,6 @@ object Event {
     val TUTORIAL_COMPLETE = "tutorial_complete"
     val PRESENT_WALLPAPER = "present_wallpaper"
     val DEVICE_UNSUPPORTED = "device_unsupported"
+    val VIEW_WALLPAPER_DETAIL = "wallpaper_detail"
+    val VIEW_WALLPAPER_DETAIL_FAILED = "wallpaper_detail_failed"
 }

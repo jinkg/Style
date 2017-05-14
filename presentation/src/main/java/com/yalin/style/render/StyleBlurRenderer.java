@@ -161,8 +161,8 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
         hintViewportSize(width, height);
         if (!mDemoMode && !mPreview) {
             // Reset art detail viewports
-            WallpaperDetailViewport.getInstance().setViewport(0, 0, 0, 0, 0, false);
-            WallpaperDetailViewport.getInstance().setViewport(1, 0, 0, 0, 0, false);
+            WallpaperDetailViewport.Companion.getInstance().setViewport(0, 0, 0, 0, 0, false);
+            WallpaperDetailViewport.Companion.getInstance().setViewport(1, 0, 0, 0, 0, false);
         }
         mCurrentGLPictureSet.recomputeTransformMatrices();
         mNextGLPictureSet.recomputeTransformMatrices();
@@ -240,9 +240,10 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
                     mNextGLPictureSet.mId, true));
             EventBus.getDefault().postSticky(new StyleWallpaperSizeChangedEvent(
                     bitmapRegionLoader.getWidth(), bitmapRegionLoader.getHeight()));
-            WallpaperDetailViewport.getInstance().setDefaultViewport(mNextGLPictureSet.mId,
-                    bitmapRegionLoader.getWidth() * 1f / bitmapRegionLoader.getHeight(),
-                    mAspectRatio);
+            WallpaperDetailViewport.Companion.getInstance()
+                    .setDefaultViewport(mNextGLPictureSet.mId,
+                            bitmapRegionLoader.getWidth() * 1f / bitmapRegionLoader.getHeight(),
+                            mAspectRatio);
         }
 
         mNextGLPictureSet.load(bitmapRegionLoader);
@@ -429,11 +430,13 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
 
             float focusAmount = (mBlurKeyframes - mBlurAnimator.currentValue()) / mBlurKeyframes;
             if (mBlurRelatedToArtDetailMode && focusAmount > 0) {
-                RectF artDetailViewport = WallpaperDetailViewport.getInstance().getViewport(mId);
+                RectF artDetailViewport = WallpaperDetailViewport.Companion
+                        .getInstance().getViewport(mId);
                 if (artDetailViewport.width() == 0 || artDetailViewport.height() == 0) {
                     if (!mDemoMode && !mPreview) {
                         // reset art detail viewport
-                        WallpaperDetailViewport.getInstance().setViewport(mId,
+                        WallpaperDetailViewport.Companion
+                                .getInstance().setViewport(mId,
                                 MathUtil.uninterpolate(-1, 1, mCurrentViewport.left),
                                 MathUtil.uninterpolate(1, -1, mCurrentViewport.top),
                                 MathUtil.uninterpolate(-1, 1, mCurrentViewport.right),
@@ -539,8 +542,8 @@ public class StyleBlurRenderer implements GLSurfaceView.Renderer {
     public void setIsBlurred(final boolean isBlurred, final boolean artDetailMode) {
         if (artDetailMode && !isBlurred && !mDemoMode && !mPreview) {
             // Reset art detail viewport
-            WallpaperDetailViewport.getInstance().setViewport(0, 0, 0, 0, 0, false);
-            WallpaperDetailViewport.getInstance().setViewport(1, 0, 0, 0, 0, false);
+            WallpaperDetailViewport.Companion.getInstance().setViewport(0, 0, 0, 0, 0, false);
+            WallpaperDetailViewport.Companion.getInstance().setViewport(1, 0, 0, 0, 0, false);
         }
 
         mBlurRelatedToArtDetailMode = artDetailMode;
