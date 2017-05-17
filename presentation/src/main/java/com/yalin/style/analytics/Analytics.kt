@@ -1,8 +1,10 @@
 package com.yalin.style.analytics
 
 import android.content.Context
+import android.os.Bundle
 
 import com.flurry.android.FlurryAgent
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.yalin.style.BuildConfig
 import com.yalin.style.data.log.LogUtil
 
@@ -22,7 +24,8 @@ object Analytics {
 
 
     fun setUserProperty(context: Context, key: String, value: String) {
-
+        FirebaseAnalytics.getInstance(context)
+                .setUserProperty(key, value)
     }
 
     fun onStartSession(context: Context) {
@@ -34,6 +37,7 @@ object Analytics {
     }
 
     fun logEvent(context: Context, event: String) {
+        FirebaseAnalytics.getInstance(context).logEvent(event, null)
         FlurryAgent.logEvent(event)
     }
 
@@ -41,5 +45,9 @@ object Analytics {
         val paramsMap = HashMap<String, String>()
         paramsMap.put(event, params[0])
         FlurryAgent.logEvent(event, paramsMap)
+
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, params[0])
+        FirebaseAnalytics.getInstance(context).logEvent(event, bundle)
     }
 }

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "938703193302",
+    "firebase_url": "https://style-997fc.firebaseio.com",
+    "project_id": "style-997fc",
+    "storage_bucket": "style-997fc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:938703193302:android:08f0f10e5a95f84f",
+        "android_client_info": {
+          "package_name": "com.yalin.style"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "938703193302-vutiiimvcf6kl6p8ea7klbapa0c4kkq1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXgpHrzEXNQSROL4OHn9ZYU41ijhUd5vc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

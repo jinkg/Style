@@ -73,6 +73,10 @@ dependencies {
     compile "com.tencent.bugly:crashreport:${BUGLY_VERSION}"
     compile "com.flurry.android:analytics:${FLURRY_VERSION}"
 
+    compile "com.google.firebase:firebase-core:${FIRE_BASE_VERSION}"
+    // Only use crash reporting in the "prod" product flavor
+    productionCompile "com.google.firebase:firebase-crash:${FIRE_BASE_VERSION}"
+
 //    annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
     kapt "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
 
@@ -105,3 +109,4 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:${KOTLIN_VERSION}"
     }
 }
+apply plugin: 'com.google.gms.google-services'
