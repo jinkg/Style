@@ -37,8 +37,9 @@ object Analytics {
     }
 
     fun logEvent(context: Context, event: String) {
-        FirebaseAnalytics.getInstance(context).logEvent(event, null)
         FlurryAgent.logEvent(event)
+
+        FirebaseAnalytics.getInstance(context).logEvent(event, null)
     }
 
     fun logEvent(context: Context, event: String, vararg params: String) {
