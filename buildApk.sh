@@ -8,5 +8,6 @@ echo "Start Build Apk"
 ./gradlew assembleProductionRelease -Dchannel=flyme
 ./gradlew assembleProductionRelease -Dchannel=wandoujia
 ./gradlew assembleProductionRelease -Dchannel=baidu
+./gradlew assembleProductionRelease -Dchannel=kinglloy
 
 echo "Build Apk Complete"
