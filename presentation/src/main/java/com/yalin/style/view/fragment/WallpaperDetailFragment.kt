@@ -181,7 +181,8 @@ class WallpaperDetailFragment : BaseFragment(),
         panScaleProxyView.setMaxZoom(5)
         panScaleProxyView.setOnViewportChangedListener(
                 PanScaleProxyView.OnViewportChangedListener {
-                    if (mGuardViewportChangeListener) {
+                    if (mGuardViewportChangeListener
+                            || panScaleProxyView == null) {
                         return@OnViewportChangedListener
                     }
                     WallpaperDetailViewport.instance.setViewport(
