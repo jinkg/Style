@@ -19,6 +19,10 @@
 
     <string name="done">完成</string>
 
+    <string name="section_choose_source">壁纸来源</string>
+    <string name="section_advanced">高级设置</string>
+    <string name="action_source_settings">自定义壁纸</string>
+
     <string name="reset_settings_defaults">重置设置</string>
 
     <string name="error_view_details">您的设备不支持查看壁纸详情.</string>
@@ -49,4 +53,5 @@
     <string name="share_title">分享壁纸</string>
     <string name="share_text">我今天的壁纸是 \' %1$s \' 由 %2$s 所画.  #StyleWallpaper\n\n
         %3$s</string>
+
 </resources>

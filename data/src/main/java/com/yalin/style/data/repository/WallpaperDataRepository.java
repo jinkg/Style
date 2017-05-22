@@ -14,6 +14,7 @@ import com.yalin.style.data.repository.datasource.WallpaperDataStoreFactory;
 import com.yalin.style.data.repository.datasource.provider.StyleContract;
 import com.yalin.style.data.repository.datasource.sync.SyncHelper;
 import com.yalin.style.data.repository.datasource.sync.account.Account;
+import com.yalin.style.domain.Source;
 import com.yalin.style.domain.Wallpaper;
 import com.yalin.style.domain.interactor.DefaultObserver;
 import com.yalin.style.domain.repository.WallpaperRepository;
@@ -21,6 +22,7 @@ import com.yalin.style.domain.repository.WallpaperRepository;
 
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -101,6 +103,12 @@ public class WallpaperDataRepository implements WallpaperRepository {
         Preconditions.checkArgument(!TextUtils.isEmpty(wallpaperId), "WallpaperId cannot be null");
         final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
         return dataStore.likeWallpaper(wallpaperId);
+    }
+
+    @Override
+    public Observable<List<Source>> getSources() {
+        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.create();
+        return dataStore.getSources(context).map(wallpaperEntityMapper::transformSources);
     }
 
     @Override

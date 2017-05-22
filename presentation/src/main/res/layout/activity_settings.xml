@@ -25,7 +25,15 @@
             app:navigationContentDescription="@string/done"
             app:navigationIcon="@drawable/ic_ab_done"
             app:popupTheme="@style/ThemeOverlay.Style.Toolbar"
-            app:theme="@style/ThemeOverlay.Style.Toolbar" />
+            app:theme="@style/ThemeOverlay.Style.Toolbar">
+
+            <Spinner
+                android:id="@+id/sectionSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?selectableItemBackground" />
+
+        </android.support.v7.widget.Toolbar>
 
         <FrameLayout
             android:id="@+id/contentContainer"

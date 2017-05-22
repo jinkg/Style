@@ -20,13 +20,13 @@ import kotlinx.android.synthetic.main.layout_include_settings_content.*
  * @since 2017/5/2.
  */
 
-class SettingsFragment : BaseFragment(), SettingsActivity.SettingsActivityMenuListener {
+class SettingsAdvanceFragment : BaseFragment(), SettingsActivity.SettingsActivityMenuListener {
 
 
     companion object {
         private val mHandler = Handler()
-        fun newInstance(): SettingsFragment {
-            return SettingsFragment()
+        fun newInstance(): SettingsAdvanceFragment {
+            return SettingsAdvanceFragment()
         }
     }
 

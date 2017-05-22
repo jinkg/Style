@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="Scrollbar">
+        <attr name="backgroundColor" format="color" />
+        <attr name="indicatorColor" format="color" />
+    </declare-styleable>
+
     <declare-styleable name="ShadowDipsTextView">
         <attr name="shadowDx" format="dimension" />
         <attr name="shadowDy" format="dimension" />

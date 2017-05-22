@@ -18,6 +18,10 @@
 
     <string name="done">Done</string>
 
+    <string name="section_choose_source">Sources</string>
+    <string name="section_advanced">Advanced</string>
+    <string name="action_source_settings">Customize source</string>
+
     <string name="reset_settings_defaults">Reset sliders</string>
 
     <string name="error_view_details">Couldn\'t view wallpaper details.</string>
@@ -47,6 +51,5 @@
     <string name="share_title">Share wallpaper</string>
     <string name="share_text">My Android wallpaper today is \' %1$s \' by %2$s. #StyleWallpaper\n\n
         %3$s</string>
-
 
 </resources>

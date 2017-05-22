@@ -30,4 +30,10 @@
     <dimen name="settings_checkbox_margin_start">0dp</dimen>
     <integer name="settings_checkbox_column">0</integer>
     <integer name="settings_checkbox_column_span">3</integer>
+
+    <dimen name="settings_choose_source_item_width">200dp</dimen>
+    <dimen name="settings_choose_source_item_image_size">100dp</dimen>
+    <dimen name="settings_choose_source_item_estimated_height">220dp</dimen>
+    <dimen name="settings_choose_source_min_side_padding">64dp</dimen>
+    <dimen name="settings_choose_source_settings_button_animate_distance">24dp</dimen>
 </resources>

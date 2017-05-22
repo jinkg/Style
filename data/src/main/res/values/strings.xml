@@ -2,4 +2,11 @@
     <string name="app_name">Style</string>
 
     <string name="authority">com.yalin.style</string>
+
+
+    <string name="featuredart_source_title">Featured art</string>
+    <string name="featuredart_source_description">A new painting every day</string>
+
+    <string name="gallery_title">My Photos</string>
+    <string name="gallery_description">Random camera photos</string>
 </resources>
