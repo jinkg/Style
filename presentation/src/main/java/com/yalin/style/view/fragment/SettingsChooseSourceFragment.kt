@@ -51,6 +51,8 @@ class SettingsChooseSourceFragment : BaseFragment() {
     private var mSelectedSourceImage: Drawable? = null
     private var mSelectedSourceIndex: Int = 0
 
+    private var mSelectedSource: SourceItem? = null
+
     @Inject
     lateinit internal var getSourcesUseCase: GetSources
 
@@ -68,6 +70,8 @@ class SettingsChooseSourceFragment : BaseFragment() {
                 R.dimen.settings_choose_source_item_image_size)
 
         getComponent(SourceComponent::class.java).inject(this)
+
+        prepareGenerateSourceImages()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -86,11 +90,12 @@ class SettingsChooseSourceFragment : BaseFragment() {
             }
 
         })
+
+        updateSources()
     }
 
     override fun onResume() {
         super.onResume()
-        updateSources()
     }
 
     fun updateSources() {
@@ -98,6 +103,12 @@ class SettingsChooseSourceFragment : BaseFragment() {
             override fun onNext(sources: List<Source>) {
                 super.onNext(sources)
                 mSources.addAll(wallpaperMapper.transformSources(sources))
+                for (source in mSources) {
+                    if (source.selected) {
+                        mSelectedSource = source
+                        break
+                    }
+                }
                 redrawSources()
             }
         }, null)
@@ -110,106 +121,104 @@ class SettingsChooseSourceFragment : BaseFragment() {
 
         sourceContainer.removeAllViews()
         for (source in mSources) {
-            val rootView = LayoutInflater.from(activity).inflate(
+            source.rootView = LayoutInflater.from(activity).inflate(
                     R.layout.settings_choose_source_item, sourceContainer, false)
 
-            rootView.alpha = ALPHA_UNSELECTED
+            source.rootView?.apply {
+                alpha = ALPHA_UNSELECTED
 
-            val selectSourceButton = rootView.findViewById(R.id.source_image)
-            selectSourceButton.setOnClickListener {
-                if (source.selected) {
-                    (activity as Callbacks).onRequestCloseActivity()
-                } else {
+                val selectSourceButton = findViewById(R.id.source_image)
+                selectSourceButton.setOnClickListener {
+                    if (source.selected) {
+                        (activity as Callbacks).onRequestCloseActivity()
+                    } else {
 
+                    }
                 }
+                val icon = generateSourceImage(source.iconId)
+                icon.setColorFilter(source.color, PorterDuff.Mode.SRC_ATOP)
+                selectSourceButton.background = icon
+
+                adjustSourceColor(source)
+
+                val titleView = findViewById(R.id.source_title) as TextView
+                titleView.text = source.title
+                titleView.setTextColor(source.color)
+
+                (findViewById(R.id.source_status) as TextView).text =
+                        source.description
+
+                val settingsButton = findViewById(R.id.source_settings_button)
+                settingsButton.setOnClickListener {
+                    //                launchSourceSettings(source)
+                }
+
+                animateSettingsButton(settingsButton, false, false)
+
             }
-            val icon = BitmapDrawable(resources,
-                    generateSourceImage(ContextCompat.getDrawable(activity, source.iconId)))
-            icon.setColorFilter(source.color, PorterDuff.Mode.SRC_ATOP)
-            selectSourceButton.background = icon
-
-            val titleView = rootView.findViewById(R.id.source_title) as TextView
-            titleView.text = source.title
-            titleView.setTextColor(source.color)
-
-            (rootView.findViewById(R.id.source_status) as TextView).text =
-                    source.description
-
-            val settingsButton = rootView.findViewById(R.id.source_settings_button)
-//            CheatSheet.setup(source.settingsButton)
-            settingsButton.setOnClickListener {
-                //                launchSourceSettings(source)
-            }
-
-//            animateSettingsButton(settingsButton, false, false)
-
-            sourceContainer.addView(rootView)
+            sourceContainer.addView(source.rootView)
         }
 
         updateSelectedItem(false)
     }
 
     private fun updateSelectedItem(allowAnimate: Boolean) {
-//        val previousSelectedSource = mSelectedSource
-//        mSelectedSource = SourceManager.getSelectedSource(context)
-//        if (previousSelectedSource != null && previousSelectedSource == mSelectedSource) {
-//            // Only update status
-//            for (source in mSources) {
-//                if (source.componentName != mSelectedSource || source.rootView == null) {
-//                    continue
-//                }
-//                updateSourceStatusUi(source)
-//            }
-//            return
-//        }
-//
-//        // This is a newly selected source.
-//        var selected: Boolean
-//        var index = -1
-//        for (source in mSources) {
-//            ++index
-//            if (source.componentName == previousSelectedSource) {
-//                selected = false
-//            } else if (source.componentName == mSelectedSource) {
-//                mSelectedSourceIndex = index
-//                selected = true
-//            } else {
-//                continue
-//            }
-//
-//            if (source.rootView == null) {
-//                continue
-//            }
-//
-//            val sourceImageButton = source.rootView.findViewById(R.id.source_image)
-//            val drawable = if (selected) mSelectedSourceImage else source.icon
-//            drawable.setColorFilter(source.color, PorterDuff.Mode.SRC_ATOP)
-//            sourceImageButton.setBackground(drawable)
-//
-//            val alpha = if (selected) 1f else ALPHA_UNSELECTED
-//            source.rootView.animate()
-//                    .alpha(alpha)
-//                    .setDuration(mAnimationDuration.toLong())
-//
-//            if (selected) {
-//                updateSourceStatusUi(source)
-//            }
-//
-//            animateSettingsButton(source.settingsButton,
-//                    selected && source.settingsActivity != null, allowAnimate)
-//        }
-//
-//        if (mSelectedSourceIndex >= 0 && allowAnimate) {
-//            if (mCurrentScroller != null) {
-//                mCurrentScroller.cancel()
-//            }
-//
-//            // For some reason smoothScrollTo isn't very smooth..
-//            mCurrentScroller = ObjectAnimator.ofInt(mSourceScrollerView, "scrollX",
-//                    mItemWidth * mSelectedSourceIndex)
-//            mCurrentScroller.setDuration(mAnimationDuration.toLong())
-//            mCurrentScroller.start()
-//        }
+        for (source in mSources) {
+            if (source.rootView == null) {
+                continue
+            }
+            with(source.rootView!!) {
+                val sourceImageButton = findViewById(R.id.source_image)
+                val drawable = if (source.selected)
+                    mSelectedSourceImage else
+                    generateSourceImage(source.iconId)
+                drawable!!.setColorFilter(source.color, PorterDuff.Mode.SRC_ATOP)
+                sourceImageButton.background = drawable
+
+                val alpha = if (source.selected) 1f else ALPHA_UNSELECTED
+                animate().alpha(alpha).duration = mAnimationDuration.toLong()
+
+                val settingsButton = findViewById(R.id.source_settings_button)
+                animateSettingsButton(settingsButton,
+                        source.selected && source.hasSetting, allowAnimate)
+            }
+        }
+
+        if (mSelectedSourceIndex >= 0 && allowAnimate) {
+            mCurrentScroller?.cancel()
+
+            // For some reason smoothScrollTo isn't very smooth..
+            mCurrentScroller = ObjectAnimator.ofInt(sourceScroller, "scrollX",
+                    mItemWidth * mSelectedSourceIndex)
+            mCurrentScroller!!.duration = mAnimationDuration.toLong()
+            mCurrentScroller!!.start()
+        }
+    }
+
+    private fun animateSettingsButton(settingsButton: View, show: Boolean,
+                                      allowAnimate: Boolean) {
+        if (show && settingsButton.visibility == View.VISIBLE ||
+                !show && settingsButton.visibility == View.INVISIBLE) {
+            return
+        }
+        settingsButton.visibility = View.VISIBLE
+        settingsButton.animate()
+                .translationY((if (show)
+                    0
+                else
+                    -resources.getDimensionPixelSize(
+                            R.dimen.settings_choose_source_settings_button_animate_distance))
+                        .toFloat())
+                .alpha(if (show) 1f else 0f)
+                .rotation((if (show) 0 else -90).toFloat())
+                .setDuration((if (allowAnimate) 300 else 0).toLong())
+                .setStartDelay((if (show && allowAnimate) 200 else 0).toLong())
+                .withLayer()
+                .withEndAction {
+                    if (!show) {
+                        settingsButton.visibility = View.INVISIBLE
+                    }
+                }
     }
 
     private fun showScrollbar() {
@@ -222,7 +231,9 @@ class SettingsChooseSourceFragment : BaseFragment() {
         mHandler.postDelayed(mHideScrollbarRunnable, SCROLLBAR_HIDE_DELAY_MILLIS.toLong())
     }
 
-    private fun generateSourceImage(image: Drawable?): Bitmap {
+    private fun generateSourceImage(iconId: Int): BitmapDrawable {
+        val image = ContextCompat.getDrawable(activity, iconId)
+
         val bitmap = Bitmap.createBitmap(mItemImageSize, mItemImageSize,
                 Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -235,7 +246,40 @@ class SettingsChooseSourceFragment : BaseFragment() {
             image.draw(canvas)
             canvas.restore()
         }
-        return bitmap
+        return BitmapDrawable(resources, bitmap)
+    }
+
+    private fun prepareGenerateSourceImages() {
+        mImageFillPaint.color = Color.WHITE
+        mImageFillPaint.isAntiAlias = true
+        mAlphaPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+        mSelectedSourceImage = generateSourceImage(R.drawable.ic_source_selected)
+    }
+
+    private fun adjustSourceColor(source: SourceItem) = with(source) {
+        try {
+            val hsv = FloatArray(3)
+            Color.colorToHSV(color, hsv)
+            var adjust = false
+            if (hsv[2] < 0.8f) {
+                hsv[2] = 0.8f
+                adjust = true
+            }
+            if (hsv[1] > 0.4f) {
+                hsv[1] = 0.4f
+                adjust = true
+            }
+            if (adjust) {
+                color = Color.HSVToColor(hsv)
+            }
+            if (Color.alpha(color) != 255) {
+                color = Color.argb(255,
+                        Color.red(color),
+                        Color.green(color),
+                        Color.blue(color))
+            }
+        } catch (ignored: IllegalArgumentException) {
+        }
     }
 
     interface Callbacks {

@@ -14,16 +14,19 @@
   limitations under the License.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.yalin.style.view.component.ObservableHorizontalScrollView
         android:id="@+id/sourceScroller"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="1"
         android:overScrollMode="never"
         android:saveEnabled="false"
         android:scrollbars="none">
@@ -32,7 +35,12 @@
             android:id="@+id/sourceContainer"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingEnd="64dp"
+            android:paddingLeft="64dp"
+            android:paddingRight="64dp"
+            android:paddingStart="64dp" />
 
     </com.yalin.style.view.component.ObservableHorizontalScrollView>
 
@@ -45,4 +53,4 @@
         app:backgroundColor="#3fff"
         app:indicatorColor="#fff" />
 
-</FrameLayout>
+</LinearLayout>

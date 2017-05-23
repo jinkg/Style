@@ -22,12 +22,13 @@ constructor(ctx: Context) : SourcesCache {
         val SOURCE_ID_CUSTOM = 1
     }
 
-    val sources = ArrayList<SourceEntity>()
-
     var selectedId: Int by DelegateExt.preferences(ctx, "selected_source_id", SOURCE_ID_STYLE)
 
+    val featureSource: SourceEntity
+    val gallerySource: SourceEntity
+
     init {
-        val featureSource = SourceEntity(SOURCE_ID_STYLE).apply {
+        featureSource = SourceEntity(SOURCE_ID_STYLE).apply {
             title = ctx.getString(R.string.featuredart_source_title)
             iconId = R.drawable.featuredart_ic_source
             description = ctx.getString(R.string.featuredart_source_description)
@@ -35,36 +36,39 @@ constructor(ctx: Context) : SourcesCache {
             selected = selectedId == id
             hasSetting = false
         }
-        sources.add(featureSource)
 
-        val gallerySource = SourceEntity(SOURCE_ID_CUSTOM).apply {
+        gallerySource = SourceEntity(SOURCE_ID_CUSTOM).apply {
             title = ctx.getString(R.string.gallery_title)
             iconId = R.drawable.gallery_ic_source
             description = ctx.getString(R.string.gallery_description)
             color = 0x4db6ac
-            selected = selectedId == featureSource.id
+            selected = selectedId == id
             hasSetting = true
         }
-        sources.add(gallerySource)
     }
 
     override fun getSources(ctx: Context): Observable<List<SourceEntity>> {
         return Observable.create { emitter ->
+            val sources = ArrayList<SourceEntity>()
+            sources.add(featureSource)
+            sources.add(gallerySource)
             emitter.onNext(sources)
         }
     }
 
     override fun selectSource(selectedEntity: SourceEntity) {
-        for (source in sources) {
-            if (source.id == selectedEntity.id) {
-                source.selected = true
-                selectedId = selectedEntity.id
-                break
-            }
+        if (featureSource.id == selectedEntity.id) {
+            featureSource.selected = true
+            gallerySource.selected = false
+            selectedId = selectedEntity.id
+        } else if (gallerySource.id == selectedEntity.id) {
+            featureSource.selected = false
+            gallerySource.selected = true
+            selectedId = selectedEntity.id
         }
     }
 
     override fun useCustomSource(): Boolean {
-        return !sources[0].selected && sources[1].selected
+        return gallerySource.selected
     }
 }

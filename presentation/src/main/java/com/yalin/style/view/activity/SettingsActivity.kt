@@ -32,7 +32,8 @@ import kotlinx.android.synthetic.main.activity_settings.*
  * @since 2017/5/2.
  */
 
-class SettingsActivity : BaseActivity(), HasComponent<SourceComponent> {
+class SettingsActivity : BaseActivity(), HasComponent<SourceComponent>,
+        SettingsChooseSourceFragment.Callbacks {
 
     companion object {
         val START_SECTION_SOURCE = 0
@@ -194,6 +195,9 @@ class SettingsActivity : BaseActivity(), HasComponent<SourceComponent> {
     override val component: SourceComponent
         get() = sourceComponent
 
+    override fun onRequestCloseActivity() {
+        finish()
+    }
 
     interface SettingsActivityMenuListener {
         fun onSettingsActivityMenuItemClick(item: MenuItem)
