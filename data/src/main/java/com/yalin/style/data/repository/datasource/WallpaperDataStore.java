@@ -1,12 +1,8 @@
 package com.yalin.style.data.repository.datasource;
 
-import android.content.Context;
-
-import com.yalin.style.data.entity.SourceEntity;
 import com.yalin.style.data.entity.WallpaperEntity;
 
 import java.io.InputStream;
-import java.util.List;
 
 import io.reactivex.Observable;
 
@@ -26,6 +22,4 @@ public interface WallpaperDataStore {
     Observable<Integer> getWallpaperCount();
 
     Observable<Boolean> likeWallpaper(String wallpaperId);
-
-    Observable<List<SourceEntity>> getSources(Context context);
 }

@@ -20,46 +20,25 @@ import javax.inject.Singleton;
 @Singleton
 public class WallpaperDataStoreFactory {
 
-    private final Context context;
     private final WallpaperCache wallpaperCache;
-    private final SourcesCache sourcesCache;
-    private final OpenInputStreamLock openInputStreamLock;
-    private final LikeWallpaperLock likeWallpaperLock;
+    private final SourcesDataStoreImpl sourcesDataStore;
 
     @Inject
     WallpaperDataStoreFactory(Context context, WallpaperCache wallpaperCache,
                               SourcesCache sourcesCache,
                               OpenInputStreamLock openInputStreamLock,
                               LikeWallpaperLock likeWallpaperLock) {
-        this.context = context;
         this.wallpaperCache = wallpaperCache;
-        this.sourcesCache = sourcesCache;
-        this.openInputStreamLock = openInputStreamLock;
-        this.likeWallpaperLock = likeWallpaperLock;
+        this.sourcesDataStore = new SourcesDataStoreImpl(context,
+                sourcesCache, wallpaperCache, openInputStreamLock, likeWallpaperLock);
     }
 
     public WallpaperDataStore create() {
-        WallpaperDataStore wallpaperDataStore;
-        if (sourcesCache.useCustomSource()) {
-            wallpaperDataStore = new LocalDataStore(context);
-        } else {
-            if (!wallpaperCache.isDirty() && wallpaperCache.isCached()) {
-                wallpaperDataStore =
-                        new CacheWallpaperDataStore(wallpaperCache, sourcesCache, openInputStreamLock);
-            } else {
-                wallpaperDataStore = createDbDataStore();
-            }
-        }
-        return wallpaperDataStore;
+        return sourcesDataStore.getWallpaperDataStore();
     }
 
     public WallpaperDataStore createDbDataStore() {
-        if (sourcesCache.useCustomSource()) {
-            return new LocalDataStore(context);
-        } else {
-            return new DbWallpaperDataStore(context, wallpaperCache,
-                    openInputStreamLock, likeWallpaperLock);
-        }
+        return sourcesDataStore.getDbWallpaperDataStore();
     }
 
     public void onDataRefresh() {

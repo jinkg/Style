@@ -14,7 +14,8 @@ import dagger.Component
  * @since 2017/4/18.
  */
 @PerActivity
-@Component(dependencies = arrayOf(ApplicationComponent::class), modules = arrayOf(WallpaperModule::class))
+@Component(dependencies = arrayOf(ApplicationComponent::class),
+        modules = arrayOf(WallpaperModule::class))
 interface WallpaperComponent {
     fun inject(wallpaperDetailFragment: WallpaperDetailFragment)
 }

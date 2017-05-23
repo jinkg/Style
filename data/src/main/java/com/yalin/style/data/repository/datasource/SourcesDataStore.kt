@@ -1,0 +1,19 @@
+package com.yalin.style.data.repository.datasource
+
+import com.yalin.style.data.entity.SourceEntity
+import io.reactivex.Observable
+
+/**
+ * @author jinyalin
+ * @since 2017/5/23.
+ */
+interface SourcesDataStore {
+
+    fun getSources(): Observable<List<SourceEntity>>
+
+    fun selectSource(sourceId: Int): Observable<Boolean>
+
+    fun getWallpaperDataStore(): WallpaperDataStore
+
+    fun getDbWallpaperDataStore(): WallpaperDataStore
+}

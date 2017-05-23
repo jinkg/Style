@@ -1,14 +1,17 @@
 package com.yalin.style.data.entity
 
+
 /**
  * @author jinyalin
- * @since 2017/5/22.
+ * *
+ * @since 2017/5/23.
  */
-class SourceEntity(val id: Int) {
+
+class SourceEntity(var id: Int) {
     var title: String? = null
     var description: String? = null
     var iconId: Int = 0
-    var selected: Boolean = false
-    var hasSetting: Boolean = false
+    var isSelected: Boolean = false
+    var isHasSetting: Boolean = false
     var color: Int = 0
 }

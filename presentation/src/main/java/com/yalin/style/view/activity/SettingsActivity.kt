@@ -19,9 +19,7 @@ import com.yalin.style.analytics.Analytics
 import com.yalin.style.analytics.Event
 import com.yalin.style.injection.HasComponent
 import com.yalin.style.injection.component.DaggerSourceComponent
-import com.yalin.style.injection.component.DaggerWallpaperComponent
 import com.yalin.style.injection.component.SourceComponent
-import com.yalin.style.injection.component.WallpaperComponent
 import com.yalin.style.view.fragment.SettingsAdvanceFragment
 import com.yalin.style.view.fragment.SettingsChooseSourceFragment
 import kotlinx.android.synthetic.main.activity_settings.*

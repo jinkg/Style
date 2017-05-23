@@ -3,6 +3,7 @@ package com.yalin.style.domain.interactor;
 import com.yalin.style.domain.Source;
 import com.yalin.style.domain.executor.PostExecutionThread;
 import com.yalin.style.domain.executor.ThreadExecutor;
+import com.yalin.style.domain.repository.SourcesRepository;
 import com.yalin.style.domain.repository.WallpaperRepository;
 
 import java.util.List;
@@ -17,18 +18,18 @@ import io.reactivex.Observable;
  */
 
 public class GetSources extends UseCase<List<Source>, Void> {
-    private WallpaperRepository wallpaperRepository;
+    private SourcesRepository sourcesRepository;
 
     @Inject
     public GetSources(ThreadExecutor threadExecutor,
                       PostExecutionThread postExecutionThread,
-                      WallpaperRepository wallpaperRepository) {
+                      SourcesRepository sourcesRepository) {
         super(threadExecutor, postExecutionThread);
-        this.wallpaperRepository = wallpaperRepository;
+        this.sourcesRepository = sourcesRepository;
     }
 
     @Override
     Observable<List<Source>> buildUseCaseObservable(Void a) {
-        return wallpaperRepository.getSources();
+        return sourcesRepository.getSources();
     }
 }

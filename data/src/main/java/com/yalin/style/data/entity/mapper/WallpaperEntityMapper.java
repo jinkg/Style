@@ -48,11 +48,12 @@ public class WallpaperEntityMapper {
     public Source transformSource(SourceEntity sourceEntity) {
         Preconditions.checkNotNull(sourceEntity, "SourceEntity can not be null.");
         Source source = new Source();
+        source.id = sourceEntity.getId();
         source.title = sourceEntity.getTitle();
         source.description = sourceEntity.getDescription();
         source.iconId = sourceEntity.getIconId();
-        source.selected = sourceEntity.getSelected();
-        source.hasSetting = sourceEntity.getHasSetting();
+        source.selected = sourceEntity.isSelected();
+        source.hasSetting = sourceEntity.isHasSetting();
         source.color = sourceEntity.getColor();
         return source;
     }

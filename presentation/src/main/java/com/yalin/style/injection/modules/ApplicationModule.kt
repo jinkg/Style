@@ -3,14 +3,13 @@ package com.yalin.style.injection.modules
 import android.content.Context
 
 import com.yalin.style.UIThread
-import com.yalin.style.data.cache.SourcesCache
-import com.yalin.style.data.cache.SourcesCacheImpl
-import com.yalin.style.data.cache.WallpaperCache
-import com.yalin.style.data.cache.WallpaperCacheImpl
+import com.yalin.style.data.cache.*
 import com.yalin.style.data.executor.JobExecutor
+import com.yalin.style.data.repository.SourcesDataRepository
 import com.yalin.style.data.repository.WallpaperDataRepository
 import com.yalin.style.domain.executor.PostExecutionThread
 import com.yalin.style.domain.executor.ThreadExecutor
+import com.yalin.style.domain.repository.SourcesRepository
 import com.yalin.style.domain.repository.WallpaperRepository
 
 import javax.inject.Singleton
@@ -47,9 +46,16 @@ class ApplicationModule(context: Context) {
 
     @Provides
     @Singleton
-    internal fun provideUserRepository(wallpaperDataRepository: WallpaperDataRepository):
+    internal fun provideWallpaperRepository(wallpaperDataRepository: WallpaperDataRepository):
             WallpaperRepository {
         return wallpaperDataRepository
+    }
+
+    @Provides
+    @Singleton
+    internal fun provideSourcesRepository(sourcesDataRepository: SourcesDataRepository):
+            SourcesRepository {
+        return sourcesDataRepository
     }
 
     @Provides

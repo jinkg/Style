@@ -10,29 +10,24 @@ import java.io.InputStream
  * @author jinyalin
  * @since 2017/5/22.
  */
-class LocalDataStore(context: Context) : WallpaperDataStore {
+class CustomWallpaperDataStore(context: Context) : WallpaperDataStore {
     override fun getWallPaperEntity(): Observable<WallpaperEntity> {
-        throw IllegalAccessException()
+        throw IllegalAccessException("")
     }
 
     override fun switchWallPaperEntity(): Observable<WallpaperEntity> {
-        throw IllegalAccessException()
+        throw IllegalAccessException("")
     }
 
     override fun openInputStream(wallpaperId: String?): Observable<InputStream> {
-        throw IllegalAccessException()
+        throw IllegalAccessException("")
     }
 
     override fun getWallpaperCount(): Observable<Int> {
-        throw IllegalAccessException()
+        throw IllegalAccessException("")
     }
 
     override fun likeWallpaper(wallpaperId: String?): Observable<Boolean> {
-        throw IllegalAccessException()
+        throw IllegalAccessException("")
     }
-
-    override fun getSources(context: Context?): Observable<MutableList<SourceEntity>> {
-        throw IllegalAccessException()
-    }
-
 }

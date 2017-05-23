@@ -1,6 +1,7 @@
 package com.yalin.style.view.fragment
 
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -12,22 +13,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.yalin.style.R
-import com.yalin.style.domain.Source
-import com.yalin.style.domain.interactor.DefaultObserver
-import com.yalin.style.domain.interactor.GetSources
 import com.yalin.style.injection.component.SourceComponent
-import com.yalin.style.mapper.WallpaperItemMapper
 import com.yalin.style.model.SourceItem
+import com.yalin.style.presenter.SettingsChooseSourcePresenter
+import com.yalin.style.view.SourceChooseView
 import com.yalin.style.view.component.ObservableHorizontalScrollView
 import kotlinx.android.synthetic.main.layout_settings_choose_source.*
-import java.util.*
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 /**
  * @author jinyalin
  * @since 2017/5/22.
  */
-class SettingsChooseSourceFragment : BaseFragment() {
+class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
+
     companion object {
         private val SCROLLBAR_HIDE_DELAY_MILLIS = 1000
         private val ALPHA_UNSELECTED = 0.4f
@@ -35,8 +35,6 @@ class SettingsChooseSourceFragment : BaseFragment() {
 
     private val mHandler = Handler()
     private var mCurrentScroller: ObjectAnimator? = null
-
-    private val mSources = ArrayList<SourceItem>()
 
     private val mHideScrollbarRunnable = { sourceScrollbar.hide() }
 
@@ -49,15 +47,9 @@ class SettingsChooseSourceFragment : BaseFragment() {
     private val mImageFillPaint = Paint()
     private val mAlphaPaint = Paint()
     private var mSelectedSourceImage: Drawable? = null
-    private var mSelectedSourceIndex: Int = 0
-
-    private var mSelectedSource: SourceItem? = null
 
     @Inject
-    lateinit internal var getSourcesUseCase: GetSources
-
-    @Inject
-    lateinit internal var wallpaperMapper: WallpaperItemMapper
+    lateinit internal var settingsPresenter: SettingsChooseSourcePresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +72,8 @@ class SettingsChooseSourceFragment : BaseFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        settingsPresenter.setView(this)
+
         sourceScroller.setCallbacks(object : ObservableHorizontalScrollView.Callbacks {
             override fun onScrollChanged(scrollX: Int) {
                 showScrollbar()
@@ -91,40 +85,64 @@ class SettingsChooseSourceFragment : BaseFragment() {
 
         })
 
-        updateSources()
+        settingsPresenter.initialize()
     }
 
     override fun onResume() {
         super.onResume()
+        settingsPresenter.resume()
     }
 
-    fun updateSources() {
-        getSourcesUseCase.execute(object : DefaultObserver<List<Source>>() {
-            override fun onNext(sources: List<Source>) {
-                super.onNext(sources)
-                mSources.addAll(wallpaperMapper.transformSources(sources))
-                for (source in mSources) {
-                    if (source.selected) {
-                        mSelectedSource = source
-                        break
-                    }
-                }
-                redrawSources()
-            }
-        }, null)
+    override fun onPause() {
+        super.onPause()
+        settingsPresenter.pause()
     }
 
-    private fun redrawSources() {
+    override fun onDestroy() {
+        super.onDestroy()
+        settingsPresenter.destroy()
+    }
+
+    override fun renderSources(sources: List<SourceItem>) {
+        redrawSources(sources)
+    }
+
+    override fun sourceSelected(sources: List<SourceItem>, selectedItem: SourceItem) {
+        updateSelectedItem(sources, selectedItem, true)
+    }
+
+    override fun showLoading() {
+    }
+
+    override fun hideLoading() {
+    }
+
+    override fun showRetry() {
+    }
+
+    override fun hideRetry() {
+    }
+
+    override fun showError(message: String) {
+    }
+
+    override fun context(): Context {
+        return activity
+    }
+
+    val sourcesMap = HashMap<Int, View>()
+    private fun redrawSources(sources: List<SourceItem>) {
         if (!isAdded) {
             return
         }
-
+        sourcesMap.clear()
         sourceContainer.removeAllViews()
-        for (source in mSources) {
-            source.rootView = LayoutInflater.from(activity).inflate(
+        for (source in sources) {
+            val rootView = LayoutInflater.from(activity).inflate(
                     R.layout.settings_choose_source_item, sourceContainer, false)
+            sourcesMap.put(source.id, rootView)
 
-            source.rootView?.apply {
+            with(rootView!!) {
                 alpha = ALPHA_UNSELECTED
 
                 val selectSourceButton = findViewById(R.id.source_image)
@@ -132,7 +150,7 @@ class SettingsChooseSourceFragment : BaseFragment() {
                     if (source.selected) {
                         (activity as Callbacks).onRequestCloseActivity()
                     } else {
-
+                        settingsPresenter.selectSource(source.id)
                     }
                 }
                 val icon = generateSourceImage(source.iconId)
@@ -155,21 +173,23 @@ class SettingsChooseSourceFragment : BaseFragment() {
 
                 animateSettingsButton(settingsButton, false, false)
 
+                sourceContainer.addView(rootView)
             }
-            sourceContainer.addView(source.rootView)
         }
-
-        updateSelectedItem(false)
     }
 
-    private fun updateSelectedItem(allowAnimate: Boolean) {
-        for (source in mSources) {
-            if (source.rootView == null) {
-                continue
-            }
-            with(source.rootView!!) {
+    private fun updateSelectedItem(sources: List<SourceItem>,
+                                   selectedItem: SourceItem, allowAnimate: Boolean) {
+        var selectedIndex = -1
+        var index = -1
+        for (source in sources) {
+            index++
+            val selected = source.id == selectedItem.id
+            selectedIndex = if (selected) index else selectedIndex
+
+            with(sourcesMap[source.id]!!) {
                 val sourceImageButton = findViewById(R.id.source_image)
-                val drawable = if (source.selected)
+                val drawable = if (selected)
                     mSelectedSourceImage else
                     generateSourceImage(source.iconId)
                 drawable!!.setColorFilter(source.color, PorterDuff.Mode.SRC_ATOP)
@@ -184,12 +204,12 @@ class SettingsChooseSourceFragment : BaseFragment() {
             }
         }
 
-        if (mSelectedSourceIndex >= 0 && allowAnimate) {
+        if (selectedIndex >= 0 && allowAnimate) {
             mCurrentScroller?.cancel()
 
             // For some reason smoothScrollTo isn't very smooth..
             mCurrentScroller = ObjectAnimator.ofInt(sourceScroller, "scrollX",
-                    mItemWidth * mSelectedSourceIndex)
+                    mItemWidth * selectedIndex)
             mCurrentScroller!!.duration = mAnimationDuration.toLong()
             mCurrentScroller!!.start()
         }

@@ -33,8 +33,8 @@ constructor(ctx: Context) : SourcesCache {
             iconId = R.drawable.featuredart_ic_source
             description = ctx.getString(R.string.featuredart_source_description)
             color = Color.WHITE
-            selected = selectedId == id
-            hasSetting = false
+            isSelected = selectedId == id
+            isHasSetting = false
         }
 
         gallerySource = SourceEntity(SOURCE_ID_CUSTOM).apply {
@@ -42,8 +42,8 @@ constructor(ctx: Context) : SourcesCache {
             iconId = R.drawable.gallery_ic_source
             description = ctx.getString(R.string.gallery_description)
             color = 0x4db6ac
-            selected = selectedId == id
-            hasSetting = true
+            isSelected = selectedId == id
+            isHasSetting = true
         }
     }
 
@@ -56,19 +56,22 @@ constructor(ctx: Context) : SourcesCache {
         }
     }
 
-    override fun selectSource(selectedEntity: SourceEntity) {
-        if (featureSource.id == selectedEntity.id) {
-            featureSource.selected = true
-            gallerySource.selected = false
-            selectedId = selectedEntity.id
-        } else if (gallerySource.id == selectedEntity.id) {
-            featureSource.selected = false
-            gallerySource.selected = true
-            selectedId = selectedEntity.id
+    override fun selectSource(selectSourceId: Int): Boolean {
+        if (featureSource.id == selectSourceId) {
+            featureSource.isSelected = true
+            gallerySource.isSelected = false
+            selectedId = selectSourceId
+            return true
+        } else if (gallerySource.id == selectSourceId) {
+            featureSource.isSelected = false
+            gallerySource.isSelected = true
+            selectedId = selectSourceId
+            return true
         }
+        return false
     }
 
     override fun useCustomSource(): Boolean {
-        return gallerySource.selected
+        return gallerySource.isSelected
     }
 }

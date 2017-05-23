@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.yalin.style.data.cache.WallpaperCache;
-import com.yalin.style.data.entity.SourceEntity;
 import com.yalin.style.data.entity.WallpaperEntity;
 import com.yalin.style.data.exception.LikeException;
 import com.yalin.style.data.lock.LikeWallpaperLock;
@@ -19,7 +18,6 @@ import com.yalin.style.data.repository.datasource.provider.StyleContract.Wallpap
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import io.reactivex.Observable;
@@ -136,11 +134,6 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
                 }
             }
         });
-    }
-
-    @Override
-    public Observable<List<SourceEntity>> getSources(Context context) {
-        throw new UnsupportedOperationException("Db data store not support getSources.");
     }
 
     private Observable<Queue<WallpaperEntity>> createEntitiesObservable() {

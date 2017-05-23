@@ -42,6 +42,7 @@ constructor() {
     fun transformSource(source: Source): SourceItem {
         Preconditions.checkNotNull(source, "SourceEntity can not be null.")
         val sourceItem = SourceItem()
+        sourceItem.id = source.id
         sourceItem.title = source.title
         sourceItem.description = source.description
         sourceItem.iconId = source.iconId
