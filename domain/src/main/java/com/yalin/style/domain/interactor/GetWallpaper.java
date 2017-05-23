@@ -25,14 +25,6 @@ public class GetWallpaper extends UseCase<Wallpaper, Void> {
         this.wallpaperRepository = wallpaperRepository;
     }
 
-    public void registerObserver(DefaultObserver<Void> observer) {
-        wallpaperRepository.registerObserver(observer);
-    }
-
-    public void unregisterObserver(DefaultObserver<Void> observer) {
-        wallpaperRepository.unregisterObserver(observer);
-    }
-
     @Override
     Observable<Wallpaper> buildUseCaseObservable(Void a) {
         return wallpaperRepository.getWallpaper();

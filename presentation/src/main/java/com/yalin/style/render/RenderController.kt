@@ -9,6 +9,7 @@ import com.yalin.style.data.log.LogUtil
 import com.yalin.style.domain.Wallpaper
 import com.yalin.style.domain.interactor.DefaultObserver
 import com.yalin.style.domain.interactor.GetWallpaper
+import com.yalin.style.domain.interactor.ObserverWallpaper
 import com.yalin.style.domain.interactor.OpenWallpaperInputStream
 import com.yalin.style.mapper.WallpaperItemMapper
 import com.yalin.style.settings.Prefs
@@ -23,6 +24,7 @@ import javax.inject.Inject
 
 open class RenderController @Inject
 constructor(protected var mContext: Context, private val getWallpaperUseCase: GetWallpaper,
+            private val observerWallpaper: ObserverWallpaper,
             private val openWallpaperInputStreamUseCase: OpenWallpaperInputStream,
             private val wallpaperItemMapper: WallpaperItemMapper) {
     protected var mRenderer: StyleBlurRenderer? = null
@@ -48,7 +50,7 @@ constructor(protected var mContext: Context, private val getWallpaperUseCase: Ge
 
     init {
         wallpaperRefreshObserver = WallpaperRefreshObserver()
-        this.getWallpaperUseCase.registerObserver(wallpaperRefreshObserver)
+        observerWallpaper.registerObserver(wallpaperRefreshObserver)
 
         Prefs.getSharedPreferences(mContext)
                 .registerOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener)
@@ -66,7 +68,7 @@ constructor(protected var mContext: Context, private val getWallpaperUseCase: Ge
         }
         Prefs.getSharedPreferences(mContext)
                 .unregisterOnSharedPreferenceChangeListener(mOnSharedPreferenceChangeListener)
-        getWallpaperUseCase.unregisterObserver(wallpaperRefreshObserver)
+        observerWallpaper.unregisterObserver(wallpaperRefreshObserver)
     }
 
     @Throws(Exception::class)

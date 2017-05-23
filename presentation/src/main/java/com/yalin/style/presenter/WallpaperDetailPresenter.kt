@@ -6,11 +6,7 @@ import com.yalin.style.analytics.Analytics
 import com.yalin.style.analytics.Event
 import com.yalin.style.data.exception.ReswitchException
 import com.yalin.style.domain.Wallpaper
-import com.yalin.style.domain.interactor.DefaultObserver
-import com.yalin.style.domain.interactor.GetWallpaper
-import com.yalin.style.domain.interactor.GetWallpaperCount
-import com.yalin.style.domain.interactor.LikeWallpaper
-import com.yalin.style.domain.interactor.SwitchWallpaper
+import com.yalin.style.domain.interactor.*
 import com.yalin.style.event.WallpaperSwitchEvent
 import com.yalin.style.exception.ErrorMessageFactory
 import com.yalin.style.injection.PerActivity
@@ -31,6 +27,7 @@ import javax.inject.Inject
 @PerActivity
 class WallpaperDetailPresenter @Inject
 constructor(private val getWallpaperUseCase: GetWallpaper,
+            private val observerWallpaper: ObserverWallpaper,
             private val getWallpaperCountUseCase: GetWallpaperCount,
             private val switchWallpaperUseCase: SwitchWallpaper,
             private val likeWallpaperUseCase: LikeWallpaper,
@@ -50,7 +47,7 @@ constructor(private val getWallpaperUseCase: GetWallpaper,
 
     init {
         wallpaperRefreshObserver = WallpaperRefreshObserver()
-        getWallpaperUseCase.registerObserver(wallpaperRefreshObserver)
+        observerWallpaper.registerObserver(wallpaperRefreshObserver)
     }
 
     fun setView(wallpaperDetailView: WallpaperDetailView) {
@@ -112,7 +109,7 @@ constructor(private val getWallpaperUseCase: GetWallpaper,
 
     override fun destroy() {
         getWallpaperUseCase.dispose()
-        getWallpaperUseCase.unregisterObserver(wallpaperRefreshObserver)
+        observerWallpaper.unregisterObserver(wallpaperRefreshObserver)
         wallpaperDetailView = null
     }
 

@@ -1,7 +1,6 @@
 package com.yalin.style.domain.repository;
 
 import com.yalin.style.domain.Wallpaper;
-import com.yalin.style.domain.interactor.DefaultObserver;
 
 import java.io.InputStream;
 
@@ -23,8 +22,4 @@ public interface WallpaperRepository {
     Observable<Integer> getWallpaperCount();
 
     Observable<Boolean> likeWallpaper(String wallpaperId);
-
-    void registerObserver(DefaultObserver<Void> observer);
-
-    void unregisterObserver(DefaultObserver<Void> observer);
 }

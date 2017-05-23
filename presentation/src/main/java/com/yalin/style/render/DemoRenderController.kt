@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Handler
 
 import com.yalin.style.domain.interactor.GetWallpaper
+import com.yalin.style.domain.interactor.ObserverWallpaper
 import com.yalin.style.domain.interactor.OpenWallpaperInputStream
 import com.yalin.style.mapper.WallpaperItemMapper
 
@@ -19,9 +20,10 @@ import javax.inject.Inject
  */
 class DemoRenderController @Inject
 constructor(context: Context, getWallpaperUseCase: GetWallpaper,
+            observerWallpaper: ObserverWallpaper,
             openWallpaperInputStream: OpenWallpaperInputStream,
             wallpaperItemMapper: WallpaperItemMapper)
-    : RenderController(context, getWallpaperUseCase,
+    : RenderController(context, getWallpaperUseCase, observerWallpaper,
         openWallpaperInputStream, wallpaperItemMapper) {
 
     companion object {
