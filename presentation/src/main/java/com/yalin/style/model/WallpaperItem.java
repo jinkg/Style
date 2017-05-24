@@ -15,6 +15,7 @@ public class WallpaperItem implements Parcelable {
     public String byline;
     public String attribution;
 
+    public boolean canLike;
     public boolean liked;
     public boolean isDefault;
 

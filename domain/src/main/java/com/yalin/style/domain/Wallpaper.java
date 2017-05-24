@@ -7,12 +7,13 @@ package com.yalin.style.domain;
 
 public class Wallpaper {
 
-  public String wallpaperId;
-  public String imageUri;
-  public String title;
-  public String byline;
-  public String attribution;
+    public String wallpaperId;
+    public String imageUri;
+    public String title;
+    public String byline;
+    public String attribution;
 
-  public boolean liked;
-  public boolean isDefault;
+    public boolean canLike;
+    public boolean liked;
+    public boolean isDefault;
 }

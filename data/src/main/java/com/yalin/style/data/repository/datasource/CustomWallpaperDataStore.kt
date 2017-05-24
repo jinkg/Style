@@ -64,6 +64,7 @@ class CustomWallpaperDataStore(val context: Context,
         wallpaperEntity.wallpaperId = "-1"
         wallpaperEntity.liked = false
         wallpaperEntity.isDefault = true
+        wallpaperEntity.canLike = false
         return wallpaperEntity
     }
 }

@@ -28,6 +28,7 @@ public class WallpaperEntity {
     public String byline;
     public String attribution;
 
+    public boolean canLike;
     public boolean liked;
     public boolean isDefault;
 

@@ -33,6 +33,7 @@ public class WallpaperEntityMapper {
         wallpaper.wallpaperId = wallpaperEntity.wallpaperId;
         wallpaper.liked = wallpaperEntity.liked;
         wallpaper.isDefault = wallpaperEntity.isDefault;
+        wallpaper.canLike = wallpaperEntity.canLike;
         return wallpaper;
     }
 

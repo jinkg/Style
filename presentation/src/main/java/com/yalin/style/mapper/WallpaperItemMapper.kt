@@ -27,6 +27,7 @@ constructor() {
         wallpaperItem.wallpaperId = wallpaper.wallpaperId
         wallpaperItem.liked = wallpaper.liked
         wallpaperItem.isDefault = wallpaper.isDefault
+        wallpaperItem.canLike = wallpaper.canLike
         return wallpaperItem
     }
 

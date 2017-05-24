@@ -150,6 +150,10 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
                     cursor.close();
                 }
             }
+            // from db all wallpaper can be liked
+            for (WallpaperEntity entity : validWallpapers) {
+                entity.canLike = true;
+            }
 
             validWallpapers.add(buildDefaultWallpaper());
 
@@ -169,6 +173,7 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
         wallpaperEntity.wallpaperId = DEFAULT_WALLPAPER_ID;
         wallpaperEntity.liked = false;
         wallpaperEntity.isDefault = true;
+        wallpaperEntity.canLike = false;
         return wallpaperEntity;
     }
 

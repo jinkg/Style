@@ -114,15 +114,17 @@ constructor(private val getWallpaperUseCase: GetWallpaper,
     }
 
     private fun showWallpaperDetailInView(wallpaperItem: WallpaperItem) {
-        wallpaperDetailView!!.renderWallpaper(wallpaperItem)
-        wallpaperDetailView!!.validLikeAction(!wallpaperItem.isDefault)
-        if (!wallpaperItem.isDefault) {
-            wallpaperDetailView!!.updateLikeState(wallpaperItem, wallpaperItem.liked)
+        with(wallpaperDetailView!!) {
+            renderWallpaper(wallpaperItem)
+            validLikeAction(wallpaperItem.canLike)
+            if (wallpaperItem.canLike) {
+                updateLikeState(wallpaperItem, wallpaperItem.liked)
+            }
         }
     }
 
     private fun showOrHideNextView(count: Int) {
-        wallpaperDetailView!!.showNextButton(count > 1)
+        wallpaperDetailView?.showNextButton(count > 1)
     }
 
     private inner class WallpaperObserver @JvmOverloads
@@ -144,8 +146,8 @@ constructor(private val getWallpaperUseCase: GetWallpaper,
             if (exception is ReswitchException) {
                 return
             }
-            wallpaperDetailView!!
-                    .showError(ErrorMessageFactory.create(wallpaperDetailView!!.context(),
+            wallpaperDetailView?.
+                    showError(ErrorMessageFactory.create(wallpaperDetailView!!.context(),
                             exception as Exception))
         }
     }
