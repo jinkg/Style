@@ -41,9 +41,9 @@ constructor(val context: Context,
                 notifyObserver()
             } else if (!sourcesCache.isUseCustomSource() && TextUtils.equals(uri.toString(),
                     StyleContract.Wallpaper.CONTENT_URI.toString())) {
-                styleWallpaperDataStoreFactory.onDataRefresh()
                 notifyObserver()
             }
+            styleWallpaperDataStoreFactory.onDataRefresh()
         }
     }
 

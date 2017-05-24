@@ -66,6 +66,10 @@ android {
 dependencies {
     compile "com.android.support:appcompat-v7:${SUPPORT_LIBRARY_VERSION}"
     compile "com.android.support:exifinterface:${SUPPORT_LIBRARY_VERSION}"
+    compile "com.android.support:design:${SUPPORT_LIBRARY_VERSION}"
+    compile "com.android.support:recyclerview-v7:${SUPPORT_LIBRARY_VERSION}"
+    compile "com.android.support:percent:${SUPPORT_LIBRARY_VERSION}"
+
     compile "com.google.code.gson:gson:${GSON_VERSION}"
     compile "com.squareup.okhttp3:okhttp:${OK_HTTP_VERSION}"
     compile "com.google.dagger:dagger:${DAGGER_VERSION}"

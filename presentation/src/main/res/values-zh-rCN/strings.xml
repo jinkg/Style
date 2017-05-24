@@ -54,4 +54,15 @@
     <string name="share_text">我今天的壁纸是 \' %1$s \' 由 %2$s 所画.  #StyleWallpaper\n\n
         %3$s</string>
 
+    <string name="gallery_empty">自定义壁纸</string>
+    <string name="gallery_empty_subtitle">选择指定的图片充当壁纸</string>
+
+    <string name="gallery_enable_random">开启自定义壁纸</string>
+    <string name="gallery_permission_rationale">允许Style使用存储权限，以开启自定义壁纸</string>
+    <string name="gallery_edit_settings">编辑应用权限</string>
+    <string name="gallery_denied_explanation">你必须开启<b>存储</b>权限以使用自定义壁纸</string>
+
+    <string name="gallery_add_fab">添加照片</string>
+    <string name="gallery_add_photos">添加照片</string>
+    <string name="gallery_add_folder">从%s导入照片</string>
 </resources>

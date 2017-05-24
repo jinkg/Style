@@ -52,4 +52,17 @@
     <string name="share_text">My Android wallpaper today is \' %1$s \' by %2$s. #StyleWallpaper\n\n
         %3$s</string>
 
+    <string name="gallery_empty">Random camera photos</string>
+    <string name="gallery_empty_subtitle">Choose specific photos instead</string>
+
+    <string name="gallery_enable_random">Enable random camera photos</string>
+    <string name="gallery_permission_rationale">Allow the storage permission to show random photos as
+        your background.</string>
+    <string name="gallery_edit_settings">Edit App Permissions</string>
+    <string name="gallery_denied_explanation">You must enable the <b>Storage</b> permission to use
+        random photos as your background.</string>
+
+    <string name="gallery_add_fab">Add photos</string>
+    <string name="gallery_add_photos">Add photos</string>
+    <string name="gallery_add_folder">Import photos from %s</string>
 </resources>
