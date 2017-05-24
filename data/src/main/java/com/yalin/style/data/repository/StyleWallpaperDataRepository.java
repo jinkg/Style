@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.fernandocejas.arrow.checks.Preconditions;
 import com.yalin.style.data.entity.mapper.WallpaperEntityMapper;
 import com.yalin.style.data.repository.datasource.WallpaperDataStore;
-import com.yalin.style.data.repository.datasource.WallpaperDataStoreFactory;
+import com.yalin.style.data.repository.datasource.StyleWallpaperDataStoreFactory;
 import com.yalin.style.data.repository.datasource.sync.SyncHelper;
 import com.yalin.style.data.repository.datasource.sync.account.Account;
 import com.yalin.style.domain.Wallpaper;
@@ -25,54 +25,53 @@ import io.reactivex.Observable;
  * @since 2017/4/18.
  */
 @Singleton
-public class WallpaperDataRepository implements WallpaperRepository {
+public class StyleWallpaperDataRepository implements WallpaperRepository {
 
     private final Context context;
-    private final WallpaperDataStoreFactory wallpaperDataStoreFactory;
+    private final StyleWallpaperDataStoreFactory styleWallpaperDataStoreFactory;
     private final WallpaperEntityMapper wallpaperEntityMapper;
 
     @Inject
-    WallpaperDataRepository(Context context,
-                            WallpaperDataStoreFactory wallpaperDataStoreFactory,
-                            WallpaperEntityMapper wallpaperEntityMapper) {
+    StyleWallpaperDataRepository(Context context,
+                                 StyleWallpaperDataStoreFactory styleWallpaperDataStoreFactory,
+                                 WallpaperEntityMapper wallpaperEntityMapper) {
         this.context = context;
-        this.wallpaperDataStoreFactory = wallpaperDataStoreFactory;
+        this.styleWallpaperDataStoreFactory = styleWallpaperDataStoreFactory;
         this.wallpaperEntityMapper = wallpaperEntityMapper;
 
         Account.createSyncAccount(context);
         SyncHelper.updateSyncInterval(context);
     }
 
-
     @Override
     public Observable<Wallpaper> getWallpaper() {
-        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.create();
+        final WallpaperDataStore dataStore = styleWallpaperDataStoreFactory.create();
         return dataStore.getWallPaperEntity().map(wallpaperEntityMapper::transform);
     }
 
     @Override
     public Observable<Wallpaper> switchWallpaper() {
-        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.create();
+        final WallpaperDataStore dataStore = styleWallpaperDataStoreFactory.create();
         return dataStore.switchWallPaperEntity().map(wallpaperEntityMapper::transform);
     }
 
     @Override
     public Observable<InputStream> openInputStream(String wallpaperId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(wallpaperId), "WallpaperId cannot be null");
-        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
+        final WallpaperDataStore dataStore = styleWallpaperDataStoreFactory.createDbDataStore();
         return dataStore.openInputStream(wallpaperId);
     }
 
     @Override
     public Observable<Integer> getWallpaperCount() {
-        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.create();
+        final WallpaperDataStore dataStore = styleWallpaperDataStoreFactory.create();
         return dataStore.getWallpaperCount();
     }
 
     @Override
     public Observable<Boolean> likeWallpaper(String wallpaperId) {
         Preconditions.checkArgument(!TextUtils.isEmpty(wallpaperId), "WallpaperId cannot be null");
-        final WallpaperDataStore dataStore = wallpaperDataStoreFactory.createDbDataStore();
+        final WallpaperDataStore dataStore = styleWallpaperDataStoreFactory.createDbDataStore();
         return dataStore.likeWallpaper(wallpaperId);
     }
 

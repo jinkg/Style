@@ -3,7 +3,7 @@ package com.yalin.style.domain.interactor;
 
 import com.yalin.style.domain.executor.PostExecutionThread;
 import com.yalin.style.domain.executor.ThreadExecutor;
-import com.yalin.style.domain.repository.WallpaperRepository;
+import com.yalin.style.domain.repository.SourcesRepository;
 
 import javax.inject.Inject;
 
@@ -15,18 +15,18 @@ import io.reactivex.Observable;
  */
 
 public class GetWallpaperCount extends UseCase<Integer, Void> {
-    private WallpaperRepository wallpaperRepository;
+    private SourcesRepository sourcesRepository;
 
     @Inject
     public GetWallpaperCount(ThreadExecutor threadExecutor,
                              PostExecutionThread postExecutionThread,
-                             WallpaperRepository wallpaperRepository) {
+                             SourcesRepository sourcesRepository) {
         super(threadExecutor, postExecutionThread);
-        this.wallpaperRepository = wallpaperRepository;
+        this.sourcesRepository = sourcesRepository;
     }
 
     @Override
     Observable<Integer> buildUseCaseObservable(Void aVoid) {
-        return wallpaperRepository.getWallpaperCount();
+        return sourcesRepository.getWallpaperRepository().getWallpaperCount();
     }
 }

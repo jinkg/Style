@@ -1,4 +1,4 @@
-package com.yalin.style.domain.repository;
+package com.yalin.style.domain.observable;
 
 import com.yalin.style.domain.interactor.DefaultObserver;
 

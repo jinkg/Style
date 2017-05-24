@@ -13,7 +13,5 @@ interface SourcesDataStore {
 
     fun selectSource(sourceId: Int): Observable<Boolean>
 
-    fun getWallpaperDataStore(): WallpaperDataStore
-
-    fun getDbWallpaperDataStore(): WallpaperDataStore
+    fun isUseCustomSource(): Boolean
 }

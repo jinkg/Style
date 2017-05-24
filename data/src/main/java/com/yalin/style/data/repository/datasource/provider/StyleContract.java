@@ -51,12 +51,18 @@ public class StyleContract {
 
     public static final Uri BASE_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY);
 
+    private static final String PATH_SOURCE = "source";
     private static final String PATH_WALLPAPER = "wallpaper";
     private static final String PATH_GALLERY = "gallery";
 
     public static final String[] TOP_LEVEL_PATHS = {
             PATH_WALLPAPER
     };
+
+    public static final class Source {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_SOURCE).build();
+    }
 
     public static final class Wallpaper implements WallpaperColumns, BaseColumns {
 

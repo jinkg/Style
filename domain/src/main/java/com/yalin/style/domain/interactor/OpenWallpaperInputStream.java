@@ -3,7 +3,7 @@ package com.yalin.style.domain.interactor;
 import com.fernandocejas.arrow.checks.Preconditions;
 import com.yalin.style.domain.executor.PostExecutionThread;
 import com.yalin.style.domain.executor.ThreadExecutor;
-import com.yalin.style.domain.repository.WallpaperRepository;
+import com.yalin.style.domain.repository.SourcesRepository;
 
 import java.io.InputStream;
 
@@ -18,20 +18,20 @@ import io.reactivex.Observable;
 
 public class OpenWallpaperInputStream
         extends UseCase<InputStream, OpenWallpaperInputStream.Params> {
-    private WallpaperRepository wallpaperRepository;
+    private SourcesRepository sourcesRepository;
 
     @Inject
     public OpenWallpaperInputStream(ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
-                                    WallpaperRepository wallpaperRepository) {
+                                    SourcesRepository sourcesRepository) {
         super(threadExecutor, postExecutionThread);
-        this.wallpaperRepository = wallpaperRepository;
+        this.sourcesRepository = sourcesRepository;
     }
 
     @Override
     Observable<InputStream> buildUseCaseObservable(Params params) {
         Preconditions.checkNotNull(params);
-        return wallpaperRepository.openInputStream(params.wallpaperId);
+        return sourcesRepository.getWallpaperRepository().openInputStream(params.wallpaperId);
     }
 
     public static final class Params {

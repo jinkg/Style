@@ -5,8 +5,9 @@ import android.content.Context
 import com.yalin.style.StyleWallpaperService
 import com.yalin.style.domain.executor.PostExecutionThread
 import com.yalin.style.domain.executor.ThreadExecutor
+import com.yalin.style.domain.observable.SourcesObservable
 import com.yalin.style.domain.repository.SourcesRepository
-import com.yalin.style.domain.repository.WallpaperObservable
+import com.yalin.style.domain.observable.WallpaperObservable
 import com.yalin.style.domain.repository.WallpaperRepository
 import com.yalin.style.injection.modules.ApplicationModule
 import com.yalin.style.view.fragment.StyleRenderFragment
@@ -34,5 +35,6 @@ interface ApplicationComponent {
     fun postExecutionThread(): PostExecutionThread
     fun wallpaperRepository(): WallpaperRepository
     fun sourcesRepository(): SourcesRepository
-    fun wallpaperObserverable(): WallpaperObservable
+    fun wallpaperObservable(): WallpaperObservable
+    fun sourceObservable(): SourcesObservable
 }

@@ -1,16 +1,14 @@
-package com.yalin.style.data.repository
+package com.yalin.style.data.observable
 
 import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
 import android.os.Handler
-import android.text.TextUtils
 import com.yalin.style.data.cache.SourcesCache
 import com.yalin.style.data.log.LogUtil
-import com.yalin.style.data.repository.datasource.WallpaperDataStoreFactory
 import com.yalin.style.data.repository.datasource.provider.StyleContract
 import com.yalin.style.domain.interactor.DefaultObserver
-import com.yalin.style.domain.repository.WallpaperObservable
+import com.yalin.style.domain.observable.SourcesObservable
 import java.util.HashSet
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,10 +18,9 @@ import javax.inject.Singleton
  * @since 2017/5/23.
  */
 @Singleton
-class WallpaperObservableImpl @Inject
+class SourcesObservableImpl @Inject
 constructor(val context: Context,
-            val sourcesCache: SourcesCache,
-            val wallpaperDataStoreFactory: WallpaperDataStoreFactory) : WallpaperObservable {
+            val sourcesCache: SourcesCache) : SourcesObservable {
 
     companion object {
         val TAG = "WallpaperObservableImpl"
@@ -32,15 +29,8 @@ constructor(val context: Context,
     private val mObserverSet = HashSet<DefaultObserver<Void>>()
     private val mContentObserver = object : ContentObserver(Handler()) {
         override fun onChange(selfChange: Boolean, uri: Uri) {
-            LogUtil.D(TAG, "Wallpaper data changed notify observer to reload.")
-            if (sourcesCache.useCustomSource() && TextUtils.equals(uri.toString(),
-                    StyleContract.Wallpaper.GALLERY_CONTENT_URI.toString())) {
-                notifyObserver()
-            } else if(!sourcesCache.useCustomSource() && TextUtils.equals(uri.toString(),
-                    StyleContract.Wallpaper.CONTENT_URI.toString())){
-                wallpaperDataStoreFactory.onDataRefresh()
-                notifyObserver()
-            }
+            LogUtil.D(TAG, "Source changed notify observer to reload.")
+            notifyObserver()
         }
     }
 
@@ -51,10 +41,7 @@ constructor(val context: Context,
             mObserverSet.add(observer)
             if (!observerRegistered) {
                 context.contentResolver
-                        .registerContentObserver(StyleContract.Wallpaper.CONTENT_URI,
-                                true, mContentObserver)
-                context.contentResolver
-                        .registerContentObserver(StyleContract.Wallpaper.GALLERY_CONTENT_URI,
+                        .registerContentObserver(StyleContract.Source.CONTENT_URI,
                                 true, mContentObserver)
                 observerRegistered = true
             }

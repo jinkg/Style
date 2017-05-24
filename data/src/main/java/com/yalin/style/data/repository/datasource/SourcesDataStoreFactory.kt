@@ -2,9 +2,6 @@ package com.yalin.style.data.repository.datasource
 
 import android.content.Context
 import com.yalin.style.data.cache.SourcesCache
-import com.yalin.style.data.cache.WallpaperCache
-import com.yalin.style.data.lock.LikeWallpaperLock
-import com.yalin.style.data.lock.OpenInputStreamLock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,13 +12,9 @@ import javax.inject.Singleton
 @Singleton
 class SourcesDataStoreFactory @Inject
 constructor(val context: Context,
-            val sourcesCache: SourcesCache,
-            val wallpaperCache: WallpaperCache,
-            val openInputStreamLock: OpenInputStreamLock,
-            val likeWallpaperLock: LikeWallpaperLock) {
+            val sourcesCache: SourcesCache) {
 
     fun create(): SourcesDataStore {
-        return SourcesDataStoreImpl(context, sourcesCache,
-                wallpaperCache, openInputStreamLock, likeWallpaperLock)
+        return SourcesDataStoreImpl(context, sourcesCache)
     }
 }

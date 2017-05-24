@@ -17,4 +17,6 @@ public interface SourcesRepository {
 
     Observable<Boolean> selectSource(int sourceId);
 
+    WallpaperRepository getWallpaperRepository();
+
 }

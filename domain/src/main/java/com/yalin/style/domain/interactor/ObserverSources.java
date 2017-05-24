@@ -9,12 +9,12 @@ import javax.inject.Inject;
  * @since 2017/5/23.
  */
 
-public class ObserverWallpaper {
+public class ObserverSources {
 
     private WallpaperObservable wallpaperObservable;
 
     @Inject
-    public ObserverWallpaper(WallpaperObservable wallpaperObservable) {
+    public ObserverSources(WallpaperObservable wallpaperObservable) {
         this.wallpaperObservable = wallpaperObservable;
     }
 

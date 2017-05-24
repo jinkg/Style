@@ -13,5 +13,5 @@ interface SourcesCache {
 
     fun selectSource(selectSourceId: Int): Boolean
 
-    fun useCustomSource(): Boolean
+    fun isUseCustomSource(): Boolean
 }

@@ -5,13 +5,15 @@ import android.content.Context
 import com.yalin.style.UIThread
 import com.yalin.style.data.cache.*
 import com.yalin.style.data.executor.JobExecutor
+import com.yalin.style.data.observable.SourcesObservableImpl
 import com.yalin.style.data.repository.SourcesDataRepository
-import com.yalin.style.data.repository.WallpaperDataRepository
-import com.yalin.style.data.repository.WallpaperObservableImpl
+import com.yalin.style.data.repository.StyleWallpaperDataRepository
+import com.yalin.style.data.observable.WallpaperObservableImpl
 import com.yalin.style.domain.executor.PostExecutionThread
 import com.yalin.style.domain.executor.ThreadExecutor
+import com.yalin.style.domain.observable.SourcesObservable
 import com.yalin.style.domain.repository.SourcesRepository
-import com.yalin.style.domain.repository.WallpaperObservable
+import com.yalin.style.domain.observable.WallpaperObservable
 import com.yalin.style.domain.repository.WallpaperRepository
 
 import javax.inject.Singleton
@@ -48,9 +50,9 @@ class ApplicationModule(context: Context) {
 
     @Provides
     @Singleton
-    internal fun provideWallpaperRepository(wallpaperDataRepository: WallpaperDataRepository):
+    internal fun provideWallpaperRepository(styleWallpaperDataRepository: StyleWallpaperDataRepository):
             WallpaperRepository {
-        return wallpaperDataRepository
+        return styleWallpaperDataRepository
     }
 
     @Provides
@@ -76,6 +78,13 @@ class ApplicationModule(context: Context) {
     @Singleton
     internal fun provideWallpaperObservable(observable: WallpaperObservableImpl):
             WallpaperObservable {
+        return observable
+    }
+
+    @Provides
+    @Singleton
+    internal fun provideSourceObservable(observable: SourcesObservableImpl):
+            SourcesObservable {
         return observable
     }
 }

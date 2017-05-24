@@ -5,6 +5,7 @@ import android.graphics.Color
 import com.yalin.style.data.R
 import com.yalin.style.data.entity.SourceEntity
 import com.yalin.style.data.extensions.DelegateExt
+import com.yalin.style.data.repository.datasource.provider.StyleContract
 import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -15,7 +16,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class SourcesCacheImpl @Inject
-constructor(ctx: Context) : SourcesCache {
+constructor(val ctx: Context) : SourcesCache {
 
     companion object {
         val SOURCE_ID_STYLE = 0
@@ -57,21 +58,29 @@ constructor(ctx: Context) : SourcesCache {
     }
 
     override fun selectSource(selectSourceId: Int): Boolean {
+        var success = false
         if (featureSource.id == selectSourceId) {
             featureSource.isSelected = true
             gallerySource.isSelected = false
             selectedId = selectSourceId
-            return true
+            success = true
         } else if (gallerySource.id == selectSourceId) {
             featureSource.isSelected = false
             gallerySource.isSelected = true
             selectedId = selectSourceId
-            return true
+            success = true
         }
-        return false
+        if (success) {
+            notifyChanged()
+        }
+        return success
     }
 
-    override fun useCustomSource(): Boolean {
+    override fun isUseCustomSource(): Boolean {
         return gallerySource.isSelected
+    }
+
+    private fun notifyChanged() {
+        ctx.contentResolver.notifyChange(StyleContract.Source.CONTENT_URI, null)
     }
 }
