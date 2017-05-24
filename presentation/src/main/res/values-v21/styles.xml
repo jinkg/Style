@@ -11,4 +11,9 @@
         <item name="android:progressDrawable">@drawable/scrubber_progress_horizontal</item>
         <item name="android:indeterminateDrawable">@drawable/scrubber_progress_horizontal</item>
     </style>
+
+    <style name="Theme.Style.Gallery" parent="Theme.Style.Gallery.Base">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
 </resources>

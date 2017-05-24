@@ -21,7 +21,7 @@
     android:fitsSystemWindows="true">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/photo_grid"
+        android:id="@+id/photoGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -41,7 +41,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/app_bar"
+            android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
@@ -63,7 +63,7 @@
             android:padding="32dp">
 
             <ViewAnimator
-                android:id="@+id/empty_animator"
+                android:id="@+id/emptyAnimator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -74,14 +74,14 @@
                     android:layout_height="wrap_content" />
 
                 <Button
-                    android:id="@+id/gallery_enable_random"
+                    android:id="@+id/btnGalleryEnableRandom"
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/gallery_enable_random" />
 
                 <Button
-                    android:id="@+id/gallery_edit_permission_settings"
+                    android:id="@+id/btnGalleryEditPermissionSettings"
                     style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
             </ViewAnimator>
 
             <TextView
-                android:id="@+id/empty_description"
+                android:id="@+id/emptyDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="64dp"
@@ -118,7 +118,7 @@
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_fab"
+        android:id="@+id/addFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
@@ -127,7 +127,7 @@
         android:src="@drawable/gallery_ic_add" />
 
     <LinearLayout
-        android:id="@+id/add_toolbar"
+        android:id="@+id/addToolbar"
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="@dimen/gallery_fab_toolbar_height"
@@ -137,7 +137,7 @@
         android:visibility="invisible">
 
         <ImageButton
-            android:id="@+id/add_photos"
+            android:id="@+id/addPhotos"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -146,7 +146,7 @@
             android:src="@drawable/gallery_ic_add_photo" />
 
         <ImageButton
-            android:id="@+id/add_folder"
+            android:id="@+id/addFolder"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -156,7 +156,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/selection_toolbar_container"
+        android:id="@+id/selectionToolbarContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/gallery_header_elevation"
@@ -166,7 +166,7 @@
         tools:targetApi="LOLLIPOP">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/selection_toolbar"
+            android:id="@+id/selectionToolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="@color/gallery_theme_dark"

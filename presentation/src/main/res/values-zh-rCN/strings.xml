@@ -65,4 +65,10 @@
     <string name="gallery_add_fab">添加照片</string>
     <string name="gallery_add_photos">添加照片</string>
     <string name="gallery_add_folder">从%s导入照片</string>
+
+    <string name="gallery_internal_storage_message">Don\'t see anything? Try enabling internal storage in the overflow
+        menu</string>
+    <string name="gallery_add_photos_error">Your device does not support adding pictures.\nPlease contact your manufacturer.</string>
+    <string name="gallery_add_folder_error">Your device does not support adding folders.\nPlease contact your manufacturer.</string>
+
 </resources>

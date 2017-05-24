@@ -1,7 +1,9 @@
 package com.yalin.style.view.fragment
 
 import android.animation.ObjectAnimator
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -13,10 +15,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.yalin.style.R
+import com.yalin.style.data.log.LogUtil
 import com.yalin.style.injection.component.SourceComponent
 import com.yalin.style.model.SourceItem
 import com.yalin.style.presenter.SettingsChooseSourcePresenter
 import com.yalin.style.view.SourceChooseView
+import com.yalin.style.view.activity.GallerySettingActivity
 import com.yalin.style.view.component.ObservableHorizontalScrollView
 import kotlinx.android.synthetic.main.layout_settings_choose_source.*
 import javax.inject.Inject
@@ -29,6 +33,7 @@ import kotlin.collections.HashMap
 class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
 
     companion object {
+        private val TAG = "SettingsChooseSourceFragment"
         private val SCROLLBAR_HIDE_DELAY_MILLIS = 1000
         private val ALPHA_UNSELECTED = 0.4f
     }
@@ -168,7 +173,7 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
 
                 val settingsButton = findViewById(R.id.source_settings_button)
                 settingsButton.setOnClickListener {
-                    //                launchSourceSettings(source)
+                    launchSourceSettings()
                 }
 
                 animateSettingsButton(settingsButton, false, false)
@@ -300,6 +305,18 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
             }
         } catch (ignored: IllegalArgumentException) {
         }
+    }
+
+    private fun launchSourceSettings() {
+        try {
+            val settingsIntent = Intent(activity, GallerySettingActivity::class.java)
+            startActivity(settingsIntent)
+        } catch (e: ActivityNotFoundException) {
+            LogUtil.E(TAG, "Can't launch source settings.", e)
+        } catch (e: SecurityException) {
+            LogUtil.E(TAG, "Can't launch source settings.", e)
+        }
+
     }
 
     interface Callbacks {

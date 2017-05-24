@@ -52,6 +52,11 @@
             android:parentActivityName=".view.activity.SettingsActivity"
             android:theme="@style/Theme.Style.About" />
 
+        <activity
+            android:name=".view.activity.GallerySettingActivity"
+            android:label="@string/gallery_title"
+            android:theme="@style/Theme.Style.Gallery" />
+
         <service
             android:name=".StyleWallpaperService"
             android:permission="android.permission.BIND_WALLPAPER">

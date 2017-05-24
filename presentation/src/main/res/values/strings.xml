@@ -65,4 +65,10 @@
     <string name="gallery_add_fab">Add photos</string>
     <string name="gallery_add_photos">Add photos</string>
     <string name="gallery_add_folder">Import photos from %s</string>
+
+    <string name="gallery_internal_storage_message">没有内容？请尝试。。。</string>
+    <string name="gallery_add_photos_error">你的设备不支持添加图片。请联系设备的生产厂商</string>
+    <string name="gallery_add_folder_error">你的设备不支持添加文件夹。请联系设备的生产厂商</string>
+
+
 </resources>
