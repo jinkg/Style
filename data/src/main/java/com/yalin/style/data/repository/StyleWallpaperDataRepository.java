@@ -9,11 +9,13 @@ import com.yalin.style.data.repository.datasource.WallpaperDataStore;
 import com.yalin.style.data.repository.datasource.StyleWallpaperDataStoreFactory;
 import com.yalin.style.data.repository.datasource.sync.SyncHelper;
 import com.yalin.style.data.repository.datasource.sync.account.Account;
+import com.yalin.style.domain.GalleryWallpaper;
 import com.yalin.style.domain.Wallpaper;
 import com.yalin.style.domain.repository.WallpaperRepository;
 
 
 import java.io.InputStream;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -73,6 +75,22 @@ public class StyleWallpaperDataRepository implements WallpaperRepository {
         Preconditions.checkArgument(!TextUtils.isEmpty(wallpaperId), "WallpaperId cannot be null");
         final WallpaperDataStore dataStore = styleWallpaperDataStoreFactory.createDbDataStore();
         return dataStore.likeWallpaper(wallpaperId);
+    }
+
+    @Override
+    public Observable<Boolean> addCustomWallpaperUris(Set<GalleryWallpaper> uris) {
+        return Observable.create(emitter ->
+                emitter.onError(new IllegalStateException(
+                        "StyleWallpaperRepository can not add custom wallpaper."))
+        );
+    }
+
+    @Override
+    public Observable<Set<GalleryWallpaper>> getGalleryWallpapers() {
+        return Observable.create(emitter ->
+                emitter.onError(new IllegalStateException(
+                        "StyleWallpaperRepository have not custom wallpapers."))
+        );
     }
 
 }

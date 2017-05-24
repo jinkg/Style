@@ -58,6 +58,9 @@ constructor(val getSourcesUseCase: GetSources,
     }
 
     override fun destroy() {
+        getSourcesUseCase.dispose()
+        selectSourceUseCae.dispose()
+        mSourceChooseView = null
     }
 
     fun updateSources() {

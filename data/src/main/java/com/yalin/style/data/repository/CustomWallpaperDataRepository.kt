@@ -2,6 +2,7 @@ package com.yalin.style.data.repository
 
 import com.yalin.style.data.entity.mapper.WallpaperEntityMapper
 import com.yalin.style.data.repository.datasource.CustomWallpaperDataStoreFactory
+import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.Wallpaper
 import com.yalin.style.domain.repository.WallpaperRepository
 import io.reactivex.Observable
@@ -18,6 +19,7 @@ class CustomWallpaperDataRepository @Inject
 constructor(val customWallpaperDataStoreFactory: CustomWallpaperDataStoreFactory,
             val wallpaperEntityMapper: WallpaperEntityMapper) :
         WallpaperRepository {
+
     override fun getWallpaper(): Observable<Wallpaper> =
             customWallpaperDataStoreFactory.create()
                     .wallPaperEntity.map(wallpaperEntityMapper::transform)
@@ -34,8 +36,15 @@ constructor(val customWallpaperDataStoreFactory: CustomWallpaperDataStoreFactory
             customWallpaperDataStoreFactory.create()
                     .wallpaperCount
 
-    override fun likeWallpaper(wallpaperId: String?): Observable<Boolean> =
+    override fun likeWallpaper(wallpaperId: String): Observable<Boolean> =
             customWallpaperDataStoreFactory.create()
                     .likeWallpaper(wallpaperId)
 
+    override fun addCustomWallpaperUris(uris: Set<GalleryWallpaper>): Observable<Boolean> =
+            customWallpaperDataStoreFactory.create()
+                    .addCustomWallpaperUris(uris)
+
+    override fun getGalleryWallpapers(): Observable<Set<GalleryWallpaper>> =
+            customWallpaperDataStoreFactory.create()
+                    .getCustomWallpaperUris().map(wallpaperEntityMapper::transformGalleryWallpaper)
 }

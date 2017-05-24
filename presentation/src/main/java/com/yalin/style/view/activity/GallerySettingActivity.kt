@@ -4,9 +4,9 @@ import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
+import android.app.Activity
+import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -21,11 +21,17 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.ImageView
-import android.widget.Toast
 import com.yalin.style.R
+import com.yalin.style.StyleApplication
+import com.yalin.style.domain.GalleryWallpaper
+import com.yalin.style.domain.interactor.AddGalleryWallpaper
+import com.yalin.style.domain.interactor.DefaultObserver
+import com.yalin.style.domain.interactor.GetGalleryWallpaper
 import kotlinx.android.synthetic.main.activity_gallery.*
 import org.jetbrains.anko.toast
 import java.util.ArrayList
+import java.util.HashSet
+import javax.inject.Inject
 
 /**
  * @author jinyalin
@@ -47,10 +53,21 @@ class GallerySettingActivity : BaseActivity() {
 
     private var mItemSize = 10
 
+    private var mUpdatePosition = -1
+
+    @Inject
+    lateinit internal var addGalleryWallpaperUseCase: AddGalleryWallpaper
+
+    @Inject
+    lateinit internal var getGalleryWallpaperUseCase: GetGalleryWallpaper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_gallery)
+
+        StyleApplication.instance.applicationComponent.inject(this)
+
         setSupportActionBar(appBar)
 
         mPlaceholderDrawable = ColorDrawable(ContextCompat.getColor(this,
@@ -95,7 +112,7 @@ class GallerySettingActivity : BaseActivity() {
                 photoGrid.adapter = mChosenPhotosAdapter
 
                 photoGrid.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                tryUpdateSelection(false)
+                tryUpdateSelection(false)
             }
         })
 
@@ -136,7 +153,7 @@ class GallerySettingActivity : BaseActivity() {
         }
 
         addPhotos.setOnClickListener {
-            requestPhotos();
+            requestPhotos()
         }
 
         addFolder.setOnClickListener {
@@ -153,7 +170,124 @@ class GallerySettingActivity : BaseActivity() {
                 hideAddToolbar(true)
             }
         }
+
+        refreshGalleryWallpaper()
     }
+
+    override fun onResume() {
+        super.onResume()
+        onDataSetChanged()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<out String>,
+                                            grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != REQUEST_STORAGE_PERMISSION) {
+            return
+        }
+        onDataSetChanged()
+    }
+
+    private fun refreshGalleryWallpaper() {
+        getGalleryWallpaperUseCase.execute(object : DefaultObserver<Set<GalleryWallpaper>>() {
+            override fun onNext(success: Set<GalleryWallpaper>) {
+                super.onNext(success)
+            }
+        }, null)
+    }
+
+    private fun tryUpdateSelection(allowAnimate: Boolean) {
+        if (mUpdatePosition >= 0) {
+            mChosenPhotosAdapter.notifyItemChanged(mUpdatePosition)
+            mUpdatePosition = -1
+        } else {
+            mChosenPhotosAdapter.notifyDataSetChanged()
+        }
+
+//        val selectedCount = mMultiSelectionController.getSelectedCount()
+        val selectedCount = 0
+        val toolbarVisible = selectedCount > 0
+        var showForceNow = selectedCount == 1
+        if (showForceNow) {
+            // Double check to make sure we can force a URI for the selected URI
+//            val selectedUri = mMultiSelectionController.getSelection().iterator().next()
+//            val data = contentResolver.query(selectedUri,
+//                    arrayOf<String>(GalleryContract.ChosenPhotos.COLUMN_NAME_IS_TREE_URI, GalleryContract.ChosenPhotos.COLUMN_NAME_URI), null, null, null)
+//            if (data != null && data.moveToNext()) {
+//                val isTreeUri = data.getInt(0) != 0
+//                // Only show the force now icon if it isn't a tree URI or there is at least one image in the tree
+//                showForceNow = !isTreeUri || !getImagesFromTreeUri(Uri.parse(data.getString(1)), 1).isEmpty()
+//            }
+//            data?.close()
+        }
+//        selectionToolbar.menu.findItem(R.id.action_force_now).isVisible = showForceNow
+
+//        var previouslyVisible: Boolean? = selectionToolbarContainer.getTag(0xDEADBEEF.toInt()) as Boolean
+        var previouslyVisible = false
+
+        if (previouslyVisible !== toolbarVisible) {
+            selectionToolbarContainer.setTag(0xDEADBEEF.toInt(), toolbarVisible)
+
+            val duration = if (allowAnimate)
+                resources.getInteger(android.R.integer.config_shortAnimTime)
+            else
+                0
+            if (toolbarVisible) {
+                selectionToolbarContainer.visibility = View.VISIBLE
+                selectionToolbarContainer.translationY = (-selectionToolbarContainer.height).toFloat()
+                selectionToolbarContainer.animate()
+                        .translationY(0f)
+                        .setDuration(duration.toLong())
+                        .withEndAction(null)
+
+                if (addToolbar.visibility == View.VISIBLE) {
+                    hideAddToolbar(false)
+                } else {
+                    addFab.animate()
+                            .scaleX(0f)
+                            .scaleY(0f)
+                            .setDuration(duration.toLong())
+                            .withEndAction({ addFab.visibility = View.INVISIBLE })
+                }
+            } else {
+                selectionToolbarContainer.animate()
+                        .translationY((-selectionToolbarContainer.height).toFloat())
+                        .setDuration(duration.toLong())
+                        .withEndAction { selectionToolbarContainer.visibility = View.INVISIBLE }
+
+                addFab.visibility = View.VISIBLE
+                addFab.animate()
+                        .scaleY(1f)
+                        .scaleX(1f)
+                        .setDuration(duration.toLong())
+                        .withEndAction(null)
+            }
+        }
+
+        if (toolbarVisible) {
+            var title = Integer.toString(selectedCount)
+            if (selectedCount == 1) {
+                // If they've selected a tree URI, show the DISPLAY_NAME instead of just '1'
+//                val selectedUri = mMultiSelectionController.getSelection().iterator().next()
+//                val selectedUri = mMultiSelectionController.getSelection().iterator().next()
+//                val data = contentResolver.query(selectedUri,
+//                        arrayOf<String>(GalleryContract.ChosenPhotos.COLUMN_NAME_IS_TREE_URI, GalleryContract.ChosenPhotos.COLUMN_NAME_URI), null, null, null)
+//                if (data != null && data.moveToNext()) {
+//                    val isTreeUri = data.getInt(0) != 0
+//                    if (isTreeUri) {
+//                        val displayName = getDisplayNameForTreeUri(Uri.parse(data.getString(1)))
+//                        if (!TextUtils.isEmpty(displayName)) {
+//                            title = displayName
+//                        }
+//                    }
+//                }
+//                data?.close()
+            }
+            selectionToolbar.title = title
+        }
+    }
+
 
     private fun requestPhotos() {
         // Use ACTION_OPEN_DOCUMENT by default for adding photos.
@@ -175,6 +309,83 @@ class GallerySettingActivity : BaseActivity() {
             }
         }
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
+        super.onActivityResult(requestCode, resultCode, result)
+        if (requestCode != REQUEST_CHOOSE_PHOTOS && requestCode != REQUEST_CHOOSE_FOLDER) {
+            return
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (!addToolbar.isAttachedToWindow) {
+                // Can't animate detached Views
+                addToolbar.visibility = View.INVISIBLE
+                addFab.visibility = View.VISIBLE
+            } else {
+                hideAddToolbar(true)
+            }
+        }
+
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+
+        if (result == null) {
+            return
+        }
+
+        if (requestCode == REQUEST_CHOOSE_FOLDER) {
+            val preferences = getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
+            preferences.edit().putBoolean(SHOW_INTERNAL_STORAGE_MESSAGE, false).apply()
+        }
+
+        // Add chosen items
+        val uris = HashSet<String>()
+        if (result.data != null) {
+            uris.add(result.data.toString())
+        }
+        // When selecting multiple images, "Photos" returns the first URI in getData and all URIs
+        // in getClipData.
+        val clipData = result.clipData
+        if (clipData != null) {
+            val count = clipData.itemCount
+            for (i in 0..count - 1) {
+                val uri = clipData.getItemAt(i).uri
+                if (uri != null) {
+                    uris.add(uri.toString())
+                }
+            }
+        }
+
+        if (uris.isEmpty()) {
+            // Nothing to do, so we can avoid posting the runnable at all
+            return
+        }
+
+        Set<GalleryWallpaper>
+        for()
+
+        addGalleryWallpaperUseCase.execute(
+                AddCustomWallpaperObserver(),
+                AddGalleryWallpaper.Params.addCustomWallpaperUris(uris))
+        // Update chosen URIs
+//        runOnHandlerThread(Runnable {
+//            val operations = ArrayList<ContentProviderOperation>()
+//            for (uri in uris) {
+//                val values = ContentValues()
+//                values.put(GalleryContract.ChosenPhotos.COLUMN_NAME_URI, uri.toString())
+//                operations.add(ContentProviderOperation.newInsert(GalleryContract.ChosenPhotos.CONTENT_URI)
+//                        .withValues(values).build())
+//            }
+//            try {
+//                contentResolver.applyBatch(GalleryContract.AUTHORITY, operations)
+//            } catch (e: RemoteException) {
+//                Log.e(TAG, "Error writing uris to ContentProvider", e)
+//            } catch (e: OperationApplicationException) {
+//                Log.e(TAG, "Error writing uris to ContentProvider", e)
+//            }
+//        })
     }
 
     override fun onBackPressed() {
@@ -248,6 +459,37 @@ class GallerySettingActivity : BaseActivity() {
         hideAnimator.start()
     }
 
+    private fun onDataSetChanged() {
+//        if (mChosenUris != null && mChosenUris.getCount() > 0) {
+//            emptyView.visibility = View.GONE
+//            // We have at least one image, so consider the Gallery source properly setup
+//            setResult(Activity.RESULT_OK)
+//        } else {
+        // No chosen images, show the empty View
+        empty.visibility = View.VISIBLE
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            // Permission is granted, we can show the random camera photos image
+            emptyAnimator.displayedChild = 0
+            emptyDescription.setText(R.string.gallery_empty)
+            setResult(Activity.RESULT_OK)
+        } else {
+            // We have no images until they enable the permission
+            setResult(Activity.RESULT_CANCELED)
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // We should show rationale on why they should enable the storage permission and
+                // random camera photos
+                emptyAnimator.displayedChild = 1
+                emptyDescription.setText(R.string.gallery_permission_rationale)
+            } else {
+                // The user has permanently denied the storage permission. Give them a link to app settings
+                emptyAnimator.displayedChild = 2
+                emptyDescription.setText(R.string.gallery_denied_explanation)
+            }
+        }
+    }
+
     open class CheckableViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         var mRootView: View = root
         var mCheckedOverlayView: View = root.findViewById(R.id.checked_overlay)
@@ -304,6 +546,15 @@ class GallerySettingActivity : BaseActivity() {
 
         override fun getItemId(position: Int): Long {
             return 0
+        }
+    }
+
+    private inner class AddCustomWallpaperObserver : DefaultObserver<Boolean>() {
+        override fun onNext(success: Boolean) {
+            super.onNext(success)
+            if (success) {
+                refreshGalleryWallpaper()
+            }
         }
     }
 }

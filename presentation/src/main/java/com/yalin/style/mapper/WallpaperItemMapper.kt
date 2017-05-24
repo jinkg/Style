@@ -1,8 +1,10 @@
 package com.yalin.style.mapper
 
 import com.fernandocejas.arrow.checks.Preconditions
+import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.Source
 import com.yalin.style.domain.Wallpaper
+import com.yalin.style.model.GalleryWallpaperItem
 import com.yalin.style.model.SourceItem
 import com.yalin.style.model.WallpaperItem
 import java.util.ArrayList
@@ -51,5 +53,14 @@ constructor() {
         sourceItem.hasSetting = source.hasSetting
         sourceItem.color = source.color
         return sourceItem
+    }
+
+    fun transform(galleryWallpaper: GalleryWallpaper): GalleryWallpaperItem {
+        Preconditions.checkNotNull(galleryWallpaper,
+                "GalleryWallpaperItem can not be null.")
+        val galleryWallpaperItem = GalleryWallpaperItem()
+        galleryWallpaperItem.isTreeUri = galleryWallpaperItem.isTreeUri
+        galleryWallpaperItem.uri = galleryWallpaperItem.uri
+        return galleryWallpaperItem
     }
 }

@@ -1,13 +1,17 @@
 package com.yalin.style.data.entity.mapper;
 
 import com.fernandocejas.arrow.checks.Preconditions;
+import com.yalin.style.data.entity.GalleryWallpaperEntity;
 import com.yalin.style.data.entity.SourceEntity;
 import com.yalin.style.data.entity.WallpaperEntity;
+import com.yalin.style.domain.GalleryWallpaper;
 import com.yalin.style.domain.Source;
 import com.yalin.style.domain.Wallpaper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -58,4 +62,26 @@ public class WallpaperEntityMapper {
         source.color = sourceEntity.getColor();
         return source;
     }
+
+    public Set<GalleryWallpaper> transformGalleryWallpaper(
+            Set<GalleryWallpaperEntity> galleryWallpaperEntities) {
+        Preconditions.checkNotNull(galleryWallpaperEntities,
+                "GalleryWallpaperEntity can not be null.");
+        Set<GalleryWallpaper> entities = new HashSet<>();
+        for (GalleryWallpaperEntity entity : galleryWallpaperEntities) {
+            entities.add(transformGalleryWallpaper(entity));
+        }
+        return entities;
+    }
+
+    public GalleryWallpaper transformGalleryWallpaper(
+            GalleryWallpaperEntity galleryWallpaperEntity) {
+        Preconditions.checkNotNull(galleryWallpaperEntity,
+                "GalleryWallpaperEntity can not be null.");
+        GalleryWallpaper galleryWallpaper = new GalleryWallpaper();
+        galleryWallpaper.isTreeUri = galleryWallpaperEntity.isTreeUri();
+        galleryWallpaper.uri = galleryWallpaperEntity.getUri();
+        return galleryWallpaper;
+    }
+
 }

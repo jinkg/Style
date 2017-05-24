@@ -10,6 +10,7 @@ import com.yalin.style.domain.repository.SourcesRepository
 import com.yalin.style.domain.observable.WallpaperObservable
 import com.yalin.style.domain.repository.WallpaperRepository
 import com.yalin.style.injection.modules.ApplicationModule
+import com.yalin.style.view.activity.GallerySettingActivity
 import com.yalin.style.view.fragment.StyleRenderFragment
 
 import javax.inject.Singleton
@@ -27,6 +28,8 @@ interface ApplicationComponent {
     fun inject(styleWallpaperEngine: StyleWallpaperService.StyleWallpaperEngine)
 
     fun inject(styleView: StyleRenderFragment.StyleView)
+
+    fun inject(gallerySettingActivity: GallerySettingActivity)
 
     //Exposed to sub-graphs.
     fun context(): Context

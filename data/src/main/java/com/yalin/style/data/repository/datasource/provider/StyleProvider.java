@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yalin.style.data.log.LogUtil;
+import com.yalin.style.data.repository.datasource.provider.StyleContract.GalleryWallpaper;
 import com.yalin.style.data.repository.datasource.provider.StyleContract.Wallpaper;
 import com.yalin.style.data.utils.SelectionBuilder;
 import com.yalin.style.data.utils.WallpaperFileHelper;
@@ -87,6 +88,10 @@ public class StyleProvider extends ContentProvider {
                 final SelectionBuilder builder = buildSimpleSelection(uri);
                 return builder.query(db, projection, Wallpaper._ID + " DESC");
             }
+            case GALLERY: {
+                final SelectionBuilder builder = buildSimpleSelection(uri);
+                return builder.query(db, projection, GalleryWallpaper._ID + " DESC");
+            }
             default: {
                 final SelectionBuilder builder = buildExpandedSelection(uri, uriEnum.code);
 
@@ -109,12 +114,14 @@ public class StyleProvider extends ContentProvider {
 
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         StyleUriEnum uriEnum = mUriMatcher.matchUri(uri);
-        db.insertOrThrow(uriEnum.table, null, values);
+        long id = db.insertOrThrow(uriEnum.table, null, values);
 
         switch (uriEnum) {
             case WALLPAPER:
                 return StyleContract.Wallpaper.buildWallpaperUri(
                         values.getAsString(StyleContract.Wallpaper.COLUMN_NAME_WALLPAPER_ID));
+            case GALLERY:
+                return StyleContract.GalleryWallpaper.buildGalleryWallpaperUri(id);
             default: {
                 throw new UnsupportedOperationException("Unknown insert uri: " + uri);
             }
@@ -208,6 +215,15 @@ public class StyleProvider extends ContentProvider {
             case WALLPAPER_LIKED: {
                 return builder.table(StyleDatabase.Tables.WALLPAPER)
                         .where(Wallpaper.COLUMN_NAME_LIKED + " = ?", "1");
+            }
+            case GALLERY: {
+                return builder.table(StyleDatabase.Tables.GALLERY);
+            }
+            case GALLERY_ID: {
+                String galleryWallpaperId
+                        = StyleContract.GalleryWallpaper.getGalleryWallpaperId(uri);
+                return builder.table(StyleDatabase.Tables.GALLERY)
+                        .where(GalleryWallpaper._ID + " = ?", galleryWallpaperId);
             }
             default: {
                 throw new UnsupportedOperationException("Unknown uri for " + uri);

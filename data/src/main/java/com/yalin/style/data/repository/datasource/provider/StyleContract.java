@@ -49,6 +49,18 @@ public class StyleContract {
         String COLUMN_NAME_CHECKSUM = "checksum";
     }
 
+    interface GalleryColumns {
+        /**
+         * Type: TEXT
+         */
+        String COLUMN_NAME_CUSTOM_URI = "custom_wallpaper_uri";
+
+        /**
+         * Type:INTEGER
+         */
+        String COLUMN_NAME_IS_TREE_URI = "is_tree_uri";
+    }
+
     public static final Uri BASE_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY);
 
     private static final String PATH_SOURCE = "source";
@@ -74,9 +86,6 @@ public class StyleContract {
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_WALLPAPER).build();
-
-        public static final Uri GALLERY_CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_GALLERY).build();
 
         public static final Uri CONTENT_KEEPED_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_WALLPAPER)
@@ -107,6 +116,21 @@ public class StyleContract {
 
         public static String getWallpaperLikeId(Uri uri) {
             return uri.getPathSegments().get(2);
+        }
+    }
+
+    public static final class GalleryWallpaper implements GalleryColumns, BaseColumns {
+        public static final String TABLE_NAME = "gallery_wallpaper";
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_GALLERY).build();
+
+        public static Uri buildGalleryWallpaperUri(long insertId) {
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(insertId)).build();
+        }
+
+        public static String getGalleryWallpaperId(Uri uri) {
+            return uri.getPathSegments().get(1);
         }
     }
 }

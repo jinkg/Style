@@ -37,7 +37,7 @@ constructor(val context: Context,
         override fun onChange(selfChange: Boolean, uri: Uri) {
             LogUtil.D(TAG, "Wallpaper data changed notify observer to reload.")
             if (sourcesCache.isUseCustomSource() && TextUtils.equals(uri.toString(),
-                    StyleContract.Wallpaper.GALLERY_CONTENT_URI.toString())) {
+                    StyleContract.GalleryWallpaper.CONTENT_URI.toString())) {
                 notifyObserver()
             } else if (!sourcesCache.isUseCustomSource() && TextUtils.equals(uri.toString(),
                     StyleContract.Wallpaper.CONTENT_URI.toString())) {
@@ -63,7 +63,7 @@ constructor(val context: Context,
                         .registerContentObserver(StyleContract.Wallpaper.CONTENT_URI,
                                 true, mWallpaperObserver)
                 context.contentResolver
-                        .registerContentObserver(StyleContract.Wallpaper.GALLERY_CONTENT_URI,
+                        .registerContentObserver(StyleContract.GalleryWallpaper.CONTENT_URI,
                                 true, mWallpaperObserver)
 
                 sourcesObservable.registerObserver(sourceObserver)
