@@ -11,8 +11,8 @@ public enum StyleUriEnum {
     WALLPAPER_LIKED(105, "wallpaper/liked", null),
     WALLPAPER_ID(102, "wallpaper/*", null),
 
-    GALLERY(200, "gallery_wallpaper", StyleDatabase.Tables.GALLERY),
-    GALLERY_ID(201, "gallery_wallpaper/*", null);
+    GALLERY(200, "gallery", StyleDatabase.Tables.GALLERY),
+    GALLERY_ID(201, "gallery/*", null);
 
     public int code;
     public String path;

@@ -8,6 +8,7 @@ import com.yalin.style.domain.repository.SourcesRepository;
 import java.util.Set;
 
 import io.reactivex.Observable;
+import javax.inject.Inject;
 
 /**
  * @author jinyalin
@@ -16,6 +17,7 @@ import io.reactivex.Observable;
 public class GetGalleryWallpaper extends UseCase<Set<GalleryWallpaper>, Void> {
     private SourcesRepository sourcesRepository;
 
+    @Inject
     public GetGalleryWallpaper(ThreadExecutor threadExecutor,
                                PostExecutionThread postExecutionThread,
                                SourcesRepository sourcesRepository) {

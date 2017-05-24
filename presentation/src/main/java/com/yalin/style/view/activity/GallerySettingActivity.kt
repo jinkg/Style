@@ -27,6 +27,7 @@ import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.interactor.AddGalleryWallpaper
 import com.yalin.style.domain.interactor.DefaultObserver
 import com.yalin.style.domain.interactor.GetGalleryWallpaper
+import com.yalin.style.util.UriUtil
 import kotlinx.android.synthetic.main.activity_gallery.*
 import org.jetbrains.anko.toast
 import java.util.ArrayList
@@ -341,9 +342,9 @@ class GallerySettingActivity : BaseActivity() {
         }
 
         // Add chosen items
-        val uris = HashSet<String>()
+        val uris = HashSet<Uri>()
         if (result.data != null) {
-            uris.add(result.data.toString())
+            uris.add(result.data)
         }
         // When selecting multiple images, "Photos" returns the first URI in getData and all URIs
         // in getClipData.
@@ -353,7 +354,7 @@ class GallerySettingActivity : BaseActivity() {
             for (i in 0..count - 1) {
                 val uri = clipData.getItemAt(i).uri
                 if (uri != null) {
-                    uris.add(uri.toString())
+                    uris.add(uri)
                 }
             }
         }
@@ -363,12 +364,17 @@ class GallerySettingActivity : BaseActivity() {
             return
         }
 
-        Set<GalleryWallpaper>
-        for()
+        val galleryWallpapers = HashSet<GalleryWallpaper>()
+        for (uri in uris) {
+            val wallpaper = GalleryWallpaper()
+            wallpaper.uri = uri.toString()
+            wallpaper.isTreeUri = UriUtil.isTreeUri(uri)
+            galleryWallpapers.add(wallpaper)
+        }
 
         addGalleryWallpaperUseCase.execute(
                 AddCustomWallpaperObserver(),
-                AddGalleryWallpaper.Params.addCustomWallpaperUris(uris))
+                AddGalleryWallpaper.Params.addCustomWallpaperUris(galleryWallpapers))
         // Update chosen URIs
 //        runOnHandlerThread(Runnable {
 //            val operations = ArrayList<ContentProviderOperation>()
