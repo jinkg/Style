@@ -124,7 +124,7 @@ class SettingsActivity : BaseActivity(), HasComponent<SourceComponent>,
         }
 
         sectionSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(spinner: AdapterView<*>, view: View,
+            override fun onItemSelected(spinner: AdapterView<*>?, view: View?,
                                         position: Int, id: Long) {
                 val fragmentClass = SECTION_FRAGMENTS[position]
                 val currentFragment = fragmentManager.findFragmentById(

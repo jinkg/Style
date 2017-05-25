@@ -324,10 +324,14 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
     }
 
     private fun onDataSetChanged() {
-        if (mWallpapers.size > 0) {
+        if (mWallpapers.size > 0 && ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            photoGrid.visibility = View.VISIBLE
             empty.visibility = View.GONE
         } else {
             // No chosen images, show the empty View
+            photoGrid.visibility = View.GONE
             empty.visibility = View.VISIBLE
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -405,7 +409,6 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
         hideAnimator.start()
     }
 
-
     override fun onBackPressed() {
         if (mMultiSelectionController.getSelectedCount() > 0) {
             mMultiSelectionController.reset(true)
@@ -448,7 +451,8 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
                 0
             if (toolbarVisible) {
                 selectionToolbarContainer.visibility = View.VISIBLE
-                selectionToolbarContainer.translationY = (-selectionToolbarContainer.height).toFloat()
+                selectionToolbarContainer.translationY =
+                        (-selectionToolbarContainer.height).toFloat()
                 selectionToolbarContainer.animate()
                         .translationY(0f)
                         .setDuration(duration.toLong())
@@ -629,11 +633,11 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
             vh.mRootView.setTag(R.id.gallery_viewtag_position, position)
             if (mLastTouchPosition == vh.adapterPosition
                     && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Handler().post(Runnable {
+                Handler().post {
                     if (!vh.mCheckedOverlayView.isAttachedToWindow) {
                         // Can't animate detached Views
                         vh.mCheckedOverlayView.visibility = if (checked) View.VISIBLE else View.GONE
-                        return@Runnable
+                        return@post
                     }
                     if (checked) {
                         vh.mCheckedOverlayView.visibility = View.VISIBLE
@@ -660,7 +664,7 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
                         })
                     }
                     revealAnim.start()
-                })
+                }
             } else {
                 vh.mCheckedOverlayView.visibility = if (checked) View.VISIBLE else View.GONE
             }
@@ -685,7 +689,7 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
         }
 
         override fun getItemId(position: Int): Long {
-            return position.toLong()
+            return mWallpapers[position].id
         }
     }
 }

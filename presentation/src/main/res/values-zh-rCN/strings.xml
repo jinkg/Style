@@ -71,6 +71,15 @@
     <string name="gallery_add_folder_error">你的设备不支持添加文件夹。请联系设备的生产厂商</string>
 
     <string name="gallery_action_force_now">设置为壁纸</string>
-    <string name="gallery_action_remove">删除</string>
+    <string name="gallery_action_remove">移除</string>
     <string name="gallery_temporary_force_image">壁纸设置已设置为选中的照片</string>
+
+    <string name="gallery_action_clear_photos">移除所有照片</string>
+    <string name="gallery_action_rotate_interval">改变更新间隔</string>
+    <string name="gallery_action_rotate_interval_none">不更新</string>
+    <string name="gallery_action_rotate_interval_1h">每隔1小时</string>
+    <string name="gallery_action_rotate_interval_3h">每隔3小时</string>
+    <string name="gallery_action_rotate_interval_6h">每隔6小时</string>
+    <string name="gallery_action_rotate_interval_24h">每隔24小时</string>
+    <string name="gallery_action_rotate_interval_72h">每隔3天</string>
 </resources>

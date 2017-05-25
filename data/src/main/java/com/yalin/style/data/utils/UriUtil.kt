@@ -7,12 +7,16 @@ import android.net.Uri
 import android.os.Build
 import android.provider.DocumentsContract
 import android.text.TextUtils
+import com.yalin.style.data.log.LogUtil
 import java.util.*
 
 /**
  * @author jinyalin
  * @since 2017/5/25.
  */
+
+private val TAG = "UriUtil"
+
 fun isTreeUri(possibleTreeUri: Uri): Boolean {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         return DocumentsContract.isTreeUri(possibleTreeUri)
@@ -78,8 +82,13 @@ fun getImagesFromTreeUri(context: Context, treeUri: Uri, maxImages: Int): List<U
 fun getDisplayNameForTreeUri(context: Context, treeUri: Uri): String? {
     val documentUri = DocumentsContract.buildDocumentUriUsingTree(treeUri,
             DocumentsContract.getTreeDocumentId(treeUri))
-    val data = context.contentResolver.query(documentUri,
-            arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME), null, null, null)
+    var data: Cursor? = null
+    try {
+        data = context.contentResolver.query(documentUri,
+                arrayOf(DocumentsContract.Document.COLUMN_DISPLAY_NAME), null, null, null)
+    } catch (e: Throwable) {
+        LogUtil.E(TAG, "getDisplayNameForTreeUri failed.", e)
+    }
     var displayName: String? = null
     if (data != null && data.moveToNext()) {
         displayName = data.getString(
