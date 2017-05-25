@@ -79,6 +79,7 @@ public class WallpaperEntityMapper {
         Preconditions.checkNotNull(galleryWallpaperEntity,
                 "GalleryWallpaperEntity can not be null.");
         GalleryWallpaper galleryWallpaper = new GalleryWallpaper();
+        galleryWallpaper.id = galleryWallpaperEntity.getId();
         galleryWallpaper.isTreeUri = galleryWallpaperEntity.isTreeUri();
         galleryWallpaper.uri = galleryWallpaperEntity.getUri();
         return galleryWallpaper;

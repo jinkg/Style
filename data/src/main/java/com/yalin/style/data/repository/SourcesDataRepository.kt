@@ -18,7 +18,7 @@ class SourcesDataRepository @Inject
 constructor(val sourcesDataStoreFactory: SourcesDataStoreFactory,
             val wallpaperEntityMapper: WallpaperEntityMapper,
             var styleWallpaperDataRepository: StyleWallpaperDataRepository,
-            var customWallpaperDataRepository: CustomWallpaperDataRepository) : SourcesRepository {
+            var customWallpaperDataRepository: GalleryWallpaperDataRepository) : SourcesRepository {
 
     override fun getSources(): Observable<List<Source>> {
         val sourcesDataStore = sourcesDataStoreFactory.create()

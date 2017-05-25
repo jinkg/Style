@@ -88,7 +88,8 @@ public class StyleProvider extends ContentProvider {
                 final SelectionBuilder builder = buildSimpleSelection(uri);
                 return builder.query(db, projection, Wallpaper._ID + " DESC");
             }
-            case GALLERY: {
+            case GALLERY:
+            case GALLERY_ID: {
                 final SelectionBuilder builder = buildSimpleSelection(uri);
                 return builder.query(db, projection, GalleryWallpaper._ID + " DESC");
             }

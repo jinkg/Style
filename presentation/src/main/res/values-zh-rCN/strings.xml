@@ -66,9 +66,11 @@
     <string name="gallery_add_photos">添加照片</string>
     <string name="gallery_add_folder">从%s导入照片</string>
 
-    <string name="gallery_internal_storage_message">Don\'t see anything? Try enabling internal storage in the overflow
-        menu</string>
-    <string name="gallery_add_photos_error">Your device does not support adding pictures.\nPlease contact your manufacturer.</string>
-    <string name="gallery_add_folder_error">Your device does not support adding folders.\nPlease contact your manufacturer.</string>
+    <string name="gallery_internal_storage_message">没有内容？请尝试开启存储权限</string>
+    <string name="gallery_add_photos_error">你的设备不支持添加图片。请联系设备的生产厂商</string>
+    <string name="gallery_add_folder_error">你的设备不支持添加文件夹。请联系设备的生产厂商</string>
 
+    <string name="gallery_action_force_now">设置为壁纸</string>
+    <string name="gallery_action_remove">删除</string>
+    <string name="gallery_temporary_force_image">壁纸设置已设置为选中的照片</string>
 </resources>

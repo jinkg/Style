@@ -1,7 +1,7 @@
 package com.yalin.style.data.repository
 
 import com.yalin.style.data.entity.mapper.WallpaperEntityMapper
-import com.yalin.style.data.repository.datasource.CustomWallpaperDataStoreFactory
+import com.yalin.style.data.repository.datasource.GalleryWallpaperDataStoreFactory
 import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.Wallpaper
 import com.yalin.style.domain.repository.WallpaperRepository
@@ -15,8 +15,8 @@ import javax.inject.Singleton
  * @since 2017/5/24.
  */
 @Singleton
-class CustomWallpaperDataRepository @Inject
-constructor(val customWallpaperDataStoreFactory: CustomWallpaperDataStoreFactory,
+class GalleryWallpaperDataRepository @Inject
+constructor(val customWallpaperDataStoreFactory: GalleryWallpaperDataStoreFactory,
             val wallpaperEntityMapper: WallpaperEntityMapper) :
         WallpaperRepository {
 

@@ -10,11 +10,11 @@ import javax.inject.Singleton
  * @since 2017/5/24.
  */
 @Singleton
-class CustomWallpaperDataStoreFactory @Inject
+class GalleryWallpaperDataStoreFactory @Inject
 constructor(val context: Context,
             val openInputStreamLock: OpenInputStreamLock) {
 
-    fun create(): CustomWallpaperDataStore {
-        return CustomWallpaperDataStore(context, openInputStreamLock)
+    fun create(): GalleryWallpaperDataStore {
+        return GalleryWallpaperDataStore(context, openInputStreamLock)
     }
 }

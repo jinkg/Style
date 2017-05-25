@@ -67,12 +67,13 @@ constructor() {
     }
 
     fun transformGalleryWallpaper(
-            GalleryWallpaper: GalleryWallpaper): GalleryWallpaperItem {
-        Preconditions.checkNotNull(GalleryWallpaper,
+            galleryWallpaper: GalleryWallpaper): GalleryWallpaperItem {
+        Preconditions.checkNotNull(galleryWallpaper,
                 "GalleryWallpaperEntity can not be null.")
         val galleryWallpaperItem = GalleryWallpaperItem()
-        galleryWallpaperItem.isTreeUri = GalleryWallpaper.isTreeUri
-        galleryWallpaperItem.uri = GalleryWallpaper.uri
+        galleryWallpaperItem.id = galleryWallpaper.id
+        galleryWallpaperItem.isTreeUri = galleryWallpaper.isTreeUri
+        galleryWallpaperItem.uri = galleryWallpaper.uri
         return galleryWallpaperItem
     }
 }

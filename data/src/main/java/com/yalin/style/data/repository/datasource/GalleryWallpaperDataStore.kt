@@ -3,6 +3,9 @@ package com.yalin.style.data.repository.datasource
 import android.content.ContentProviderOperation
 import android.content.Context
 import android.database.Cursor
+import android.net.Uri
+import android.text.TextUtils
+import com.fernandocejas.arrow.checks.Preconditions
 import com.yalin.style.data.entity.GalleryWallpaperEntity
 import com.yalin.style.data.entity.WallpaperEntity
 import com.yalin.style.data.lock.OpenInputStreamLock
@@ -12,13 +15,15 @@ import com.yalin.style.domain.GalleryWallpaper
 import io.reactivex.Observable
 import java.io.IOException
 import java.io.InputStream
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @author jinyalin
  * @since 2017/5/22.
  */
-class CustomWallpaperDataStore(val context: Context,
-                               val openInputStreamLock: OpenInputStreamLock) : WallpaperDataStore {
+class GalleryWallpaperDataStore(val context: Context,
+                                val openInputStreamLock: OpenInputStreamLock) : WallpaperDataStore {
     override fun getWallPaperEntity(): Observable<WallpaperEntity> {
         return createEntitiesObservable()
     }
@@ -28,15 +33,30 @@ class CustomWallpaperDataStore(val context: Context,
     }
 
     override fun openInputStream(wallpaperId: String?): Observable<InputStream> {
+        Preconditions.checkArgument(!TextUtils.isEmpty(wallpaperId))
         return Observable.create<InputStream> { emitter ->
+            var cursor: Cursor? = null
             try {
                 openInputStreamLock.obtain()
-                val inputStream = context.assets.open("painterly-architectonic.jpg")
+                var inputStream: InputStream? = null
+                if (DbWallpaperDataStore.DEFAULT_WALLPAPER_ID == wallpaperId) {
+                    inputStream = context.assets.open("painterly-architectonic.jpg")
+                } else {
+                    cursor = context.contentResolver.query(
+                            StyleContract.GalleryWallpaper.buildGalleryWallpaperUri(
+                                    wallpaperId!!.toLong()), null, null, null, null)
+                    if (cursor != null && cursor.moveToFirst()) {
+                        val uriString = cursor.getString(cursor.getColumnIndex(
+                                StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI))
+                        inputStream = context.contentResolver.openInputStream(Uri.parse(uriString))
+                    }
+                }
                 emitter.onNext(inputStream)
                 emitter.onComplete()
             } catch (e: IOException) {
                 emitter.onError(e)
             } finally {
+                cursor?.close()
                 openInputStreamLock.release()
             }
         }
@@ -83,12 +103,12 @@ class CustomWallpaperDataStore(val context: Context,
                         null, null, null, null)
                 while (cursor != null && cursor.moveToNext()) {
                     val item = GalleryWallpaperEntity()
-                    item.uri = cursor.getString(
-                            cursor.getColumnIndex(
-                                    StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI))
-                    item.isTreeUri = cursor.getInt(
-                            cursor.getColumnIndex(
-                                    StyleContract.GalleryWallpaper.COLUMN_NAME_IS_TREE_URI)) == 1
+                    item.id = cursor.getLong(cursor.getColumnIndex(
+                            StyleContract.GalleryWallpaper._ID))
+                    item.uri = cursor.getString(cursor.getColumnIndex(
+                            StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI))
+                    item.isTreeUri = cursor.getInt(cursor.getColumnIndex(
+                            StyleContract.GalleryWallpaper.COLUMN_NAME_IS_TREE_URI)) == 1
                     uris.add(item)
                 }
             } finally {
@@ -102,22 +122,41 @@ class CustomWallpaperDataStore(val context: Context,
 
     private fun createEntitiesObservable(): Observable<WallpaperEntity> {
         return Observable.create<WallpaperEntity> { emitter ->
-            emitter.onNext(buildDefaultWallpaper())
+            var cursor: Cursor? = null
+            val validWallpapers = LinkedList<GalleryWallpaperEntity>()
+            try {
+                val contentResolver = context.contentResolver
+                cursor = contentResolver.query(StyleContract.GalleryWallpaper.CONTENT_URI,
+                        null, null, null, null)
+                validWallpapers.addAll(GalleryWallpaperEntity.readCursor(context, cursor))
+            } finally {
+                if (cursor != null) {
+                    cursor.close()
+                }
+            }
+            val wallpaperEntities = ArrayList<WallpaperEntity>(validWallpapers.size)
+            validWallpapers.mapTo(wallpaperEntities) { switchToWallpaperEntity(it) }
+
+            if (wallpaperEntities.isEmpty()) {
+                wallpaperEntities.add(DbWallpaperDataStore.buildDefaultWallpaper())
+            }
+
+            emitter.onNext(wallpaperEntities[0])
             emitter.onComplete()
         }
     }
 
-    private fun buildDefaultWallpaper(): WallpaperEntity {
+    private fun switchToWallpaperEntity(galleryWallpaperEntity: GalleryWallpaperEntity)
+            : WallpaperEntity {
         val wallpaperEntity = WallpaperEntity()
-        wallpaperEntity.id = -1
-        wallpaperEntity.attribution = "kinglloy.com"
-        wallpaperEntity.byline = "Lyubov Popova222, 1918"
-        wallpaperEntity.imageUri = "imageUri"
-        wallpaperEntity.title = "Painterly Architectonic123"
-        wallpaperEntity.wallpaperId = "-1"
-        wallpaperEntity.liked = false
-        wallpaperEntity.isDefault = true
+        wallpaperEntity.isDefault = false
         wallpaperEntity.canLike = false
+        wallpaperEntity.title = "My Photos"
+        wallpaperEntity.byline = "Get from your photos"
+        wallpaperEntity.attribution = "kinglloy.com"
+        wallpaperEntity.imageUri = galleryWallpaperEntity.uri
+        wallpaperEntity.wallpaperId = galleryWallpaperEntity.id.toString()
+
         return wallpaperEntity
     }
 }

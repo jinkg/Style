@@ -66,9 +66,13 @@
     <string name="gallery_add_photos">Add photos</string>
     <string name="gallery_add_folder">Import photos from %s</string>
 
-    <string name="gallery_internal_storage_message">没有内容？请尝试。。。</string>
-    <string name="gallery_add_photos_error">你的设备不支持添加图片。请联系设备的生产厂商</string>
-    <string name="gallery_add_folder_error">你的设备不支持添加文件夹。请联系设备的生产厂商</string>
+    <string name="gallery_internal_storage_message">Don\'t see anything? Try enabling internal storage in the overflow
+        menu</string>
+    <string name="gallery_add_photos_error">Your device does not support adding pictures.\nPlease contact your manufacturer.</string>
+    <string name="gallery_add_folder_error">Your device does not support adding folders.\nPlease contact your manufacturer.</string>
 
+    <string name="gallery_action_force_now">Set as wallpaper now</string>
+    <string name="gallery_action_remove">Remove</string>
+    <string name="gallery_temporary_force_image">Wallpaper set to selected image.</string>
 
 </resources>

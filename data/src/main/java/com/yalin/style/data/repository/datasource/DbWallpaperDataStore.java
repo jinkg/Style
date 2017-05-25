@@ -31,7 +31,7 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
 
     private static final String TAG = "DbWallpaperDataStore";
 
-    private static final String DEFAULT_WALLPAPER_ID = "-1";
+    public static final String DEFAULT_WALLPAPER_ID = "-1";
 
     private final Context context;
 
@@ -163,7 +163,7 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
     }
 
 
-    private WallpaperEntity buildDefaultWallpaper() {
+    public static WallpaperEntity buildDefaultWallpaper() {
         WallpaperEntity wallpaperEntity = new WallpaperEntity();
         wallpaperEntity.id = -1;
         wallpaperEntity.attribution = "kinglloy.com";
