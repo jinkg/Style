@@ -63,11 +63,11 @@ public class WallpaperEntityMapper {
         return source;
     }
 
-    public Set<GalleryWallpaper> transformGalleryWallpaper(
-            Set<GalleryWallpaperEntity> galleryWallpaperEntities) {
+    public List<GalleryWallpaper> transformGalleryWallpaper(
+            List<GalleryWallpaperEntity> galleryWallpaperEntities) {
         Preconditions.checkNotNull(galleryWallpaperEntities,
                 "GalleryWallpaperEntity can not be null.");
-        Set<GalleryWallpaper> entities = new HashSet<>();
+        List<GalleryWallpaper> entities = new ArrayList<>();
         for (GalleryWallpaperEntity entity : galleryWallpaperEntities) {
             entities.add(transformGalleryWallpaper(entity));
         }

@@ -13,7 +13,7 @@ import java.util.ArrayList
  * @since 2017/5/24.
  */
 class GalleryWallpapersHandler(val context: Context,
-                               val uris: Set<GalleryWallpaper>) : JSONHandler(context) {
+                               val uris: List<GalleryWallpaper>) : JSONHandler(context) {
     override fun makeContentProviderOperations(list: ArrayList<ContentProviderOperation>) {
         val uri = StyleContract.GalleryWallpaper.CONTENT_URI
         for (wallpaperUri in uris) {

@@ -5,7 +5,7 @@ import com.yalin.style.domain.executor.PostExecutionThread;
 import com.yalin.style.domain.executor.ThreadExecutor;
 import com.yalin.style.domain.repository.SourcesRepository;
 
-import java.util.Set;
+import java.util.List;
 
 import io.reactivex.Observable;
 import javax.inject.Inject;
@@ -14,7 +14,7 @@ import javax.inject.Inject;
  * @author jinyalin
  * @since 2017/5/24.
  */
-public class GetGalleryWallpaper extends UseCase<Set<GalleryWallpaper>, Void> {
+public class GetGalleryWallpaper extends UseCase<List<GalleryWallpaper>, Void> {
     private SourcesRepository sourcesRepository;
 
     @Inject
@@ -26,7 +26,7 @@ public class GetGalleryWallpaper extends UseCase<Set<GalleryWallpaper>, Void> {
     }
 
     @Override
-    Observable<Set<GalleryWallpaper>> buildUseCaseObservable(Void aVoid) {
+    Observable<List<GalleryWallpaper>> buildUseCaseObservable(Void aVoid) {
         return sourcesRepository.getWallpaperRepository().getGalleryWallpapers();
     }
 }

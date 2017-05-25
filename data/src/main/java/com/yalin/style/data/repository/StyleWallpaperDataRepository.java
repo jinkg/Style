@@ -15,7 +15,7 @@ import com.yalin.style.domain.repository.WallpaperRepository;
 
 
 import java.io.InputStream;
-import java.util.Set;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -78,7 +78,7 @@ public class StyleWallpaperDataRepository implements WallpaperRepository {
     }
 
     @Override
-    public Observable<Boolean> addCustomWallpaperUris(Set<GalleryWallpaper> uris) {
+    public Observable<Boolean> addCustomWallpaperUris(List<GalleryWallpaper> uris) {
         return Observable.create(emitter ->
                 emitter.onError(new IllegalStateException(
                         "StyleWallpaperRepository can not add custom wallpaper."))
@@ -86,7 +86,7 @@ public class StyleWallpaperDataRepository implements WallpaperRepository {
     }
 
     @Override
-    public Observable<Set<GalleryWallpaper>> getGalleryWallpapers() {
+    public Observable<List<GalleryWallpaper>> getGalleryWallpapers() {
         return Observable.create(emitter ->
                 emitter.onError(new IllegalStateException(
                         "StyleWallpaperRepository have not custom wallpapers."))

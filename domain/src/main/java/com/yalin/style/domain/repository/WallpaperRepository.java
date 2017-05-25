@@ -4,7 +4,7 @@ import com.yalin.style.domain.GalleryWallpaper;
 import com.yalin.style.domain.Wallpaper;
 
 import java.io.InputStream;
-import java.util.Set;
+import java.util.List;
 
 import io.reactivex.Observable;
 
@@ -25,7 +25,7 @@ public interface WallpaperRepository {
 
     Observable<Boolean> likeWallpaper(String wallpaperId);
 
-    Observable<Boolean> addCustomWallpaperUris(Set<GalleryWallpaper> uris);
+    Observable<Boolean> addCustomWallpaperUris(List<GalleryWallpaper> uris);
 
-    Observable<Set<GalleryWallpaper>> getGalleryWallpapers();
+    Observable<List<GalleryWallpaper>> getGalleryWallpapers();
 }

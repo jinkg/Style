@@ -5,7 +5,7 @@ import com.yalin.style.domain.executor.PostExecutionThread;
 import com.yalin.style.domain.executor.ThreadExecutor;
 import com.yalin.style.domain.repository.SourcesRepository;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,13 +35,13 @@ public class AddGalleryWallpaper extends UseCase<Boolean, AddGalleryWallpaper.Pa
 
     public static final class Params {
 
-        private final Set<GalleryWallpaper> customWallpaperUris;
+        private final List<GalleryWallpaper> customWallpaperUris;
 
-        private Params(Set<GalleryWallpaper> customWallpapers) {
+        private Params(List<GalleryWallpaper> customWallpapers) {
             this.customWallpaperUris = customWallpapers;
         }
 
-        public static Params addCustomWallpaperUris(Set<GalleryWallpaper> customWallpapers) {
+        public static Params addCustomWallpaperUris(List<GalleryWallpaper> customWallpapers) {
             return new Params(customWallpapers);
         }
     }

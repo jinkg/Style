@@ -7,10 +7,12 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
@@ -21,18 +23,21 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.yalin.style.R
 import com.yalin.style.StyleApplication
 import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.interactor.AddGalleryWallpaper
 import com.yalin.style.domain.interactor.DefaultObserver
 import com.yalin.style.domain.interactor.GetGalleryWallpaper
+import com.yalin.style.mapper.WallpaperItemMapper
+import com.yalin.style.model.GalleryWallpaperItem
 import com.yalin.style.util.UriUtil
 import kotlinx.android.synthetic.main.activity_gallery.*
 import org.jetbrains.anko.toast
-import java.util.ArrayList
-import java.util.HashSet
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author jinyalin
@@ -47,6 +52,9 @@ class GallerySettingActivity : BaseActivity() {
         private val REQUEST_CHOOSE_PHOTOS = 1
         private val REQUEST_CHOOSE_FOLDER = 2
         private val REQUEST_STORAGE_PERMISSION = 3
+
+        private val ITEM_TYPE_URI = 0
+        private val ITEM_TYPE_TREE = 1
     }
 
     private var mPlaceholderDrawable: ColorDrawable? = null
@@ -55,6 +63,15 @@ class GallerySettingActivity : BaseActivity() {
     private var mItemSize = 10
 
     private var mUpdatePosition = -1
+
+    private val mWallpapers = ArrayList<GalleryWallpaperItem>()
+
+    private var mLastTouchPosition: Int = 0
+    private var mLastTouchX: Int = 0
+    private var mLastTouchY: Int = 0
+
+    @Inject
+    lateinit internal var wallpaperItemMapper: WallpaperItemMapper
 
     @Inject
     lateinit internal var addGalleryWallpaperUseCase: AddGalleryWallpaper
@@ -191,9 +208,15 @@ class GallerySettingActivity : BaseActivity() {
     }
 
     private fun refreshGalleryWallpaper() {
-        getGalleryWallpaperUseCase.execute(object : DefaultObserver<Set<GalleryWallpaper>>() {
-            override fun onNext(success: Set<GalleryWallpaper>) {
-                super.onNext(success)
+        getGalleryWallpaperUseCase.execute(object : DefaultObserver<List<GalleryWallpaper>>() {
+            override fun onNext(wallpapers: List<GalleryWallpaper>) {
+                val itemSet = wallpaperItemMapper.transformGalleryWallpaper(wallpapers)
+
+                mWallpapers.clear()
+                mWallpapers.addAll(itemSet)
+
+                mChosenPhotosAdapter.notifyDataSetChanged()
+                onDataSetChanged()
             }
         }, null)
     }
@@ -364,7 +387,7 @@ class GallerySettingActivity : BaseActivity() {
             return
         }
 
-        val galleryWallpapers = HashSet<GalleryWallpaper>()
+        val galleryWallpapers = ArrayList<GalleryWallpaper>()
         for (uri in uris) {
             val wallpaper = GalleryWallpaper()
             wallpaper.uri = uri.toString()
@@ -375,23 +398,6 @@ class GallerySettingActivity : BaseActivity() {
         addGalleryWallpaperUseCase.execute(
                 AddCustomWallpaperObserver(),
                 AddGalleryWallpaper.Params.addCustomWallpaperUris(galleryWallpapers))
-        // Update chosen URIs
-//        runOnHandlerThread(Runnable {
-//            val operations = ArrayList<ContentProviderOperation>()
-//            for (uri in uris) {
-//                val values = ContentValues()
-//                values.put(GalleryContract.ChosenPhotos.COLUMN_NAME_URI, uri.toString())
-//                operations.add(ContentProviderOperation.newInsert(GalleryContract.ChosenPhotos.CONTENT_URI)
-//                        .withValues(values).build())
-//            }
-//            try {
-//                contentResolver.applyBatch(GalleryContract.AUTHORITY, operations)
-//            } catch (e: RemoteException) {
-//                Log.e(TAG, "Error writing uris to ContentProvider", e)
-//            } catch (e: OperationApplicationException) {
-//                Log.e(TAG, "Error writing uris to ContentProvider", e)
-//            }
-//        })
     }
 
     override fun onBackPressed() {
@@ -466,32 +472,33 @@ class GallerySettingActivity : BaseActivity() {
     }
 
     private fun onDataSetChanged() {
-//        if (mChosenUris != null && mChosenUris.getCount() > 0) {
-//            emptyView.visibility = View.GONE
-//            // We have at least one image, so consider the Gallery source properly setup
-//            setResult(Activity.RESULT_OK)
-//        } else {
-        // No chosen images, show the empty View
-        empty.visibility = View.VISIBLE
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-            // Permission is granted, we can show the random camera photos image
-            emptyAnimator.displayedChild = 0
-            emptyDescription.setText(R.string.gallery_empty)
+        if (mWallpapers.size > 0) {
+            empty.visibility = View.GONE
+            // We have at least one image, so consider the Gallery source properly setup
             setResult(Activity.RESULT_OK)
         } else {
-            // We have no images until they enable the permission
-            setResult(Activity.RESULT_CANCELED)
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // We should show rationale on why they should enable the storage permission and
-                // random camera photos
-                emptyAnimator.displayedChild = 1
-                emptyDescription.setText(R.string.gallery_permission_rationale)
+            // No chosen images, show the empty View
+            empty.visibility = View.VISIBLE
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted, we can show the random camera photos image
+                emptyAnimator.displayedChild = 0
+                emptyDescription.setText(R.string.gallery_empty)
+                setResult(Activity.RESULT_OK)
             } else {
-                // The user has permanently denied the storage permission. Give them a link to app settings
-                emptyAnimator.displayedChild = 2
-                emptyDescription.setText(R.string.gallery_denied_explanation)
+                // We have no images until they enable the permission
+                setResult(Activity.RESULT_CANCELED)
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    // We should show rationale on why they should enable the storage permission and
+                    // random camera photos
+                    emptyAnimator.displayedChild = 1
+                    emptyDescription.setText(R.string.gallery_permission_rationale)
+                } else {
+                    // The user has permanently denied the storage permission. Give them a link to app settings
+                    emptyAnimator.displayedChild = 2
+                    emptyDescription.setText(R.string.gallery_denied_explanation)
+                }
             }
         }
     }
@@ -499,12 +506,10 @@ class GallerySettingActivity : BaseActivity() {
     open class CheckableViewHolder(root: View) : RecyclerView.ViewHolder(root) {
         var mRootView: View = root
         var mCheckedOverlayView: View = root.findViewById(R.id.checked_overlay)
-
     }
 
     internal class PhotoViewHolder(root: View) : CheckableViewHolder(root) {
         val mThumbView: ImageView = root.findViewById(R.id.thumbnail) as ImageView
-
     }
 
     internal class TreeViewHolder(root: View) : CheckableViewHolder(root) {
@@ -520,17 +525,111 @@ class GallerySettingActivity : BaseActivity() {
 
     private val mChosenPhotosAdapter = object : RecyclerView.Adapter<CheckableViewHolder>() {
         override fun getItemViewType(position: Int): Int {
-            return 0
+            val wallpaperItem = mWallpapers[position]
+            return if (wallpaperItem.isTreeUri) ITEM_TYPE_TREE else ITEM_TYPE_URI
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckableViewHolder {
-            val view = LayoutInflater.from(this@GallerySettingActivity)
-                    .inflate(R.layout.gallery_chosen_photo_tree_item, parent, false)
-            return TreeViewHolder(view)
+            val isTreeUri = viewType != 0
+            val v: View
+            val vh: CheckableViewHolder
+            if (isTreeUri) {
+                v = LayoutInflater.from(this@GallerySettingActivity)
+                        .inflate(R.layout.gallery_chosen_photo_tree_item, parent, false)
+                vh = TreeViewHolder(v)
+            } else {
+                v = LayoutInflater.from(this@GallerySettingActivity)
+                        .inflate(R.layout.gallery_chosen_photo_item, parent, false)
+                vh = PhotoViewHolder(v)
+            }
+
+            v.layoutParams.height = mItemSize
+            v.setOnTouchListener { _, motionEvent ->
+                if (motionEvent.actionMasked != MotionEvent.ACTION_CANCEL) {
+                    mLastTouchPosition = vh.adapterPosition
+                    mLastTouchX = motionEvent.x.toInt()
+                    mLastTouchY = motionEvent.y.toInt()
+                }
+                false
+            }
+            v.setOnClickListener {
+                mUpdatePosition = vh.adapterPosition
+                if (mUpdatePosition != RecyclerView.NO_POSITION) {
+//                    val contentUri = ContentUris.withAppendedId(GalleryContract.ChosenPhotos.CONTENT_URI,
+//                            getItemId(mUpdatePosition))
+//                    mMultiSelectionController.toggle(contentUri, true)
+                }
+            }
+            return vh
         }
 
         override fun onBindViewHolder(vh: CheckableViewHolder, position: Int) {
-
+            val wallpaperItem = mWallpapers[position]
+            val isTreeUri = getItemViewType(position) != 0
+            if (isTreeUri) {
+                val treeVh = vh as TreeViewHolder
+                val maxImages = treeVh.mThumbViews.size
+                val imageUri = Uri.parse(wallpaperItem.uri)
+                val images = getImagesFromTreeUri(imageUri, maxImages)
+                val numImages = images.size
+                for (h in 0..numImages - 1) {
+                    Glide.with(this@GallerySettingActivity)
+                            .load(images[h])
+                            .override(mItemSize / 2, mItemSize / 2)
+                            .centerCrop()
+                            .placeholder(mPlaceholderSmallDrawable)
+                            .into(treeVh.mThumbViews[h])
+                }
+                for (h in numImages..maxImages - 1) {
+                    treeVh.mThumbViews[h].setImageDrawable(mPlaceholderSmallDrawable)
+                }
+            } else {
+                val photoVh = vh as PhotoViewHolder
+                Glide.with(this@GallerySettingActivity)
+                        .load(wallpaperItem.uri)
+                        .override(mItemSize, mItemSize)
+                        .centerCrop()
+                        .placeholder(mPlaceholderDrawable)
+                        .into(photoVh.mThumbView)
+            }
+//            val checked = mMultiSelectionController.isSelected(contentUri)
+//            vh.mRootView.setTag(R.id.gallery_viewtag_position, position)
+//            if (mLastTouchPosition == vh.adapterPosition && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                Handler().post(Runnable {
+//                    if (!vh.mCheckedOverlayView.isAttachedToWindow) {
+//                        // Can't animate detached Views
+//                        vh.mCheckedOverlayView.visibility = if (checked) View.VISIBLE else View.GONE
+//                        return@Runnable
+//                    }
+//                    if (checked) {
+//                        vh.mCheckedOverlayView.visibility = View.VISIBLE
+//                    }
+//
+//                    // find the smallest radius that'll cover the item
+//                    val coverRadius = maxDistanceToCorner(
+//                            mLastTouchX, mLastTouchY,
+//                            0, 0, vh.mRootView.width, vh.mRootView.height)
+//
+//                    val revealAnim = ViewAnimationUtils.createCircularReveal(
+//                            vh.mCheckedOverlayView,
+//                            mLastTouchX,
+//                            mLastTouchY,
+//                            if (checked) 0 else coverRadius,
+//                            if (checked) coverRadius else 0)
+//                            .setDuration(150)
+//
+//                    if (!checked) {
+//                        revealAnim.addListener(object : AnimatorListenerAdapter() {
+//                            override fun onAnimationEnd(animation: Animator) {
+//                                vh.mCheckedOverlayView.visibility = View.GONE
+//                            }
+//                        })
+//                    }
+//                    revealAnim.start()
+//                })
+//            } else {
+//                vh.mCheckedOverlayView.visibility = if (checked) View.VISIBLE else View.GONE
+//            }
         }
 
         private fun maxDistanceToCorner(x: Int, y: Int, left: Int, top: Int, right: Int, bottom: Int): Float {
@@ -547,12 +646,54 @@ class GallerySettingActivity : BaseActivity() {
         }
 
         override fun getItemCount(): Int {
-            return 0
+            return mWallpapers.size
         }
 
         override fun getItemId(position: Int): Long {
-            return 0
+            return position.toLong()
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun getImagesFromTreeUri(treeUri: Uri, maxImages: Int): List<Uri> {
+        val images = ArrayList<Uri>()
+        val directories = LinkedList<String>()
+        directories.add(DocumentsContract.getTreeDocumentId(treeUri))
+        while (images.size < maxImages && !directories.isEmpty()) {
+            val parentDocumentId = directories.poll()
+            val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri,
+                    parentDocumentId)
+            var children: Cursor?
+            try {
+                children = contentResolver.query(childrenUri,
+                        arrayOf(DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_MIME_TYPE), null, null, null)
+            } catch (e: SecurityException) {
+                // No longer can read this URI, which means no images from this URI
+                // This a temporary state as the next onLoadFinished() will remove this item entirely
+                children = null
+            }
+
+            if (children == null) {
+                continue
+            }
+            while (children.moveToNext()) {
+                val documentId = children.getString(
+                        children.getColumnIndex(DocumentsContract.Document.COLUMN_DOCUMENT_ID))
+                val mimeType = children.getString(
+                        children.getColumnIndex(DocumentsContract.Document.COLUMN_MIME_TYPE))
+                if (DocumentsContract.Document.MIME_TYPE_DIR == mimeType) {
+                    directories.add(documentId)
+                } else if (mimeType != null && mimeType.startsWith("image/")) {
+                    // Add images to the list
+                    images.add(DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId))
+                }
+                if (images.size == maxImages) {
+                    break
+                }
+            }
+            children.close()
+        }
+        return images
     }
 
     private inner class AddCustomWallpaperObserver : DefaultObserver<Boolean>() {

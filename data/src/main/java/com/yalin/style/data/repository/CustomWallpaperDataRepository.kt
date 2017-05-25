@@ -40,11 +40,11 @@ constructor(val customWallpaperDataStoreFactory: CustomWallpaperDataStoreFactory
             customWallpaperDataStoreFactory.create()
                     .likeWallpaper(wallpaperId)
 
-    override fun addCustomWallpaperUris(uris: Set<GalleryWallpaper>): Observable<Boolean> =
+    override fun addCustomWallpaperUris(uris: List<GalleryWallpaper>): Observable<Boolean> =
             customWallpaperDataStoreFactory.create()
                     .addCustomWallpaperUris(uris)
 
-    override fun getGalleryWallpapers(): Observable<Set<GalleryWallpaper>> =
+    override fun getGalleryWallpapers(): Observable<List<GalleryWallpaper>> =
             customWallpaperDataStoreFactory.create()
                     .getCustomWallpaperUris().map(wallpaperEntityMapper::transformGalleryWallpaper)
 }

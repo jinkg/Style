@@ -6,6 +6,7 @@ package com.yalin.style.domain;
  */
 
 public class GalleryWallpaper {
+    public long id;
     public String uri;
     public boolean isTreeUri;
 }

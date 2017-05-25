@@ -65,10 +65,10 @@ constructor(val getSourcesUseCase: GetSources,
 
     fun updateSources() {
         getSourcesUseCase.execute(object : DefaultObserver<List<Source>>() {
-            override fun onNext(success: List<Source>) {
-                super.onNext(success)
+            override fun onNext(wallpapers: List<Source>) {
+                super.onNext(wallpapers)
                 mSources.clear()
-                mSources.addAll(wallpaperMapper.transformSources(success))
+                mSources.addAll(wallpaperMapper.transformSources(wallpapers))
                 for (source in mSources) {
                     if (source.selected) {
                         mSelectedSource = source

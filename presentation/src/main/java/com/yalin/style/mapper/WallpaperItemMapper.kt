@@ -7,9 +7,9 @@ import com.yalin.style.domain.Wallpaper
 import com.yalin.style.model.GalleryWallpaperItem
 import com.yalin.style.model.SourceItem
 import com.yalin.style.model.WallpaperItem
-import java.util.ArrayList
 
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author jinyalin
@@ -55,12 +55,24 @@ constructor() {
         return sourceItem
     }
 
-    fun transform(galleryWallpaper: GalleryWallpaper): GalleryWallpaperItem {
-        Preconditions.checkNotNull(galleryWallpaper,
-                "GalleryWallpaperItem can not be null.")
+    fun transformGalleryWallpaper(
+            galleryWallpapers: List<GalleryWallpaper>): List<GalleryWallpaperItem> {
+        Preconditions.checkNotNull(galleryWallpapers,
+                "GalleryWallpaperEntity can not be null.")
+        val items = ArrayList<GalleryWallpaperItem>()
+        for (wallpaper in galleryWallpapers) {
+            items.add(transformGalleryWallpaper(wallpaper))
+        }
+        return items
+    }
+
+    fun transformGalleryWallpaper(
+            GalleryWallpaper: GalleryWallpaper): GalleryWallpaperItem {
+        Preconditions.checkNotNull(GalleryWallpaper,
+                "GalleryWallpaperEntity can not be null.")
         val galleryWallpaperItem = GalleryWallpaperItem()
-        galleryWallpaperItem.isTreeUri = galleryWallpaperItem.isTreeUri
-        galleryWallpaperItem.uri = galleryWallpaperItem.uri
+        galleryWallpaperItem.isTreeUri = GalleryWallpaper.isTreeUri
+        galleryWallpaperItem.uri = GalleryWallpaper.uri
         return galleryWallpaperItem
     }
 }

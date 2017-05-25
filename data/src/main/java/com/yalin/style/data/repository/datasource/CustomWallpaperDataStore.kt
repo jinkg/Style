@@ -53,7 +53,7 @@ class CustomWallpaperDataStore(val context: Context,
         throw IllegalAccessException("")
     }
 
-    fun addCustomWallpaperUris(uris: Set<GalleryWallpaper>): Observable<Boolean> {
+    fun addCustomWallpaperUris(uris: List<GalleryWallpaper>): Observable<Boolean> {
         return Observable.create<Boolean> { emitter ->
             var success = true
             try {
@@ -74,9 +74,9 @@ class CustomWallpaperDataStore(val context: Context,
         }
     }
 
-    fun getCustomWallpaperUris(): Observable<Set<GalleryWallpaperEntity>> {
-        return Observable.create<Set<GalleryWallpaperEntity>> { emitter ->
-            val uris = HashSet<GalleryWallpaperEntity>()
+    fun getCustomWallpaperUris(): Observable<List<GalleryWallpaperEntity>> {
+        return Observable.create<List<GalleryWallpaperEntity>> { emitter ->
+            val uris = ArrayList<GalleryWallpaperEntity>()
             var cursor: Cursor? = null
             try {
                 cursor = context.contentResolver.query(StyleContract.GalleryWallpaper.CONTENT_URI,
