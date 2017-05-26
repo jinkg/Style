@@ -66,7 +66,7 @@
     <string name="gallery_add_photos">添加照片</string>
     <string name="gallery_add_folder">从%s导入照片</string>
 
-    <string name="gallery_internal_storage_message">没有内容？请尝试开启存储权限</string>
+    <string name="gallery_internal_storage_message">没有内容？请尝试从右上角菜单栏点击显示外部存储</string>
     <string name="gallery_add_photos_error">你的设备不支持添加图片。请联系设备的生产厂商</string>
     <string name="gallery_add_folder_error">你的设备不支持添加文件夹。请联系设备的生产厂商</string>
 
