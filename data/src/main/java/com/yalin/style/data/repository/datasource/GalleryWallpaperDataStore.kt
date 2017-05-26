@@ -6,8 +6,11 @@ import android.database.Cursor
 import android.net.Uri
 import android.text.TextUtils
 import com.fernandocejas.arrow.checks.Preconditions
+import com.yalin.style.data.cache.GalleryWallpaperCache
 import com.yalin.style.data.entity.GalleryWallpaperEntity
 import com.yalin.style.data.entity.WallpaperEntity
+import com.yalin.style.data.exception.ReswitchException
+import com.yalin.style.data.extensions.DelegateExt
 import com.yalin.style.data.lock.OpenInputStreamLock
 import com.yalin.style.data.repository.datasource.io.GalleryWallpapersHandler
 import com.yalin.style.data.repository.datasource.provider.StyleContract
@@ -25,13 +28,29 @@ import kotlin.collections.ArrayList
  * @since 2017/5/22.
  */
 class GalleryWallpaperDataStore(val context: Context,
-                                val openInputStreamLock: OpenInputStreamLock) : WallpaperDataStore {
+                                val openInputStreamLock: OpenInputStreamLock,
+                                val galleryWallpaperCache: GalleryWallpaperCache) :
+        WallpaperDataStore {
+
+    var lastGalleryWallpaperId: Long by DelegateExt.preferences(context,
+            "last_gallery_wallpaper_id", -1)
+
     override fun getWallPaperEntity(): Observable<WallpaperEntity> {
-        return createEntitiesObservable()
+        return createEntitiesObservable().doOnNext(galleryWallpaperCache::put).map { entities ->
+            return@map peekOne(entities)
+        }
     }
 
     override fun switchWallPaperEntity(): Observable<WallpaperEntity> {
-        throw IllegalAccessException("")
+        if (openInputStreamLock.obtain()) {
+            openInputStreamLock.release()
+            return wallPaperEntity
+        } else {
+            return Observable.create<WallpaperEntity> {
+                emitter ->
+                emitter.onError(ReswitchException())
+            }
+        }
     }
 
     override fun openInputStream(wallpaperId: String?): Observable<InputStream> {
@@ -50,16 +69,22 @@ class GalleryWallpaperDataStore(val context: Context,
                     if (cursor != null && cursor.moveToFirst()) {
                         val uriString = cursor.getString(cursor.getColumnIndex(
                                 StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI))
-                        try {
-                            inputStream = context.contentResolver.openInputStream(
-                                    Uri.parse(uriString))
-                        } catch (e: Exception) {
-                            // if cached file exist then use cached file
-                            val cacheFile = getCacheFileForUri(context, uriString)
-                            if ((cacheFile != null && cacheFile.exists())) {
-                                inputStream = FileInputStream(cacheFile)
-                            } else {
-                                throw IOException("Cannot open gallery uri : " + uriString)
+                        val isTreeUri = cursor.getInt(cursor.getColumnIndex(
+                                StyleContract.GalleryWallpaper.COLUMN_NAME_IS_TREE_URI)) == 1
+                        if (isTreeUri) {
+
+                        } else {
+                            try {
+                                inputStream = context.contentResolver.openInputStream(
+                                        Uri.parse(uriString))
+                            } catch (e: Exception) {
+                                // if cached file exist then use cached file
+                                val cacheFile = getCacheFileForUri(context, uriString)
+                                if ((cacheFile != null && cacheFile.exists())) {
+                                    inputStream = FileInputStream(cacheFile)
+                                } else {
+                                    throw IOException("Cannot open gallery uri : " + uriString)
+                                }
                             }
                         }
                     }
@@ -77,17 +102,21 @@ class GalleryWallpaperDataStore(val context: Context,
 
     override fun getWallpaperCount(): Observable<Int> {
         return Observable.create { emitter ->
-            emitter.onNext(1)
+            val cachedCount = if (galleryWallpaperCache.isCached())
+                galleryWallpaperCache.get()!!.size else 0
+
+            emitter.onNext(cachedCount)
             emitter.onComplete()
         }
     }
 
     override fun likeWallpaper(wallpaperId: String?): Observable<Boolean> {
-        throw IllegalAccessException("")
+        throw UnsupportedOperationException("Gallery data store not support like.")
     }
 
     fun addGalleryWallpaperUris(uris: List<GalleryWallpaper>): Observable<Boolean> {
         return Observable.create<Boolean> { emitter ->
+            galleryWallpaperCache.evictAll()
             var success = true
             try {
                 val wallpaperHandler = GalleryWallpapersHandler(context, uris)
@@ -133,10 +162,10 @@ class GalleryWallpaperDataStore(val context: Context,
         }
     }
 
-    private fun createEntitiesObservable(): Observable<WallpaperEntity> {
-        return Observable.create<WallpaperEntity> { emitter ->
+    private fun createEntitiesObservable(): Observable<List<GalleryWallpaperEntity>> {
+        return Observable.create<List<GalleryWallpaperEntity>> { emitter ->
             var cursor: Cursor? = null
-            val validWallpapers = LinkedList<GalleryWallpaperEntity>()
+            val validWallpapers = ArrayList<GalleryWallpaperEntity>()
             try {
                 val contentResolver = context.contentResolver
                 cursor = contentResolver.query(StyleContract.GalleryWallpaper.CONTENT_URI,
@@ -147,15 +176,31 @@ class GalleryWallpaperDataStore(val context: Context,
                     cursor.close()
                 }
             }
-            val wallpaperEntities = ArrayList<WallpaperEntity>(validWallpapers.size)
-            validWallpapers.mapTo(wallpaperEntities) { switchToWallpaperEntity(it) }
 
-            if (wallpaperEntities.isEmpty()) {
-                wallpaperEntities.add(DbWallpaperDataStore.buildDefaultWallpaper())
-            }
-
-            emitter.onNext(wallpaperEntities[0])
+            emitter.onNext(validWallpapers)
             emitter.onComplete()
+        }
+    }
+
+    private fun peekOne(entities: List<GalleryWallpaperEntity>): WallpaperEntity {
+        var selectedEntity: GalleryWallpaperEntity? = null
+        if (entities.size == 1) {
+            return switchToWallpaperEntity(entities[0])
+        } else if (entities.size > 1) {
+            val random = Random()
+            while (true) {
+                selectedEntity = entities[random.nextInt(entities.size)]
+                if (selectedEntity.id != lastGalleryWallpaperId) {
+                    lastGalleryWallpaperId = selectedEntity.id
+                    break
+                }
+            }
+        }
+
+        if (selectedEntity != null) {
+            return switchToWallpaperEntity(selectedEntity)
+        } else {
+            return DbWallpaperDataStore.buildDefaultWallpaper()
         }
     }
 

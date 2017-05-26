@@ -41,7 +41,11 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
     private val mHandler = Handler()
     private var mCurrentScroller: ObjectAnimator? = null
 
-    private val mHideScrollbarRunnable = { sourceScrollbar.hide() }
+    private val mHideScrollbarRunnable = {
+        if (sourceScrollbar != null) {
+            sourceScrollbar.hide()
+        }
+    }
 
     private var mAnimationDuration: Int = 0
     private var mItemWidth: Int = 0
@@ -248,11 +252,11 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
 
     private fun showScrollbar() {
         mHandler.removeCallbacks(mHideScrollbarRunnable)
-        sourceScrollbar.setScrollRangeAndViewportWidth(
+        sourceScrollbar?.setScrollRangeAndViewportWidth(
                 sourceScroller.computeHorizontalScrollRange(),
                 sourceScroller.width)
-        sourceScrollbar.setScrollPosition(sourceScroller.scrollX)
-        sourceScrollbar.show()
+        sourceScrollbar?.setScrollPosition(sourceScroller.scrollX)
+        sourceScrollbar?.show()
         mHandler.postDelayed(mHideScrollbarRunnable, SCROLLBAR_HIDE_DELAY_MILLIS.toLong())
     }
 

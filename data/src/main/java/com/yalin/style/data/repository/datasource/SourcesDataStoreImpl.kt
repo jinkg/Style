@@ -3,6 +3,7 @@ package com.yalin.style.data.repository.datasource
 import android.content.Context
 import com.yalin.style.data.cache.SourcesCache
 import com.yalin.style.data.entity.SourceEntity
+import com.yalin.style.data.lock.OpenInputStreamLock
 import io.reactivex.Observable
 
 /**
@@ -10,11 +11,21 @@ import io.reactivex.Observable
  * @since 2017/5/23.
  */
 class SourcesDataStoreImpl(val context: Context,
-                           val sourcesCache: SourcesCache) : SourcesDataStore {
+                           val sourcesCache: SourcesCache,
+                           val inputStreamLock: OpenInputStreamLock) : SourcesDataStore {
 
     override fun selectSource(sourceId: Int): Observable<Boolean> {
         return Observable.create { emitter ->
-            emitter.onNext(sourcesCache.selectSource(sourceId))
+            try {
+                if (inputStreamLock.obtain()) {
+                    emitter.onNext(sourcesCache.selectSource(sourceId))
+                } else {
+                    emitter.onNext(false)
+                }
+                emitter.onComplete()
+            } finally {
+                inputStreamLock.release()
+            }
         }
     }
 
