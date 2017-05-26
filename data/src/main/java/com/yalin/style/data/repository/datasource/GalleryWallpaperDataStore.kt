@@ -4,6 +4,7 @@ import android.content.ContentProviderOperation
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.text.TextUtils
 import com.fernandocejas.arrow.checks.Preconditions
 import com.yalin.style.data.cache.GalleryWallpaperCache
@@ -13,8 +14,11 @@ import com.yalin.style.data.exception.ReswitchException
 import com.yalin.style.data.extensions.DelegateExt
 import com.yalin.style.data.lock.OpenInputStreamLock
 import com.yalin.style.data.repository.datasource.io.GalleryWallpapersHandler
+import com.yalin.style.data.repository.datasource.io.RemoveGalleryWallpapersHandler
 import com.yalin.style.data.repository.datasource.provider.StyleContract
 import com.yalin.style.data.utils.getCacheFileForUri
+import com.yalin.style.data.utils.getImagesFromTreeUri
+import com.yalin.style.data.utils.notifyChange
 import com.yalin.style.domain.GalleryWallpaper
 import io.reactivex.Observable
 import java.io.FileInputStream
@@ -71,8 +75,11 @@ class GalleryWallpaperDataStore(val context: Context,
                                 StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI))
                         val isTreeUri = cursor.getInt(cursor.getColumnIndex(
                                 StyleContract.GalleryWallpaper.COLUMN_NAME_IS_TREE_URI)) == 1
-                        if (isTreeUri) {
 
+                        if (isTreeUri && Build.VERSION.SDK_INT >= 21) {
+                            val images = getImagesFromTreeUri(context, Uri.parse(uriString), 0)
+                            inputStream = context.contentResolver.openInputStream(
+                                    images[Random().nextInt(images.size)])
                         } else {
                             try {
                                 inputStream = context.contentResolver.openInputStream(
@@ -130,6 +137,30 @@ class GalleryWallpaperDataStore(val context: Context,
                 emitter.onError(e)
             }
             if (success) {
+                notifyChange(context,StyleContract.GalleryWallpaper.CONTENT_URI)
+                emitter.onNext(true)
+                emitter.onComplete()
+            }
+        }
+    }
+
+    fun removeGalleryWallpaperUris(uris: List<GalleryWallpaper>): Observable<Boolean> {
+        return Observable.create<Boolean> { emitter ->
+            galleryWallpaperCache.evictAll()
+            var success = true
+            try {
+                val removeHandler = RemoveGalleryWallpapersHandler(context, uris)
+                val contentOperators = ArrayList<ContentProviderOperation>()
+                removeHandler.makeContentProviderOperations(contentOperators)
+                if (contentOperators.size > 0) {
+                    context.contentResolver.applyBatch(StyleContract.AUTHORITY, contentOperators)
+                }
+            } catch (e: Exception) {
+                success = false
+                emitter.onError(e)
+            }
+            if (success) {
+                notifyChange(context,StyleContract.GalleryWallpaper.CONTENT_URI)
                 emitter.onNext(true)
                 emitter.onComplete()
             }

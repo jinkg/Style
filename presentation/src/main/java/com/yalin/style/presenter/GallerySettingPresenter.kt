@@ -2,9 +2,7 @@ package com.yalin.style.presenter
 
 import android.net.Uri
 import com.yalin.style.domain.GalleryWallpaper
-import com.yalin.style.domain.interactor.AddGalleryWallpaper
-import com.yalin.style.domain.interactor.DefaultObserver
-import com.yalin.style.domain.interactor.GetGalleryWallpaper
+import com.yalin.style.domain.interactor.*
 import com.yalin.style.mapper.WallpaperItemMapper
 import com.yalin.style.model.GalleryWallpaperItem
 import com.yalin.style.view.GallerySettingView
@@ -17,6 +15,7 @@ import javax.inject.Inject
 class GallerySettingPresenter @Inject
 constructor(val wallpaperItemMapper: WallpaperItemMapper,
             val addGalleryWallpaperUseCase: AddGalleryWallpaper,
+            val removeGalleryWallpaperUseCase: RemoveGalleryWallpaper,
             val getGalleryWallpaperUseCase: GetGalleryWallpaper) : Presenter {
 
     var gallerySettingView: GallerySettingView? = null
@@ -32,8 +31,7 @@ constructor(val wallpaperItemMapper: WallpaperItemMapper,
     }
 
     fun addGalleryWallpaper(uris: Set<Uri>) {
-
-        val galleryWallpapers = java.util.ArrayList<GalleryWallpaper>()
+        val galleryWallpapers = ArrayList<GalleryWallpaper>()
         for (uri in uris) {
             val wallpaper = GalleryWallpaper()
             wallpaper.uri = uri.toString()
@@ -41,8 +39,21 @@ constructor(val wallpaperItemMapper: WallpaperItemMapper,
         }
 
         addGalleryWallpaperUseCase.execute(
-                AddCustomWallpaperObserver(),
-                AddGalleryWallpaper.Params.addCustomWallpaperUris(galleryWallpapers))
+                GalleryWallpaperChangedObserver(),
+                AddGalleryWallpaper.Params.addGalleryWallpaperUris(galleryWallpapers))
+    }
+
+    fun removeGalleryWallpaper(items: List<GalleryWallpaperItem>) {
+        val galleryWallpapers = ArrayList<GalleryWallpaper>()
+        for (item in items) {
+            val wallpaper = GalleryWallpaper()
+            wallpaper.uri = item.uri
+            galleryWallpapers.add(wallpaper)
+        }
+
+        removeGalleryWallpaperUseCase.execute(
+                GalleryWallpaperChangedObserver(),
+                RemoveGalleryWallpaper.Params.removeGalleryWallpaperUris(galleryWallpapers))
     }
 
     override fun resume() {
@@ -72,7 +83,7 @@ constructor(val wallpaperItemMapper: WallpaperItemMapper,
     }
 
 
-    private inner class AddCustomWallpaperObserver : DefaultObserver<Boolean>() {
+    private inner class GalleryWallpaperChangedObserver : DefaultObserver<Boolean>() {
         override fun onNext(success: Boolean) {
             super.onNext(success)
             if (success) {

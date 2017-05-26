@@ -16,35 +16,39 @@ import javax.inject.Singleton
  */
 @Singleton
 class GalleryWallpaperDataRepository @Inject
-constructor(val customWallpaperDataStoreFactory: GalleryWallpaperDataStoreFactory,
+constructor(val galleryWallpaperDataStoreFactory: GalleryWallpaperDataStoreFactory,
             val wallpaperEntityMapper: WallpaperEntityMapper) :
         WallpaperRepository {
 
     override fun getWallpaper(): Observable<Wallpaper> =
-            customWallpaperDataStoreFactory.create()
+            galleryWallpaperDataStoreFactory.create()
                     .wallPaperEntity.map(wallpaperEntityMapper::transform)
 
     override fun switchWallpaper(): Observable<Wallpaper> =
-            customWallpaperDataStoreFactory.create()
+            galleryWallpaperDataStoreFactory.create()
                     .switchWallPaperEntity().map(wallpaperEntityMapper::transform)
 
     override fun openInputStream(wallpaperId: String?): Observable<InputStream> =
-            customWallpaperDataStoreFactory.create()
+            galleryWallpaperDataStoreFactory.create()
                     .openInputStream(wallpaperId)
 
     override fun getWallpaperCount(): Observable<Int> =
-            customWallpaperDataStoreFactory.create()
+            galleryWallpaperDataStoreFactory.create()
                     .wallpaperCount
 
     override fun likeWallpaper(wallpaperId: String): Observable<Boolean> =
-            customWallpaperDataStoreFactory.create()
+            galleryWallpaperDataStoreFactory.create()
                     .likeWallpaper(wallpaperId)
 
-    override fun addCustomWallpaperUris(uris: List<GalleryWallpaper>): Observable<Boolean> =
-            customWallpaperDataStoreFactory.create()
+    override fun addGalleryWallpaperUris(uris: List<GalleryWallpaper>): Observable<Boolean> =
+            galleryWallpaperDataStoreFactory.create()
                     .addGalleryWallpaperUris(uris)
 
+    override fun removeGalleryWallpaperUris(uris: List<GalleryWallpaper>): Observable<Boolean> =
+            galleryWallpaperDataStoreFactory.create()
+                    .removeGalleryWallpaperUris(uris)
+
     override fun getGalleryWallpapers(): Observable<List<GalleryWallpaper>> =
-            customWallpaperDataStoreFactory.create()
+            galleryWallpaperDataStoreFactory.create()
                     .getGalleryWallpaperUris().map(wallpaperEntityMapper::transformGalleryWallpaper)
 }
