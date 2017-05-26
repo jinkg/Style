@@ -1,7 +1,6 @@
 package com.yalin.style.presenter
 
 import android.net.Uri
-import com.yalin.style.data.utils.isTreeUri
 import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.interactor.AddGalleryWallpaper
 import com.yalin.style.domain.interactor.DefaultObserver
@@ -38,7 +37,6 @@ constructor(val wallpaperItemMapper: WallpaperItemMapper,
         for (uri in uris) {
             val wallpaper = GalleryWallpaper()
             wallpaper.uri = uri.toString()
-            wallpaper.isTreeUri = isTreeUri(uri)
             galleryWallpapers.add(wallpaper)
         }
 

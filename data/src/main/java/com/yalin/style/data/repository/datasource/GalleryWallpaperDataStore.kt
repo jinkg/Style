@@ -73,7 +73,7 @@ class GalleryWallpaperDataStore(val context: Context,
         throw IllegalAccessException("")
     }
 
-    fun addCustomWallpaperUris(uris: List<GalleryWallpaper>): Observable<Boolean> {
+    fun addGalleryWallpaperUris(uris: List<GalleryWallpaper>): Observable<Boolean> {
         return Observable.create<Boolean> { emitter ->
             var success = true
             try {
@@ -94,7 +94,7 @@ class GalleryWallpaperDataStore(val context: Context,
         }
     }
 
-    fun getCustomWallpaperUris(): Observable<List<GalleryWallpaperEntity>> {
+    fun getGalleryWallpaperUris(): Observable<List<GalleryWallpaperEntity>> {
         return Observable.create<List<GalleryWallpaperEntity>> { emitter ->
             val uris = ArrayList<GalleryWallpaperEntity>()
             var cursor: Cursor? = null

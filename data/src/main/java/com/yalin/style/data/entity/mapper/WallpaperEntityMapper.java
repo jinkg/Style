@@ -9,9 +9,7 @@ import com.yalin.style.domain.Source;
 import com.yalin.style.domain.Wallpaper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

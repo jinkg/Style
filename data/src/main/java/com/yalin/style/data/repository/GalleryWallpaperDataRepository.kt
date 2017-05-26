@@ -42,9 +42,9 @@ constructor(val customWallpaperDataStoreFactory: GalleryWallpaperDataStoreFactor
 
     override fun addCustomWallpaperUris(uris: List<GalleryWallpaper>): Observable<Boolean> =
             customWallpaperDataStoreFactory.create()
-                    .addCustomWallpaperUris(uris)
+                    .addGalleryWallpaperUris(uris)
 
     override fun getGalleryWallpapers(): Observable<List<GalleryWallpaper>> =
             customWallpaperDataStoreFactory.create()
-                    .getCustomWallpaperUris().map(wallpaperEntityMapper::transformGalleryWallpaper)
+                    .getGalleryWallpaperUris().map(wallpaperEntityMapper::transformGalleryWallpaper)
 }
