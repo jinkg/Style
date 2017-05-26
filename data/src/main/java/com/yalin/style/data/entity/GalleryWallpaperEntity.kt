@@ -5,6 +5,7 @@ import android.database.Cursor
 import android.net.Uri
 import com.yalin.style.data.log.LogUtil
 import com.yalin.style.data.repository.datasource.provider.StyleContract
+import com.yalin.style.data.utils.getCacheFileForUri
 import java.util.ArrayList
 
 /**
@@ -31,8 +32,13 @@ class GalleryWallpaperEntity {
                     validWallpapers.add(entity)
                     inputStream?.close()
                 } catch (e: Exception) {
-                    LogUtil.D(TAG, "File not found with gallery wallpaper uri : "
+                    LogUtil.D(TAG, "Cannot open inputStream for uri : "
                             + entity.uri)
+                    val cacheFile = getCacheFileForUri(context, entity.uri!!)
+                    if ((cacheFile != null && cacheFile.exists())) {
+                        // has cache file
+                        validWallpapers.add(entity)
+                    }
                 }
             }
             return validWallpapers;

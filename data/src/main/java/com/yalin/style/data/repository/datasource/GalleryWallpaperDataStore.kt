@@ -11,8 +11,10 @@ import com.yalin.style.data.entity.WallpaperEntity
 import com.yalin.style.data.lock.OpenInputStreamLock
 import com.yalin.style.data.repository.datasource.io.GalleryWallpapersHandler
 import com.yalin.style.data.repository.datasource.provider.StyleContract
+import com.yalin.style.data.utils.getCacheFileForUri
 import com.yalin.style.domain.GalleryWallpaper
 import io.reactivex.Observable
+import java.io.FileInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
@@ -48,7 +50,18 @@ class GalleryWallpaperDataStore(val context: Context,
                     if (cursor != null && cursor.moveToFirst()) {
                         val uriString = cursor.getString(cursor.getColumnIndex(
                                 StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI))
-                        inputStream = context.contentResolver.openInputStream(Uri.parse(uriString))
+                        try {
+                            inputStream = context.contentResolver.openInputStream(
+                                    Uri.parse(uriString))
+                        } catch (e: Exception) {
+                            // if cached file exist then use cached file
+                            val cacheFile = getCacheFileForUri(context, uriString)
+                            if ((cacheFile != null && cacheFile.exists())) {
+                                inputStream = FileInputStream(cacheFile)
+                            } else {
+                                throw IOException("Cannot open gallery uri : " + uriString)
+                            }
+                        }
                     }
                 }
                 emitter.onNext(inputStream)
