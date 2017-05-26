@@ -18,6 +18,7 @@ import com.yalin.style.StyleWallpaperService
 import com.yalin.style.analytics.Analytics
 import com.yalin.style.analytics.Event
 import com.yalin.style.data.BuildConfig
+import com.yalin.style.data.log.LogUtil
 import com.yalin.style.event.MainContainerInsetsChangedEvent
 import com.yalin.style.event.SeenTutorialEvent
 import com.yalin.style.event.WallpaperActivateEvent
@@ -47,6 +48,7 @@ class StyleActivity : BaseActivity(), HasComponent<WallpaperComponent>,
         PanScaleProxyView.OnOtherGestureListener {
 
     companion object {
+        private val TAG = "StyleActivity"
         // ui mode
         private val MODE_UNKNOWN = -1
         private val MODE_ACTIVATE = 0
@@ -198,6 +200,9 @@ class StyleActivity : BaseActivity(), HasComponent<WallpaperComponent>,
         if (mUiMode == newMode) {
             return
         }
+
+        LogUtil.D(TAG, "update UI")
+
         val oldModeView = getContainerFromMode(mUiMode)
         val newModeView = getContainerFromMode(newMode)
 
