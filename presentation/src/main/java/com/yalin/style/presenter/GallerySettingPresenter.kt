@@ -1,6 +1,7 @@
 package com.yalin.style.presenter
 
 import android.net.Uri
+import com.yalin.style.analytics.Analytics
 import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.interactor.*
 import com.yalin.style.mapper.WallpaperItemMapper
@@ -78,6 +79,11 @@ constructor(val wallpaperItemMapper: WallpaperItemMapper,
     override fun destroy() {
         addGalleryWallpaperUseCase.dispose()
         getGalleryWallpaperUseCase.dispose()
+        removeGalleryWallpaperUseCase.dispose()
+        getGalleryWallpaperUseCase.dispose()
+        forceNowUseCase.dispose()
+        setIntervalUseCase.dispose()
+        getIntervalUseCase.dispose()
         gallerySettingView = null
     }
 

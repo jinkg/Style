@@ -124,10 +124,23 @@ class GalleryWallpaperDataStore(val context: Context,
 
     override fun getWallpaperCount(): Observable<Int> {
         return Observable.create { emitter ->
-            val cachedCount = if (galleryWallpaperCache.isCached())
-                galleryWallpaperCache.get()!!.size else 0
+            var totalCount: Int = 0
+            if (galleryWallpaperCache.isCached()) {
+                totalCount = galleryWallpaperCache.get()!!.size
+            } else {
+                var cursor: Cursor? = null
+                try {
+                    cursor = context.contentResolver.query(StyleContract.GalleryWallpaper.CONTENT_URI,
+                            null, null, null, null)
+                    if (cursor != null) {
+                        totalCount = cursor.count
+                    }
+                } finally {
+                    cursor?.close()
+                }
+            }
 
-            emitter.onNext(cachedCount)
+            emitter.onNext(totalCount)
             emitter.onComplete()
         }
     }

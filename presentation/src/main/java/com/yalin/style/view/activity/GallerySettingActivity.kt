@@ -30,6 +30,8 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.yalin.style.R
 import com.yalin.style.StyleApplication
+import com.yalin.style.analytics.Analytics
+import com.yalin.style.analytics.Event
 import com.yalin.style.data.utils.getDisplayNameForTreeUri
 import com.yalin.style.data.utils.getImagesFromTreeUri
 import com.yalin.style.model.GalleryWallpaperItem
@@ -204,6 +206,7 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
         }
 
         addFab.setOnClickListener {
+            Analytics.logEvent(this, Event.ADD_PHOTO_CLICK)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 // On Lollipop and higher, we show the add toolbar to allow users to add either
                 // individual photos or a whole directory
@@ -340,12 +343,14 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
         val itemId = item.itemId
         val rotateMin = sRotateMinsByMenuId.get(itemId, -1)
         if (rotateMin != -1) {
+            Analytics.logEvent(this, Event.SETUP_UPDATE_INTERVAL, rotateMin.toString())
             presenter.setUpdateInterval(rotateMin)
             item.isChecked = true
             return true
         }
 
         if (itemId == R.id.action_import_photos) {
+            Analytics.logEvent(this, Event.IMPORT_FROM_GALLERY)
             if (mGetContentActivities.size == 1) {
                 // Just start the one ACTION_GET_CONTENT app
                 requestGetContent(mGetContentActivities[0])
@@ -365,6 +370,7 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
             }
             return true
         } else if (itemId == R.id.action_clear_photos) {
+            Analytics.logEvent(this, Event.CLEAR_WALLPAPER)
             presenter.removeGalleryWallpaper(mWallpapers)
             return true
         }

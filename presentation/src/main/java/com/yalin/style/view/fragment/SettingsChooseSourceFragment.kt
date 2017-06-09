@@ -15,6 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.yalin.style.R
+import com.yalin.style.analytics.Analytics
+import com.yalin.style.analytics.Event
 import com.yalin.style.data.log.LogUtil
 import com.yalin.style.injection.component.SourceComponent
 import com.yalin.style.model.SourceItem
@@ -159,6 +161,7 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
                     if (source.selected) {
                         (activity as Callbacks).onRequestCloseActivity()
                     } else {
+                        Analytics.logEvent(context, Event.SELECT_WALLPAPER_SOURCE, source.title!!)
                         settingsPresenter.selectSource(source.id)
                     }
                 }
@@ -177,6 +180,7 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
 
                 val settingsButton = findViewById(R.id.source_settings_button)
                 settingsButton.setOnClickListener {
+                    Analytics.logEvent(context, Event.CUSTOM_WALLPAPER_SETTINGS)
                     launchSourceSettings()
                 }
 

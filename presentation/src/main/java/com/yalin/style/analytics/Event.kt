@@ -23,4 +23,12 @@ object Event {
     val DEVICE_UNSUPPORTED = "device_unsupported"
     val VIEW_WALLPAPER_DETAIL = "wallpaper_detail"
     val VIEW_WALLPAPER_DETAIL_FAILED = "wallpaper_detail_failed"
+
+    // custom settings
+    val SELECT_WALLPAPER_SOURCE = "select_wallpaper_source"
+    val CUSTOM_WALLPAPER_SETTINGS = "custom_wallpaper_settings"
+    val SETUP_UPDATE_INTERVAL = "setup_update_interval"
+    val IMPORT_FROM_GALLERY = "import_from_gallery"
+    val ADD_PHOTO_CLICK = "add_photo_click"
+    val CLEAR_WALLPAPER = "clear_wallpaper"
 }

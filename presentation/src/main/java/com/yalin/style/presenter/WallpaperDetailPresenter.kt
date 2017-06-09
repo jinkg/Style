@@ -109,6 +109,7 @@ constructor(private val getWallpaperUseCase: GetWallpaper,
 
     override fun destroy() {
         getWallpaperUseCase.dispose()
+        getWallpaperCountUseCase.dispose()
         observerWallpaper.unregisterObserver(wallpaperRefreshObserver)
         wallpaperDetailView = null
     }
@@ -154,8 +155,8 @@ constructor(private val getWallpaperUseCase: GetWallpaper,
 
     private inner class WallpaperCountObserver : DefaultObserver<Int>() {
 
-        override fun onNext(count: Int?) {
-            wallpaperCount = count!!
+        override fun onNext(count: Int) {
+            wallpaperCount = count
             showOrHideNextView(count)
         }
 

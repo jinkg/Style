@@ -25,7 +25,7 @@ class GalleryScheduleService : IntentService(TAG) {
         val PREF_ROTATE_INTERVAL_MIN = "rotate_interval_min"
         val PREF_CURRENT_SHOW_WALLPAPER_ID = "current_gallery_wallpaper_id"
 
-        val DEFAULT_ROTATE_INTERVAL_MIN = 1
+        val DEFAULT_ROTATE_INTERVAL_MIN = 60 * 6
 
         val ACTION_START_UP = "com.yalin.style.ACTION_START_UP"
         val ACTION_SHUT_DOWN = "com.yalin.style.ACTION_SHUT_DOWN"
@@ -157,7 +157,6 @@ class GalleryScheduleService : IntentService(TAG) {
             }
         }
 
-        var notify = false
         if (validWallpapers.size > 1) {
             val random = Random()
             while (true) {
@@ -167,22 +166,17 @@ class GalleryScheduleService : IntentService(TAG) {
                     break
                 }
             }
-            notify = true
         } else if (validWallpapers.size == 1) {
             if (currentShowWallpaperId != validWallpapers[0].id) {
                 currentShowWallpaperId = validWallpapers[0].id
-                notify = true
             }
         } else {
             if (currentShowWallpaperId != -1L) {
                 currentShowWallpaperId = -1
-                notify = true
             }
         }
 
-        LogUtil.D(TAG, "Current select wallpaper id : $currentShowWallpaperId notify =$notify")
-        if (notify) {
-            notifyChange(this, StyleContract.GalleryWallpaper.CONTENT_URI)
-        }
+        LogUtil.D(TAG, "Current select wallpaper id : $currentShowWallpaperId ")
+        notifyChange(this, StyleContract.GalleryWallpaper.CONTENT_URI)
     }
 }
