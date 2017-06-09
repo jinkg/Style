@@ -37,6 +37,17 @@
                 android:resource="@xml/authenticator" />
         </service>
 
+        <service
+            android:name=".repository.datasource.sync.gallery.GalleryScheduleService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.yalin.style.ACTION_START_UP" />
+                <action android:name="com.yalin.style.ACTION_SHUT_DOWN" />
+                <action android:name="com.yalin.style.ACTION_SCHEDULE" />
+            </intent-filter>
+
+        </service>
+
         <provider
             android:name=".repository.datasource.provider.StyleProvider"
             android:authorities="com.yalin.style"

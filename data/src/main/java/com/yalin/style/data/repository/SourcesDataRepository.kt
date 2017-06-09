@@ -1,5 +1,6 @@
 package com.yalin.style.data.repository
 
+import android.content.Context
 import com.yalin.style.data.entity.mapper.WallpaperEntityMapper
 import com.yalin.style.data.repository.datasource.SourcesDataStoreFactory
 import com.yalin.style.domain.Source
@@ -15,7 +16,8 @@ import javax.inject.Singleton
  */
 @Singleton
 class SourcesDataRepository @Inject
-constructor(val sourcesDataStoreFactory: SourcesDataStoreFactory,
+constructor(val context: Context,
+            val sourcesDataStoreFactory: SourcesDataStoreFactory,
             val wallpaperEntityMapper: WallpaperEntityMapper,
             var styleWallpaperDataRepository: StyleWallpaperDataRepository,
             var customWallpaperDataRepository: GalleryWallpaperDataRepository) : SourcesRepository {

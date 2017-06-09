@@ -6,6 +6,7 @@ import com.yalin.style.data.R
 import com.yalin.style.data.entity.SourceEntity
 import com.yalin.style.data.extensions.DelegateExt
 import com.yalin.style.data.repository.datasource.provider.StyleContract
+import com.yalin.style.data.repository.datasource.sync.gallery.GalleryScheduleService
 import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,6 +47,10 @@ constructor(val ctx: Context) : SourcesCache {
             isSelected = selectedId == id
             isHasSetting = true
         }
+
+        if (isUseCustomSource()) {
+            GalleryScheduleService.startUp(ctx)
+        }
     }
 
     override fun getSources(ctx: Context): Observable<List<SourceEntity>> {
@@ -64,11 +69,15 @@ constructor(val ctx: Context) : SourcesCache {
             gallerySource.isSelected = false
             selectedId = selectSourceId
             success = true
+
+            GalleryScheduleService.shutDown(ctx)
         } else if (gallerySource.id == selectSourceId) {
             featureSource.isSelected = false
             gallerySource.isSelected = true
             selectedId = selectSourceId
             success = true
+
+            GalleryScheduleService.startUp(ctx)
         }
         if (success) {
             notifyChanged()
