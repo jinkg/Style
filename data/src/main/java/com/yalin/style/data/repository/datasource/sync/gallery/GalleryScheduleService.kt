@@ -11,6 +11,7 @@ import com.yalin.style.data.entity.GalleryWallpaperEntity
 import com.yalin.style.data.extensions.DelegateExt
 import com.yalin.style.data.log.LogUtil
 import com.yalin.style.data.repository.datasource.provider.StyleContract
+import com.yalin.style.data.utils.notifyChange
 import java.util.*
 
 /**
@@ -84,8 +85,8 @@ class GalleryScheduleService : IntentService(TAG) {
 
     private fun scheduleNext() {
         LogUtil.D(TAG, "Schedule next gallery wallpaper.")
-        publicNextWallpaper()
         setNextAlarm()
+        publicNextWallpaper()
     }
 
     private fun shutDown() {
@@ -160,11 +161,7 @@ class GalleryScheduleService : IntentService(TAG) {
 
         LogUtil.D(TAG, "Current select wallpaper id : $currentShowWallpaperId notify =$notify")
         if (notify) {
-            notifyChanged()
+            notifyChange(this, StyleContract.GalleryWallpaper.CONTENT_URI)
         }
-    }
-
-    private fun notifyChanged() {
-        contentResolver.notifyChange(StyleContract.GalleryWallpaper.CONTENT_URI, null)
     }
 }

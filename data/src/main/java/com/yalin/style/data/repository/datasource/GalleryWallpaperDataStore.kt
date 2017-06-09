@@ -138,7 +138,6 @@ class GalleryWallpaperDataStore(val context: Context,
                 emitter.onError(e)
             }
             if (success) {
-                notifyChange(context,StyleContract.GalleryWallpaper.CONTENT_URI)
                 emitter.onNext(true)
                 emitter.onComplete()
                 GalleryScheduleService.publish(context)
@@ -162,9 +161,9 @@ class GalleryWallpaperDataStore(val context: Context,
                 emitter.onError(e)
             }
             if (success) {
-                notifyChange(context,StyleContract.GalleryWallpaper.CONTENT_URI)
                 emitter.onNext(true)
                 emitter.onComplete()
+                GalleryScheduleService.publish(context)
             }
         }
     }
