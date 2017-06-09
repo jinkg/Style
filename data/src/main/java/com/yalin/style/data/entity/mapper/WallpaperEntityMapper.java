@@ -80,6 +80,9 @@ public class WallpaperEntityMapper {
         galleryWallpaper.id = galleryWallpaperEntity.getId();
         galleryWallpaper.isTreeUri = galleryWallpaperEntity.isTreeUri();
         galleryWallpaper.uri = galleryWallpaperEntity.getUri();
+        galleryWallpaper.dateTime = galleryWallpaperEntity.getDateTime();
+        galleryWallpaper.location = galleryWallpaperEntity.getLocation();
+        galleryWallpaper.hasMetadata = galleryWallpaperEntity.getHasMetadata();
         return galleryWallpaper;
     }
 

@@ -12,6 +12,9 @@ public class GalleryWallpaperItem implements Parcelable {
     public long id;
     public String uri;
     public boolean isTreeUri;
+    public long dateTime;
+    public String location;
+    public boolean hasMetadata;
 
     public GalleryWallpaperItem() {
 
@@ -21,7 +24,37 @@ public class GalleryWallpaperItem implements Parcelable {
         id = in.readLong();
         uri = in.readString();
         isTreeUri = in.readByte() != 0;
+        dateTime = in.readLong();
+        location = in.readString();
+        hasMetadata = in.readByte() != 0;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(uri);
+        dest.writeByte((byte) (isTreeUri ? 1 : 0));
+        dest.writeLong(dateTime);
+        dest.writeString(location);
+        dest.writeByte((byte) (hasMetadata ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<GalleryWallpaperItem> CREATOR = new Creator<GalleryWallpaperItem>() {
+        @Override
+        public GalleryWallpaperItem createFromParcel(Parcel in) {
+            return new GalleryWallpaperItem(in);
+        }
+
+        @Override
+        public GalleryWallpaperItem[] newArray(int size) {
+            return new GalleryWallpaperItem[size];
+        }
+    };
 
     @Override
     public boolean equals(Object obj) {
@@ -39,27 +72,5 @@ public class GalleryWallpaperItem implements Parcelable {
         return result;
     }
 
-    public static final Creator<GalleryWallpaperItem> CREATOR = new Creator<GalleryWallpaperItem>() {
-        @Override
-        public GalleryWallpaperItem createFromParcel(Parcel in) {
-            return new GalleryWallpaperItem(in);
-        }
 
-        @Override
-        public GalleryWallpaperItem[] newArray(int size) {
-            return new GalleryWallpaperItem[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeString(uri);
-        dest.writeByte((byte) (isTreeUri ? 1 : 0));
-    }
 }

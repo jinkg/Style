@@ -19,7 +19,6 @@ class GalleryWallpaperDataRepository @Inject
 constructor(val galleryWallpaperDataStoreFactory: GalleryWallpaperDataStoreFactory,
             val wallpaperEntityMapper: WallpaperEntityMapper) :
         WallpaperRepository {
-
     override fun getWallpaper(): Observable<Wallpaper> =
             galleryWallpaperDataStoreFactory.create()
                     .wallPaperEntity.map(wallpaperEntityMapper::transform)
@@ -51,4 +50,13 @@ constructor(val galleryWallpaperDataStoreFactory: GalleryWallpaperDataStoreFacto
     override fun getGalleryWallpapers(): Observable<List<GalleryWallpaper>> =
             galleryWallpaperDataStoreFactory.create()
                     .getGalleryWallpaperUris().map(wallpaperEntityMapper::transformGalleryWallpaper)
+
+    override fun foreNow(wallpaperUri: String): Observable<Boolean> =
+            galleryWallpaperDataStoreFactory.create().forceNow(wallpaperUri)
+
+    override fun setGalleryUpdateInterval(intervalMin: Int): Observable<Boolean> =
+            galleryWallpaperDataStoreFactory.create().setUpdateIntervalMin(intervalMin)
+
+    override fun getGalleryUpdateInterval(): Observable<Int> =
+            galleryWallpaperDataStoreFactory.create().getUpdateIntervalMin()
 }

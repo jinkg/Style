@@ -20,7 +20,7 @@ class RemoveGalleryWallpapersHandler(val context: Context,
         uris.filterNot { TextUtils.isEmpty(it.uri) }
                 .map {
                     StyleContract.GalleryWallpaper
-                            .buildGalleryWallpaperDelteUri(it.uri)
+                            .buildGalleryWallpaperDeleteUri(it.uri)
                 }
                 .map { ContentProviderOperation.newDelete(it) }
                 .mapTo(list) { it.build() }

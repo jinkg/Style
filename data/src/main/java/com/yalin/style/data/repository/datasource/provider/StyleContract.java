@@ -153,7 +153,7 @@ public class StyleContract {
             return uri.getPathSegments().get(1);
         }
 
-        public static Uri buildGalleryWallpaperDelteUri(String uri) {
+        public static Uri buildGalleryWallpaperDeleteUri(String uri) {
             return CONTENT_URI.buildUpon().appendPath(PATH_URI)
                     .appendPath(String.valueOf(uri)).build();
         }

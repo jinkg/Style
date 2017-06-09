@@ -101,4 +101,28 @@ public class StyleWallpaperDataRepository implements WallpaperRepository {
     );
   }
 
+  @Override
+  public Observable<Boolean> foreNow(String wallpaperUri) {
+    return Observable.create(emitter ->
+            emitter.onError(new IllegalStateException(
+                    "StyleWallpaperRepository can not foreNow gallery wallpaper."))
+    );
+  }
+
+  @Override
+  public Observable<Boolean> setGalleryUpdateInterval(int intervalMin) {
+    return Observable.create(emitter ->
+            emitter.onError(new IllegalStateException(
+                    "StyleWallpaperRepository can not setGalleryUpdateInterval gallery wallpaper."))
+    );
+  }
+
+    @Override
+    public Observable<Integer> getGalleryUpdateInterval() {
+        return Observable.create(emitter ->
+                emitter.onError(new IllegalStateException(
+                        "StyleWallpaperRepository can not getGalleryUpdateInterval gallery wallpaper."))
+        );
+    }
+
 }

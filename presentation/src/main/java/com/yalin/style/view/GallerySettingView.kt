@@ -8,4 +8,6 @@ import com.yalin.style.model.GalleryWallpaperItem
  */
 interface GallerySettingView : LoadingDataView {
     fun renderGalleryWallpapers(wallpaperItems: List<GalleryWallpaperItem>)
+
+    fun renderUpdateInterval(intervalMin: Int)
 }

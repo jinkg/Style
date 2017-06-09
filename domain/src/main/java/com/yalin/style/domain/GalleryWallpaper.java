@@ -9,4 +9,7 @@ public class GalleryWallpaper {
     public long id;
     public String uri;
     public boolean isTreeUri;
+    public long dateTime;
+    public String location;
+    public boolean hasMetadata;
 }

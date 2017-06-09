@@ -30,9 +30,6 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.yalin.style.R
 import com.yalin.style.StyleApplication
-import com.yalin.style.data.extensions.DelegateExt
-import com.yalin.style.data.log.LogUtil
-import com.yalin.style.data.repository.datasource.sync.gallery.GalleryScheduleService
 import com.yalin.style.data.utils.getDisplayNameForTreeUri
 import com.yalin.style.data.utils.getImagesFromTreeUri
 import com.yalin.style.model.GalleryWallpaperItem
@@ -67,10 +64,6 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
     @Inject
     lateinit internal var presenter: GallerySettingPresenter
 
-    var rotateIntervalMin: Int by DelegateExt.preferences(this,
-            GalleryScheduleService.PREF_ROTATE_INTERVAL_MIN,
-            GalleryScheduleService.DEFAULT_ROTATE_INTERVAL_MIN)
-
     private var mPlaceholderDrawable: ColorDrawable? = null
     private var mPlaceholderSmallDrawable: ColorDrawable? = null
 
@@ -103,6 +96,9 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
             sRotateMinsByMenuId.put(sRotateMenuIdsByMin.valueAt(i), sRotateMenuIdsByMin.keyAt(i))
         }
     }
+
+    private var mOptionsMenu: Menu? = null
+    private var mUpdateInterval: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -254,6 +250,15 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
         onDataSetChanged()
     }
 
+    override fun renderUpdateInterval(intervalMin: Int) {
+        mUpdateInterval = intervalMin
+        val menuId = sRotateMenuIdsByMin[intervalMin]
+        if (menuId != 0 && mOptionsMenu != null) {
+            val item = mOptionsMenu!!.findItem(menuId)
+            item?.isChecked = true
+        }
+    }
+
     override fun showLoading() {
     }
 
@@ -277,12 +282,14 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.gallery_activity, menu)
+        mOptionsMenu = menu
 
-        val menuId = sRotateMenuIdsByMin[rotateIntervalMin]
-        if (menuId != 0) {
-            val item = menu.findItem(menuId)
+        val menuId = sRotateMenuIdsByMin[mUpdateInterval]
+        if (menuId != 0 && mOptionsMenu != null) {
+            val item = mOptionsMenu!!.findItem(menuId)
             item?.isChecked = true
         }
+
         return true
     }
 
@@ -333,7 +340,7 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
         val itemId = item.itemId
         val rotateMin = sRotateMinsByMenuId.get(itemId, -1)
         if (rotateMin != -1) {
-            GalleryScheduleService.setInterval(this, rotateMin)
+            presenter.setUpdateInterval(rotateMin)
             item.isChecked = true
             return true
         }
@@ -643,8 +650,10 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
                     if (selectedItems.isTreeUri) {
                         val treeUri = Uri.parse(selectedItems.uri)
                         val photoUris = getImagesFromTreeUri(this, treeUri, Integer.MAX_VALUE)
-                        var photoUri = photoUris[Random().nextInt(photoUris.size)]
-                        //todo force now
+                        val photoUri = photoUris[Random().nextInt(photoUris.size)]
+                        presenter.forceNow(photoUri.toString())
+                    } else {
+                        presenter.forceNow(selectedItems.uri)
                     }
                     toast(R.string.gallery_temporary_force_image)
                 }

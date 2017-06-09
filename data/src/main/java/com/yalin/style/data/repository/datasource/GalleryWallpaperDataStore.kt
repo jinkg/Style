@@ -21,6 +21,7 @@ import com.yalin.style.data.repository.datasource.provider.StyleContract
 import com.yalin.style.data.repository.datasource.sync.gallery.GalleryScheduleService
 import com.yalin.style.data.utils.getCacheFileForUri
 import com.yalin.style.data.utils.getImagesFromTreeUri
+import com.yalin.style.data.utils.notifyChange
 import com.yalin.style.domain.GalleryWallpaper
 import io.reactivex.Observable
 import java.io.FileInputStream
@@ -41,9 +42,21 @@ class GalleryWallpaperDataStore(val context: Context,
     var currentGalleryWallpaperId: Long by DelegateExt.preferences(context,
             GalleryScheduleService.PREF_CURRENT_SHOW_WALLPAPER_ID, -1)
 
+    var rotateIntervalMin: Int by DelegateExt.preferences(context,
+            GalleryScheduleService.PREF_ROTATE_INTERVAL_MIN,
+            GalleryScheduleService.DEFAULT_ROTATE_INTERVAL_MIN)
+
     override fun getWallPaperEntity(): Observable<WallpaperEntity> {
-        return createEntitiesObservable().doOnNext(galleryWallpaperCache::put).map { entities ->
-            return@map peekValid(entities)
+        if (galleryWallpaperCache.isCached()) {
+            val entities = galleryWallpaperCache.get()!!
+            return Observable.create { emitter ->
+                emitter.onNext(peekValid(entities))
+                emitter.onComplete()
+            }
+        } else {
+            return createEntitiesObservable().doOnNext(galleryWallpaperCache::put).map { entities ->
+                return@map peekValid(entities)
+            }
         }
     }
 
@@ -195,6 +208,50 @@ class GalleryWallpaperDataStore(val context: Context,
         }
     }
 
+    fun forceNow(wallpaperUri: String): Observable<Boolean> {
+        return Observable.create { emitter ->
+            if (galleryWallpaperCache.isCached()) {
+                for (entity in galleryWallpaperCache.get()!!) {
+                    if (TextUtils.equals(entity.uri, wallpaperUri)) {
+                        currentGalleryWallpaperId = entity.id
+                        break
+                    }
+                }
+            } else {
+                var cursor: Cursor? = null
+                try {
+                    cursor = context.contentResolver.query(StyleContract.GalleryWallpaper.CONTENT_URI,
+                            arrayOf(StyleContract.GalleryWallpaper._ID),
+                            StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI + " = ? ",
+                            arrayOf(wallpaperUri), null)
+                    if (cursor != null && cursor.moveToFirst()) {
+                        currentGalleryWallpaperId = cursor.getLong(0)
+                    }
+                } finally {
+                    cursor?.close()
+                }
+            }
+            emitter.onNext(true)
+            emitter.onComplete()
+            notifyChange(context, StyleContract.GalleryWallpaper.CONTENT_URI)
+        }
+    }
+
+    fun setUpdateIntervalMin(intervalMin: Int): Observable<Boolean> {
+        return Observable.create { emitter ->
+            GalleryScheduleService.setInterval(context, intervalMin)
+            emitter.onNext(true)
+            emitter.onComplete()
+        }
+    }
+
+    fun getUpdateIntervalMin(): Observable<Int> {
+        return Observable.create { emitter ->
+            emitter.onNext(rotateIntervalMin)
+            emitter.onComplete()
+        }
+    }
+
     private fun createEntitiesObservable(): Observable<List<GalleryWallpaperEntity>> {
         return Observable.create<List<GalleryWallpaperEntity>> { emitter ->
             var cursor: Cursor? = null
@@ -205,9 +262,7 @@ class GalleryWallpaperDataStore(val context: Context,
                         null, null, null, null)
                 validWallpapers.addAll(GalleryWallpaperEntity.readCursor(context, cursor))
             } finally {
-                if (cursor != null) {
-                    cursor.close()
-                }
+                cursor?.close()
             }
 
             emitter.onNext(validWallpapers)

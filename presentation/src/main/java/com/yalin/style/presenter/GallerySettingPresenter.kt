@@ -16,7 +16,10 @@ class GallerySettingPresenter @Inject
 constructor(val wallpaperItemMapper: WallpaperItemMapper,
             val addGalleryWallpaperUseCase: AddGalleryWallpaper,
             val removeGalleryWallpaperUseCase: RemoveGalleryWallpaper,
-            val getGalleryWallpaperUseCase: GetGalleryWallpaper) : Presenter {
+            val getGalleryWallpaperUseCase: GetGalleryWallpaper,
+            val forceNowUseCase: ForceNow,
+            val setIntervalUseCase: SetGalleryUpdateInterval,
+            val getIntervalUseCase: GetGalleryUpdateInterval) : Presenter {
 
     var gallerySettingView: GallerySettingView? = null
 
@@ -28,6 +31,7 @@ constructor(val wallpaperItemMapper: WallpaperItemMapper,
 
     fun initialize() {
         refreshGalleryWallpaper()
+        getUpdateInterval()
     }
 
     fun addGalleryWallpaper(uris: Set<Uri>) {
@@ -56,6 +60,15 @@ constructor(val wallpaperItemMapper: WallpaperItemMapper,
                 RemoveGalleryWallpaper.Params.removeGalleryWallpaperUris(galleryWallpapers))
     }
 
+    fun forceNow(wallpaperUri: String) {
+        forceNowUseCase.execute(DefaultObserver<Boolean>(), ForceNow.Params.fromUri(wallpaperUri))
+    }
+
+    fun setUpdateInterval(intervalMin: Int) {
+        setIntervalUseCase.execute(DefaultObserver<Boolean>(),
+                SetGalleryUpdateInterval.Params.interval(intervalMin))
+    }
+
     override fun resume() {
     }
 
@@ -71,13 +84,21 @@ constructor(val wallpaperItemMapper: WallpaperItemMapper,
 
     private fun refreshGalleryWallpaper() {
         getGalleryWallpaperUseCase.execute(object : DefaultObserver<List<GalleryWallpaper>>() {
-            override fun onNext(wallpapers: List<GalleryWallpaper>) {
-                val itemSet = wallpaperItemMapper.transformGalleryWallpaper(wallpapers)
+            override fun onNext(intervalMin: List<GalleryWallpaper>) {
+                val itemSet = wallpaperItemMapper.transformGalleryWallpaper(intervalMin)
 
                 mWallpapers.clear()
                 mWallpapers.addAll(itemSet)
 
                 gallerySettingView?.renderGalleryWallpapers(mWallpapers)
+            }
+        }, null)
+    }
+
+    private fun getUpdateInterval() {
+        getIntervalUseCase.execute(object : DefaultObserver<Int>() {
+            override fun onNext(intervalMin: Int) {
+                gallerySettingView?.renderUpdateInterval(intervalMin)
             }
         }, null)
     }

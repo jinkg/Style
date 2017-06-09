@@ -108,7 +108,6 @@ class GalleryScheduleService : IntentService(TAG) {
     }
 
     private fun setInterval(intervalMin: Int) {
-        // todo maybe use a template variable
         rotateIntervalMin = intervalMin
         LogUtil.D(TAG, "Set schedule interval $rotateIntervalMin = $intervalMin")
         setNextAlarm()

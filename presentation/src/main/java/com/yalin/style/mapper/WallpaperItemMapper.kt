@@ -74,6 +74,9 @@ constructor() {
         galleryWallpaperItem.id = galleryWallpaper.id
         galleryWallpaperItem.isTreeUri = galleryWallpaper.isTreeUri
         galleryWallpaperItem.uri = galleryWallpaper.uri
+        galleryWallpaperItem.dateTime = galleryWallpaper.dateTime
+        galleryWallpaperItem.location = galleryWallpaper.location
+        galleryWallpaperItem.hasMetadata = galleryWallpaper.hasMetadata
         return galleryWallpaperItem
     }
 }

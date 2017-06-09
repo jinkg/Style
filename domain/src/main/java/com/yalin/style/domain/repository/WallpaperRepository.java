@@ -30,4 +30,10 @@ public interface WallpaperRepository {
     Observable<Boolean> removeGalleryWallpaperUris(List<GalleryWallpaper> uris);
 
     Observable<List<GalleryWallpaper>> getGalleryWallpapers();
+
+    Observable<Boolean> foreNow(String wallpaperUri);
+
+    Observable<Boolean> setGalleryUpdateInterval(int intervalMin);
+
+    Observable<Integer> getGalleryUpdateInterval();
 }
