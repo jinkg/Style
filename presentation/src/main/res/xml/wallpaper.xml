@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
-  android:author="@string/app_author"
-  android:thumbnail="@drawable/style"
-  android:description ="@string/app_description"/>
+    android:author="@string/app_author"
+    android:description="@string/app_description"
+    android:contextDescription="@string/app_context_description"
+    android:contextUri="@string/app_context_uri"
+    android:settingsActivity="com.yalin.style.view.activity.SettingsActivity"
+    android:thumbnail="@drawable/style" />

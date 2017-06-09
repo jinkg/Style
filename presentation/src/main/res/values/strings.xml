@@ -88,4 +88,7 @@
 
     <string name="gallery_import_dialog_title">Import photos from</string>
 
+    <string name="app_context_description">A living wallpaper for your home screen</string>
+    <string name="app_context_uri">http://www.kinglloy.com/</string>
+
 </resources>

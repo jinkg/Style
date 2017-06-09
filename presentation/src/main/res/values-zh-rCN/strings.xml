@@ -86,4 +86,8 @@
     <string name="gallery_action_import_photos_from">从%s导入照片</string>
 
     <string name="gallery_import_dialog_title">导入照片</string>
+
+    <string name="app_context_description">用动态壁纸装点你的屏幕</string>
+
+    <string name="app_context_uri">http://www.kinglloy.com/</string>
 </resources>
