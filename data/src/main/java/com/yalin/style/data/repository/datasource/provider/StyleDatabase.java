@@ -93,6 +93,9 @@ public class StyleDatabase extends SQLiteOpenHelper {
                 + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI + " TEXT NOT NULL,"
                 + StyleContract.GalleryWallpaper.COLUMN_NAME_IS_TREE_URI + " INTEGER,"
+                + StyleContract.GalleryWallpaper.COLUMN_NAME_DATE_TIME + " INTEGER,"
+                + StyleContract.GalleryWallpaper.COLUMN_NAME_LOCATION + " TEXT,"
+                + StyleContract.GalleryWallpaper.COLUMN_NAME_HAS_METADATA + " INTEGER DEFAULT 0,"
                 + "UNIQUE (" + StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI
                 + ") ON CONFLICT REPLACE);");
     }

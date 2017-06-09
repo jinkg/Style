@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.*
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -17,16 +18,21 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
+import android.util.SparseIntArray
 import android.view.*
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.yalin.style.R
 import com.yalin.style.StyleApplication
+import com.yalin.style.data.extensions.DelegateExt
+import com.yalin.style.data.log.LogUtil
+import com.yalin.style.data.repository.datasource.sync.gallery.GalleryScheduleService
 import com.yalin.style.data.utils.getDisplayNameForTreeUri
 import com.yalin.style.data.utils.getImagesFromTreeUri
 import com.yalin.style.model.GalleryWallpaperItem
@@ -61,6 +67,10 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
     @Inject
     lateinit internal var presenter: GallerySettingPresenter
 
+    var rotateIntervalMin: Int by DelegateExt.preferences(this,
+            GalleryScheduleService.PREF_ROTATE_INTERVAL_MIN,
+            GalleryScheduleService.DEFAULT_ROTATE_INTERVAL_MIN)
+
     private var mPlaceholderDrawable: ColorDrawable? = null
     private var mPlaceholderSmallDrawable: ColorDrawable? = null
 
@@ -77,10 +87,29 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
     private var mLastTouchX: Int = 0
     private var mLastTouchY: Int = 0
 
+    private val mGetContentActivities = ArrayList<ActivityInfo>()
+
+    private val sRotateMenuIdsByMin = SparseIntArray()
+    private val sRotateMinsByMenuId = SparseIntArray()
+
+    init {
+        sRotateMenuIdsByMin.put(0, R.id.action_rotate_interval_none)
+        sRotateMenuIdsByMin.put(60, R.id.action_rotate_interval_1h)
+        sRotateMenuIdsByMin.put(60 * 3, R.id.action_rotate_interval_3h)
+        sRotateMenuIdsByMin.put(60 * 6, R.id.action_rotate_interval_6h)
+        sRotateMenuIdsByMin.put(60 * 24, R.id.action_rotate_interval_24h)
+        sRotateMenuIdsByMin.put(60 * 72, R.id.action_rotate_interval_72h)
+        for (i in 0..(sRotateMenuIdsByMin.size() - 1)) {
+            sRotateMinsByMenuId.put(sRotateMenuIdsByMin.valueAt(i), sRotateMenuIdsByMin.keyAt(i))
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         StyleApplication.instance.applicationComponent.inject(this)
         setContentView(R.layout.activity_gallery_setting)
+
+        setSupportActionBar(appBar)
 
         mPlaceholderDrawable = ColorDrawable(ContextCompat.getColor(this,
                 R.color.gallery_chosen_photo_placeholder))
@@ -245,6 +274,105 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
         return this.applicationContext
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.gallery_activity, menu)
+
+        val menuId = sRotateMenuIdsByMin[rotateIntervalMin]
+        if (menuId != 0) {
+            val item = menu.findItem(menuId)
+            item?.isChecked = true
+        }
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        // Make sure the 'Import photos' MenuItem is set up properly based on the number of
+        // activities that handle ACTION_GET_CONTENT
+        // 0 = hide the MenuItem
+        // 1 = show 'Import photos from APP_NAME' to go to the one app that exists
+        // 2 = show 'Import photos...' to have the user pick which app to import photos from
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        val getContentActivities = packageManager.queryIntentActivities(intent, 0)
+        mGetContentActivities.clear()
+        for (info in getContentActivities) {
+            // Filter out the default system UI
+            if (TextUtils.equals(info.activityInfo.packageName, "com.android.documentsui")) {
+                continue
+            }
+            // Filter out non-exported activities
+            if (!info.activityInfo.exported) {
+                continue
+            }
+            // Filter out activities we don't have permission to start
+            if (!TextUtils.isEmpty(info.activityInfo.permission)
+                    && packageManager.checkPermission(info.activityInfo.permission,
+                    packageName) != PackageManager.PERMISSION_GRANTED) {
+                continue
+            }
+            mGetContentActivities.add(info.activityInfo)
+        }
+
+        // Hide the 'Import photos' action if there are no activities found
+        val importPhotosMenuItem = menu.findItem(R.id.action_import_photos)
+        importPhotosMenuItem.isVisible = !mGetContentActivities.isEmpty()
+        // If there's only one app that supports ACTION_GET_CONTENT, tell the user what that app is
+        if (mGetContentActivities.size == 1) {
+            importPhotosMenuItem.title = getString(R.string.gallery_action_import_photos_from,
+                    mGetContentActivities[0].loadLabel(packageManager))
+        } else {
+            importPhotosMenuItem.setTitle(R.string.gallery_action_import_photos)
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemId = item.itemId
+        val rotateMin = sRotateMinsByMenuId.get(itemId, -1)
+        if (rotateMin != -1) {
+            GalleryScheduleService.setInterval(this, rotateMin)
+            item.isChecked = true
+            return true
+        }
+
+        if (itemId == R.id.action_import_photos) {
+            if (mGetContentActivities.size == 1) {
+                // Just start the one ACTION_GET_CONTENT app
+                requestGetContent(mGetContentActivities[0])
+            } else {
+                // Let the user pick which app they want to import photos from
+                val packageManager = packageManager
+                val items = arrayOfNulls<CharSequence>(mGetContentActivities.size)
+                for (h in mGetContentActivities.indices) {
+                    items[h] = mGetContentActivities[h].loadLabel(packageManager)
+                }
+                AlertDialog.Builder(this)
+                        .setTitle(R.string.gallery_import_dialog_title)
+                        .setItems(items, { _, which ->
+                            requestGetContent(mGetContentActivities[which])
+                        })
+                        .show()
+            }
+            return true
+        } else if (itemId == R.id.action_clear_photos) {
+            presenter.removeGalleryWallpaper(mWallpapers)
+            return true
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun requestGetContent(info: ActivityInfo) {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.setClassName(info.packageName, info.name)
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        startActivityForResult(intent, REQUEST_CHOOSE_PHOTOS)
+    }
 
     private fun requestPhotos() {
         // Use ACTION_OPEN_DOCUMENT by default for adding photos.

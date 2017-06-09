@@ -25,11 +25,14 @@ class GalleryScheduleService : IntentService(TAG) {
         val PREF_ROTATE_INTERVAL_MIN = "rotate_interval_min"
         val PREF_CURRENT_SHOW_WALLPAPER_ID = "current_gallery_wallpaper_id"
 
-        val DEFAULT_ROTATE_INTERVAL_MIN = 1L
+        val DEFAULT_ROTATE_INTERVAL_MIN = 1
 
         val ACTION_START_UP = "com.yalin.style.ACTION_START_UP"
         val ACTION_SHUT_DOWN = "com.yalin.style.ACTION_SHUT_DOWN"
         val ACTION_SCHEDULE = "com.yalin.style.ACTION_SCHEDULE"
+        val ACTION_SET_INTERVAL = "com.yalin.style.ACTION_SET_INTERVAL"
+
+        val INTERVAL_KEY = "interval"
 
         fun startUp(context: Context) {
             val intent = Intent(ACTION_START_UP).setComponent(ComponentName(context,
@@ -48,9 +51,16 @@ class GalleryScheduleService : IntentService(TAG) {
                     GalleryScheduleService::class.java))
             context.startService(intent)
         }
+
+        fun setInterval(context: Context, intervalMin: Int) {
+            val intent = Intent(ACTION_SET_INTERVAL).setComponent(ComponentName(context,
+                    GalleryScheduleService::class.java))
+            intent.putExtra(INTERVAL_KEY, intervalMin)
+            context.startService(intent)
+        }
     }
 
-    var rotateIntervalMin: Long by DelegateExt.preferences(this,
+    var rotateIntervalMin: Int by DelegateExt.preferences(this,
             PREF_ROTATE_INTERVAL_MIN, DEFAULT_ROTATE_INTERVAL_MIN)
 
     var currentShowWallpaperId: Long by DelegateExt.preferences(this,
@@ -62,7 +72,7 @@ class GalleryScheduleService : IntentService(TAG) {
 
     override fun onHandleIntent(intent: Intent?) {
         if (intent != null) {
-            handleCommand(intent.action)
+            handleCommand(intent, intent.action)
         }
     }
 
@@ -70,11 +80,13 @@ class GalleryScheduleService : IntentService(TAG) {
         super.onDestroy()
     }
 
-    private fun handleCommand(action: String) {
+    private fun handleCommand(intent: Intent, action: String) {
         when (action) {
             ACTION_START_UP -> startUp()
             ACTION_SCHEDULE -> scheduleNext()
             ACTION_SHUT_DOWN -> shutDown()
+            ACTION_SET_INTERVAL -> setInterval(intent.getIntExtra(INTERVAL_KEY,
+                    DEFAULT_ROTATE_INTERVAL_MIN))
         }
     }
 
@@ -95,9 +107,18 @@ class GalleryScheduleService : IntentService(TAG) {
         stopSelf()
     }
 
+    private fun setInterval(intervalMin: Int) {
+        // todo maybe use a template variable
+        rotateIntervalMin = intervalMin
+        LogUtil.D(TAG, "Set schedule interval $rotateIntervalMin = $intervalMin")
+        setNextAlarm()
+    }
+
     private fun setNextAlarm() {
         if (rotateIntervalMin > 0) {
             setUpdateAlarm(System.currentTimeMillis() + rotateIntervalMin * 60 * 1000)
+        } else {
+            cancelAlarm()
         }
     }
 
@@ -113,6 +134,7 @@ class GalleryScheduleService : IntentService(TAG) {
     }
 
     private fun cancelAlarm() {
+        LogUtil.D(TAG, "Cancel schedule alarm")
         val am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         am.cancel(getHandleNextCommandPendingIntent(this))
     }
@@ -123,7 +145,7 @@ class GalleryScheduleService : IntentService(TAG) {
                 PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    fun publicNextWallpaper() {
+    private fun publicNextWallpaper() {
         var cursor: Cursor? = null
         val validWallpapers = ArrayList<GalleryWallpaperEntity>()
         try {

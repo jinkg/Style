@@ -9,4 +9,7 @@
 
     <string name="gallery_title">My Photos</string>
     <string name="gallery_description">Random camera photos</string>
+
+    <string name="gallery_from_gallery">From your gallery</string>
+    <string name="gallery_touch_to_view">Touch to view</string>
 </resources>

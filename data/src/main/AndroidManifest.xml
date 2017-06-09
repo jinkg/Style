@@ -44,6 +44,7 @@
                 <action android:name="com.yalin.style.ACTION_START_UP" />
                 <action android:name="com.yalin.style.ACTION_SHUT_DOWN" />
                 <action android:name="com.yalin.style.ACTION_SCHEDULE" />
+                <action android:name="com.yalin.style.ACTION_SET_INTERVAL" />
             </intent-filter>
 
         </service>

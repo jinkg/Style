@@ -86,4 +86,6 @@
     <string name="gallery_action_import_photos">Import photos…</string>
     <string name="gallery_action_import_photos_from">Import photos from %s</string>
 
+    <string name="gallery_import_dialog_title">Import photos from</string>
+
 </resources>

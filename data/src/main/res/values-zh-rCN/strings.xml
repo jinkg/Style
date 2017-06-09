@@ -9,4 +9,8 @@
 
     <string name="gallery_title">我的照片</string>
     <string name="gallery_description">随机更新照片</string>
+
+    <string name="gallery_from_gallery">来自你的相册</string>
+    <string name="gallery_touch_to_view">点击查看更多</string>
+
 </resources>

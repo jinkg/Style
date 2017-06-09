@@ -183,7 +183,7 @@ class SettingsActivity : BaseActivity(), HasComponent<SourceComponent>,
         })
     }
 
-    internal fun inflateMenuFromFragment(menuResId: Int) {
+    fun inflateMenuFromFragment(menuResId: Int) {
         appBar.menu.clear()
         if (menuResId != 0) {
             appBar.inflateMenu(menuResId)

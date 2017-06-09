@@ -1,5 +1,6 @@
 package com.yalin.style.view.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -37,6 +38,11 @@ class SettingsAdvanceFragment : BaseFragment(), SettingsActivity.SettingsActivit
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
+    }
+
+    override fun onAttach(activity: Activity) {
+        (activity as SettingsActivity).inflateMenuFromFragment(R.menu.menu_settings_advanced)
+        super.onAttach(activity)
     }
 
     override fun onDestroy() {

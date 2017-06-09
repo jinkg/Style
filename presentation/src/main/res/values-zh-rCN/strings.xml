@@ -82,4 +82,6 @@
     <string name="gallery_action_rotate_interval_6h">每隔6小时</string>
     <string name="gallery_action_rotate_interval_24h">每隔24小时</string>
     <string name="gallery_action_rotate_interval_72h">每隔3天</string>
+
+    <string name="gallery_import_dialog_title">导入照片</string>
 </resources>

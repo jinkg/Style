@@ -6,7 +6,9 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.text.TextUtils
+import android.text.format.DateUtils
 import com.fernandocejas.arrow.checks.Preconditions
+import com.yalin.style.data.R
 import com.yalin.style.data.cache.GalleryWallpaperCache
 import com.yalin.style.data.entity.GalleryWallpaperEntity
 import com.yalin.style.data.entity.WallpaperEntity
@@ -19,7 +21,6 @@ import com.yalin.style.data.repository.datasource.provider.StyleContract
 import com.yalin.style.data.repository.datasource.sync.gallery.GalleryScheduleService
 import com.yalin.style.data.utils.getCacheFileForUri
 import com.yalin.style.data.utils.getImagesFromTreeUri
-import com.yalin.style.data.utils.notifyChange
 import com.yalin.style.domain.GalleryWallpaper
 import io.reactivex.Observable
 import java.io.FileInputStream
@@ -49,7 +50,7 @@ class GalleryWallpaperDataStore(val context: Context,
     override fun switchWallPaperEntity(): Observable<WallpaperEntity> {
         if (openInputStreamLock.obtain()) {
             openInputStreamLock.release()
-            return wallPaperEntity
+            return doSwitch()
         } else {
             return Observable.create<WallpaperEntity> {
                 emitter ->
@@ -240,12 +241,69 @@ class GalleryWallpaperDataStore(val context: Context,
         val wallpaperEntity = WallpaperEntity()
         wallpaperEntity.isDefault = false
         wallpaperEntity.canLike = false
-        wallpaperEntity.title = "My Photos"
-        wallpaperEntity.byline = "Get from your photos"
+        wallpaperEntity.title = getTitle(galleryWallpaperEntity.dateTime)
+        wallpaperEntity.byline = getByline(galleryWallpaperEntity.location)
         wallpaperEntity.attribution = "kinglloy.com"
         wallpaperEntity.imageUri = galleryWallpaperEntity.uri
         wallpaperEntity.wallpaperId = galleryWallpaperEntity.id.toString()
 
         return wallpaperEntity
+    }
+
+    private fun getTitle(dateTime: Long): String {
+        if (dateTime > 0)
+            return DateUtils.formatDateTime(context, dateTime,
+                    DateUtils.FORMAT_SHOW_DATE
+                            or DateUtils.FORMAT_SHOW_YEAR
+                            or DateUtils.FORMAT_SHOW_WEEKDAY)
+        else return context.getString(R.string.gallery_from_gallery)
+    }
+
+    private fun getByline(location: String?): String {
+        if (location.isNullOrEmpty())
+            return context.getString(R.string.gallery_touch_to_view)
+        else return location!!
+    }
+
+    private fun doSwitch(): Observable<WallpaperEntity> {
+        if (galleryWallpaperCache.isCached()) {
+            return Observable.create<WallpaperEntity> { emitter ->
+                val entities = galleryWallpaperCache.get()
+                emitter.onNext(peekOne(entities!!))
+                emitter.onComplete()
+            }
+        } else {
+            return createEntitiesObservable().doOnNext(galleryWallpaperCache::put)
+                    .map { entities ->
+                        return@map peekOne(entities)
+                    }
+        }
+    }
+
+    private fun peekOne(entities: List<GalleryWallpaperEntity>): WallpaperEntity {
+        var selectedEntity: GalleryWallpaperEntity? = null
+        if (entities.size > 1) {
+            val random = Random()
+            while (true) {
+                selectedEntity = entities[random.nextInt(entities.size)]
+                if (selectedEntity.id != currentGalleryWallpaperId) {
+                    currentGalleryWallpaperId = selectedEntity.id
+                    break
+                }
+            }
+        } else if (entities.size == 1) {
+            if (currentGalleryWallpaperId != entities[0].id) {
+                currentGalleryWallpaperId = entities[0].id
+            }
+            selectedEntity = entities[0]
+        } else {
+            if (currentGalleryWallpaperId != -1L) {
+                currentGalleryWallpaperId = -1
+            }
+        }
+        if (selectedEntity != null) {
+            return switchToWallpaperEntity(selectedEntity)
+        }
+        return DbWallpaperDataStore.buildDefaultWallpaper()
     }
 }

@@ -16,6 +16,9 @@ class GalleryWallpaperEntity {
     var id: Long = 0
     var uri: String? = null
     var isTreeUri: Boolean = false
+    var dateTime: Long = 0
+    var location: String? = null
+    var hasMetadata: Boolean = false
 
     companion object {
         private val TAG = "GalleryWallpaperEntity"
@@ -53,7 +56,12 @@ class GalleryWallpaperEntity {
                     StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI))
             entity.isTreeUri = cursor.getInt(cursor.getColumnIndex(
                     StyleContract.GalleryWallpaper.COLUMN_NAME_IS_TREE_URI)) == 1
-
+            entity.dateTime = cursor.getLong(cursor.getColumnIndex(
+                    StyleContract.GalleryWallpaper.COLUMN_NAME_DATE_TIME))
+            entity.location = cursor.getString(cursor.getColumnIndex(
+                    StyleContract.GalleryWallpaper.COLUMN_NAME_LOCATION))
+            entity.hasMetadata = cursor.getInt(cursor.getColumnIndex(
+                    StyleContract.GalleryWallpaper.COLUMN_NAME_HAS_METADATA)) == 1
             return entity
         }
     }
