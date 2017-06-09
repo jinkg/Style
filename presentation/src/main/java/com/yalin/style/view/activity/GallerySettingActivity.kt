@@ -525,8 +525,7 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
             } else if (itemId == R.id.action_remove) {
                 val removeItems = ArrayList<GalleryWallpaperItem>(
                         mMultiSelectionController.getSelection())
-
-                // todo remove
+                presenter.removeGalleryWallpaper(removeItems)
                 mMultiSelectionController.reset(true)
                 return@OnMenuItemClickListener true
             }

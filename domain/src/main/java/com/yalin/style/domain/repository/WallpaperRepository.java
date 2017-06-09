@@ -25,7 +25,9 @@ public interface WallpaperRepository {
 
     Observable<Boolean> likeWallpaper(String wallpaperId);
 
-    Observable<Boolean> addCustomWallpaperUris(List<GalleryWallpaper> uris);
+    Observable<Boolean> addGalleryWallpaperUris(List<GalleryWallpaper> uris);
+
+    Observable<Boolean> removeGalleryWallpaperUris(List<GalleryWallpaper> uris);
 
     Observable<List<GalleryWallpaper>> getGalleryWallpapers();
 }

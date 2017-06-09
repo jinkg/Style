@@ -30,19 +30,19 @@ public class AddGalleryWallpaper extends UseCase<Boolean, AddGalleryWallpaper.Pa
     @Override
     Observable<Boolean> buildUseCaseObservable(Params params) {
         return sourcesRepository.getWallpaperRepository()
-                .addCustomWallpaperUris(params.customWallpaperUris);
+                .addGalleryWallpaperUris(params.galleryWallpaperUris);
     }
 
     public static final class Params {
 
-        private final List<GalleryWallpaper> customWallpaperUris;
+        private final List<GalleryWallpaper> galleryWallpaperUris;
 
-        private Params(List<GalleryWallpaper> customWallpapers) {
-            this.customWallpaperUris = customWallpapers;
+        private Params(List<GalleryWallpaper> galleryWallpapers) {
+            this.galleryWallpaperUris = galleryWallpapers;
         }
 
-        public static Params addCustomWallpaperUris(List<GalleryWallpaper> customWallpapers) {
-            return new Params(customWallpapers);
+        public static Params addGalleryWallpaperUris(List<GalleryWallpaper> galleryWallpapers) {
+            return new Params(galleryWallpapers);
         }
     }
 }

@@ -12,6 +12,7 @@ public enum StyleUriEnum {
     WALLPAPER_ID(102, "wallpaper/*", null),
 
     GALLERY(200, "gallery", StyleDatabase.Tables.GALLERY),
+    GALLERY_URI(202, "gallery/uri/*", null),
     GALLERY_ID(201, "gallery/*", null);
 
     public int code;

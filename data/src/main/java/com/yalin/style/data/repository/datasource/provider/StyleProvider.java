@@ -140,9 +140,13 @@ public class StyleProvider extends ContentProvider {
         StyleUriEnum uriEnum = mUriMatcher.matchUri(uri);
         final SelectionBuilder builder = buildSimpleSelection(uri);
         switch (uriEnum) {
-            case WALLPAPER:
+            case WALLPAPER: {
                 builder.where(Wallpaper.COLUMN_NAME_LIKED + " = ?", "0");
+            }
                 break;
+            case GALLERY_URI:{
+                return builder.delete(db);
+            }
         }
         return builder.where(selection, selectionArgs).delete(db);
     }
@@ -226,6 +230,12 @@ public class StyleProvider extends ContentProvider {
                 return builder.table(StyleDatabase.Tables.GALLERY)
                         .where(GalleryWallpaper._ID + " = ?", galleryWallpaperId);
             }
+            case GALLERY_URI:{
+                String uriString
+                    = StyleContract.GalleryWallpaper.getGalleryWallpaperDeleteUri(uri);
+                return builder.table(StyleDatabase.Tables.GALLERY)
+                    .where(GalleryWallpaper.COLUMN_NAME_CUSTOM_URI + " = ?", uriString);
+            }
             default: {
                 throw new UnsupportedOperationException("Unknown uri for " + uri);
             }
@@ -241,15 +251,6 @@ public class StyleProvider extends ContentProvider {
         switch (uriEnum) {
             default: {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
-            }
-        }
-    }
-
-    private void notifyChange(Uri uri) {
-        if (!StyleContractHelper.isUriCalledFromSyncAdapter(uri)) {
-            Context context = getContext();
-            if (context != null) {
-                context.getContentResolver().notifyChange(uri, null);
             }
         }
     }
