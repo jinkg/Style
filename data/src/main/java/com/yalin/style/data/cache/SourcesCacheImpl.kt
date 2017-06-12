@@ -32,7 +32,7 @@ constructor(val ctx: Context) : SourcesCache {
     init {
         featureSource = SourceEntity(SOURCE_ID_STYLE).apply {
             title = ctx.getString(R.string.featuredart_source_title)
-            iconId = R.drawable.featuredart_ic_source
+            iconId = R.drawable.style_ic_source
             description = ctx.getString(R.string.featuredart_source_description)
             color = Color.WHITE
             isSelected = selectedId == id
