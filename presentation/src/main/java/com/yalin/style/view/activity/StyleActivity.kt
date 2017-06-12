@@ -249,11 +249,14 @@ class StyleActivity : BaseActivity(), HasComponent<WallpaperComponent>,
             val detailFragment = fragmentManager.findFragmentById(R.id.detailContainer)
             if (detailFragment == null) {
                 wallpaperDetailFragment = WallpaperDetailFragment.createInstance()
-                mainContainer.setOnSystemUiVisibilityChangeListener(wallpaperDetailFragment)
                 fragmentManager.beginTransaction()
                         .add(R.id.detailContainer, wallpaperDetailFragment)
                         .commit()
+            } else {
+                wallpaperDetailFragment = detailFragment as WallpaperDetailFragment?
             }
+
+            mainContainer.setOnSystemUiVisibilityChangeListener(wallpaperDetailFragment)
         }
 
         if (mUiMode == MODE_TUTORIAL || newMode == MODE_TUTORIAL) {
