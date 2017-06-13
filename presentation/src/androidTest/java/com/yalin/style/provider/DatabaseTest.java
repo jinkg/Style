@@ -35,7 +35,7 @@ public class DatabaseTest {
 
     try {
       Cursor cursor = context.getContentResolver()
-          .query(Wallpaper.CONTENT_LAST_WALLPAPER_URI, null, null, null, null);
+          .query(Wallpaper.CONTENT_URI, null, null, null, null);
 
       Assert.assertNotNull(uri);
       Assert.assertNotNull(cursor);

@@ -3,9 +3,12 @@ package com.yalin.style.data.entity
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import com.yalin.style.data.log.LogUtil
 import com.yalin.style.data.repository.datasource.provider.StyleContract
 import com.yalin.style.data.utils.getCacheFileForUri
+import com.yalin.style.data.utils.getImagesFromTreeUri
+import java.io.InputStream
 import java.util.ArrayList
 
 /**
@@ -27,13 +30,14 @@ class GalleryWallpaperEntity {
             val validWallpapers = ArrayList<GalleryWallpaperEntity>(5)
             while (cursor != null && cursor.moveToNext()) {
                 val entity = readEntityFromCursor(cursor)
+                var inputStream: InputStream? = null
                 try {
                     // valid input stream
-                    val inputStream = context.contentResolver.openInputStream(
-                            Uri.parse(entity.uri))
-
+                    if (!entity.isTreeUri) {
+                        inputStream = context.contentResolver.openInputStream(
+                                Uri.parse(entity.uri))
+                    }
                     validWallpapers.add(entity)
-                    inputStream?.close()
                 } catch (e: Exception) {
                     LogUtil.D(TAG, "Cannot open inputStream for uri : "
                             + entity.uri)
@@ -42,6 +46,8 @@ class GalleryWallpaperEntity {
                         // has cache file
                         validWallpapers.add(entity)
                     }
+                } finally {
+                    inputStream?.close()
                 }
             }
             return validWallpapers;

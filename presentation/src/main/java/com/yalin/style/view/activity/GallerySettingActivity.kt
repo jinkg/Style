@@ -469,10 +469,12 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
             photoGrid.visibility = View.VISIBLE
+            addFab.visibility = View.VISIBLE
             empty.visibility = View.GONE
         } else {
             // No chosen images, show the empty View
             photoGrid.visibility = View.GONE
+            addFab.visibility = View.GONE
             empty.visibility = View.VISIBLE
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -480,6 +482,7 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
                 // Permission is granted, we can show the random camera photos image
                 emptyAnimator.displayedChild = 0
                 emptyDescription.setText(R.string.gallery_empty)
+                addFab.visibility = View.VISIBLE
             } else {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -652,15 +655,7 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
                 val selection = mMultiSelectionController.getSelection()
                 if (selection.isNotEmpty()) {
                     val selectedItems = selection.iterator().next()
-                    // Check to see if it is tree URI, if so, force a random photo from the tree
-                    if (selectedItems.isTreeUri) {
-                        val treeUri = Uri.parse(selectedItems.uri)
-                        val photoUris = getImagesFromTreeUri(this, treeUri, Integer.MAX_VALUE)
-                        val photoUri = photoUris[Random().nextInt(photoUris.size)]
-                        presenter.forceNow(photoUri.toString())
-                    } else {
-                        presenter.forceNow(selectedItems.uri)
-                    }
+                    presenter.forceNow(selectedItems.uri)
                     toast(R.string.gallery_temporary_force_image)
                 }
                 mMultiSelectionController.reset(true)

@@ -39,7 +39,7 @@ class GalleryWallpapersHandler(val context: Context,
             if (TextUtils.isEmpty(wallpaperEntity.uri)) {
                 continue
             }
-            wallpaperEntity.isTreeUri = isTreeUri(uri)
+            wallpaperEntity.isTreeUri = isTreeUri(Uri.parse(wallpaperEntity.uri))
             processUriPermission(context, wallpaperEntity)
 
             val builder = ContentProviderOperation.newInsert(uri)

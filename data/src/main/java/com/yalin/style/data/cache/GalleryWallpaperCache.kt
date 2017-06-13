@@ -19,9 +19,9 @@ class GalleryWallpaperCache @Inject constructor() {
 
     fun get() = wallpaperEntities
 
-    fun isCached() = wallpaperEntities != null
+    fun isCached() = wallpaperEntities != null && wallpaperEntities!!.isNotEmpty()
 
-    fun isDirty() = wallpaperEntities != null
+    fun isDirty() = wallpaperEntities == null || wallpaperEntities!!.isEmpty()
 
     fun evictAll() {
         wallpaperEntities = null

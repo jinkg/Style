@@ -92,7 +92,8 @@ class GalleryWallpaperDataStore(val context: Context,
                                 StyleContract.GalleryWallpaper.COLUMN_NAME_IS_TREE_URI)) == 1
 
                         if (isTreeUri && Build.VERSION.SDK_INT >= 21) {
-                            val images = getImagesFromTreeUri(context, Uri.parse(uriString), 0)
+                            val images = getImagesFromTreeUri(context, Uri.parse(uriString),
+                                    Int.MAX_VALUE)
                             inputStream = context.contentResolver.openInputStream(
                                     images[Random().nextInt(images.size)])
                         } else {
@@ -196,29 +197,7 @@ class GalleryWallpaperDataStore(val context: Context,
     }
 
     fun getGalleryWallpaperUris(): Observable<List<GalleryWallpaperEntity>> {
-        return Observable.create<List<GalleryWallpaperEntity>> { emitter ->
-            val uris = ArrayList<GalleryWallpaperEntity>()
-            var cursor: Cursor? = null
-            try {
-                cursor = context.contentResolver.query(StyleContract.GalleryWallpaper.CONTENT_URI,
-                        null, null, null, null)
-                while (cursor != null && cursor.moveToNext()) {
-                    val item = GalleryWallpaperEntity()
-                    item.id = cursor.getLong(cursor.getColumnIndex(
-                            StyleContract.GalleryWallpaper._ID))
-                    item.uri = cursor.getString(cursor.getColumnIndex(
-                            StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI))
-                    item.isTreeUri = cursor.getInt(cursor.getColumnIndex(
-                            StyleContract.GalleryWallpaper.COLUMN_NAME_IS_TREE_URI)) == 1
-                    uris.add(item)
-                }
-            } finally {
-                cursor?.close()
-            }
-
-            emitter.onNext(uris)
-            emitter.onComplete()
-        }
+        return createEntitiesObservable().doOnNext(galleryWallpaperCache::put)
     }
 
     fun forceNow(wallpaperUri: String): Observable<Boolean> {
