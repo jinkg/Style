@@ -4,7 +4,6 @@ import com.yalin.style.domain.Source
 import com.yalin.style.domain.interactor.DefaultObserver
 import com.yalin.style.domain.interactor.GetSources
 import com.yalin.style.domain.interactor.SelectSource
-import com.yalin.style.injection.PerActivity
 import com.yalin.style.mapper.WallpaperItemMapper
 import com.yalin.style.model.SourceItem
 import com.yalin.style.view.SourceChooseView
@@ -15,7 +14,6 @@ import javax.inject.Inject
  * @author jinyalin
  * @since 2017/5/23.
  */
-@PerActivity
 class SettingsChooseSourcePresenter @Inject
 constructor(val getSourcesUseCase: GetSources,
             val selectSourceUseCae: SelectSource,
@@ -65,10 +63,10 @@ constructor(val getSourcesUseCase: GetSources,
 
     fun updateSources() {
         getSourcesUseCase.execute(object : DefaultObserver<List<Source>>() {
-            override fun onNext(intervalMin: List<Source>) {
-                super.onNext(intervalMin)
+            override fun onNext(sources: List<Source>) {
+                super.onNext(sources)
                 mSources.clear()
-                mSources.addAll(wallpaperMapper.transformSources(intervalMin))
+                mSources.addAll(wallpaperMapper.transformSources(sources))
                 for (source in mSources) {
                     if (source.selected) {
                         mSelectedSource = source

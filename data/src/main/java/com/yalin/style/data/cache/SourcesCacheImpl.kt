@@ -59,6 +59,7 @@ constructor(val ctx: Context) : SourcesCache {
             sources.add(featureSource)
             sources.add(gallerySource)
             emitter.onNext(sources)
+            emitter.onComplete()
         }
     }
 

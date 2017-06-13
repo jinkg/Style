@@ -9,7 +9,7 @@ import io.reactivex.observers.DisposableObserver;
 
 public class DefaultObserver<T> extends DisposableObserver<T> {
     @Override
-    public void onNext(T intervalMin) {
+    public void onNext(T t) {
         // no-op by default.
     }
 

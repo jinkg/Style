@@ -1,7 +1,6 @@
 package com.yalin.style.presenter
 
 import android.net.Uri
-import com.yalin.style.analytics.Analytics
 import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.interactor.*
 import com.yalin.style.mapper.WallpaperItemMapper
@@ -90,8 +89,8 @@ constructor(val wallpaperItemMapper: WallpaperItemMapper,
 
     private fun refreshGalleryWallpaper() {
         getGalleryWallpaperUseCase.execute(object : DefaultObserver<List<GalleryWallpaper>>() {
-            override fun onNext(intervalMin: List<GalleryWallpaper>) {
-                val itemSet = wallpaperItemMapper.transformGalleryWallpaper(intervalMin)
+            override fun onNext(sources: List<GalleryWallpaper>) {
+                val itemSet = wallpaperItemMapper.transformGalleryWallpaper(sources)
 
                 mWallpapers.clear()
                 mWallpapers.addAll(itemSet)
