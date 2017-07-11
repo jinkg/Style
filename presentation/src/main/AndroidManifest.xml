@@ -26,7 +26,7 @@
     <application
         android:name=".StyleApplication"
         android:allowBackup="true"
-        android:icon="@drawable/style"
+        android:icon="@drawable/ic_launcher_round"
         android:label="@string/app_name_ext"
         android:supportsRtl="true">
         <activity
@@ -37,6 +37,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <activity
@@ -67,6 +71,14 @@
                 android:name="android.service.wallpaper"
                 android:resource="@xml/wallpaper" />
         </service>
+
+        <receiver
+            android:name=".receiver.ShortcutsReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.yalin.style.ACTION_SWITCH_WALLPAPER" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

@@ -58,6 +58,7 @@ class SettingsActivity : BaseActivity(), HasComponent<SourceComponent>,
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         setContentView(R.layout.activity_settings)
 
+        getSectionFromIntent(intent)
         setupAppBar()
 
         drawInsetsFrameLayout.setOnInsetsCallback { insets ->
@@ -76,6 +77,23 @@ class SettingsActivity : BaseActivity(), HasComponent<SourceComponent>,
         mBackgroundAnimator = ObjectAnimator.ofFloat(this, "backgroundOpacity", 0f, 1f)
         mBackgroundAnimator!!.duration = 1000
         mBackgroundAnimator!!.start()
+    }
+
+    private fun getSectionFromIntent(intent: Intent) {
+        val uri = intent.data
+        uri?.let {
+            val path = uri.pathSegments[0]
+            when (path) {
+                "advance" -> {
+                    mStartSection = START_SECTION_ADVANCED
+                    Analytics.logEvent(this, Event.SHORTCUTS_ADVANCE_SETTINGS)
+                }
+                else -> {
+                    mStartSection = START_SECTION_SOURCE
+                    Analytics.logEvent(this, Event.SHORTCUTS_SETTINGS)
+                }
+            }
+        }
     }
 
     private fun initializeInjector() = DaggerSourceComponent.builder()

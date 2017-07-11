@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:targetApi="25">
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_banana"
+        android:shortcutDisabledMessage="@string/shortcut_settings"
+        android:shortcutId="settings"
+        android:shortcutLongLabel="@string/shortcut_settings"
+        android:shortcutShortLabel="@string/shortcut_settings">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="style://settings/source"
+            android:targetClass="com.yalin.style.view.activity.SettingsActivity"
+            android:targetPackage="com.yalin.style" />
+
+    </shortcut>
+
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_banana"
+        android:shortcutDisabledMessage="@string/shortcut_settings_advance"
+        android:shortcutId="advance_settings"
+        android:shortcutLongLabel="@string/shortcut_settings_advance"
+        android:shortcutShortLabel="@string/shortcut_settings_advance">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="style://settings/advance"
+            android:targetClass="com.yalin.style.view.activity.SettingsActivity"
+            android:targetPackage="com.yalin.style" />
+
+    </shortcut>
+
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_strawberry"
+        android:shortcutDisabledMessage="@string/shortcut_about"
+        android:shortcutId="about"
+        android:shortcutLongLabel="@string/shortcut_about"
+        android:shortcutShortLabel="@string/shortcut_about">
+
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="style://about"
+            android:targetClass="com.yalin.style.view.activity.AboutActivity"
+            android:targetPackage="com.yalin.style" />
+
+    </shortcut>
+</shortcuts>

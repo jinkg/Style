@@ -31,4 +31,9 @@ object Event {
     val IMPORT_FROM_GALLERY = "import_from_gallery"
     val ADD_PHOTO_CLICK = "add_photo_click"
     val CLEAR_WALLPAPER = "clear_wallpaper"
+
+    // shortcuts
+    val SHORTCUTS_SETTINGS = "shortcuts_settings"
+    val SHORTCUTS_ADVANCE_SETTINGS = "shortcuts_advance_settings"
+    val SHORTCUTS_ABOUT = "shortcuts_about"
 }

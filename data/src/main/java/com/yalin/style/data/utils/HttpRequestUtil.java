@@ -23,8 +23,9 @@ public class HttpRequestUtil {
         int sdkVersion = DeviceUtil.getSDKVersion();
         String androidId = DeviceUtil.getAndroidID(context);
         String manufacturer = DeviceUtil.getManufacturer();
+        String brand = DeviceUtil.getBrand();
         String model = DeviceUtil.getModel();
 
-        return new DeviceInfo(sdkVersion, androidId, manufacturer, model);
+        return new DeviceInfo(sdkVersion, androidId, manufacturer, brand, model);
     }
 }

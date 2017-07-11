@@ -5,4 +5,4 @@
     android:contextDescription="@string/app_context_description"
     android:contextUri="@string/app_context_uri"
     android:settingsActivity="com.yalin.style.view.activity.SettingsActivity"
-    android:thumbnail="@drawable/style" />
+    android:thumbnail="@drawable/ic_launcher" />

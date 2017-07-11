@@ -1,5 +1,6 @@
 package com.yalin.style.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Html
@@ -9,6 +10,8 @@ import android.view.ViewPropertyAnimator
 
 import com.yalin.style.BuildConfig
 import com.yalin.style.R
+import com.yalin.style.analytics.Analytics
+import com.yalin.style.analytics.Event
 import com.yalin.style.view.fragment.AnimatedStyleLogoFragment
 import com.yalin.style.view.fragment.StyleRenderFragment
 import kotlinx.android.synthetic.main.activity_about.*
@@ -27,6 +30,8 @@ class AboutActivity : AppCompatActivity() {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
+        maybeLogEvent(intent)
+
         window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
@@ -47,6 +52,13 @@ class AboutActivity : AppCompatActivity() {
 
         aboutBody.text = Html.fromHtml(getString(R.string.about_body))
         aboutBody.movementMethod = LinkMovementMethod()
+    }
+
+    private fun maybeLogEvent(intent: Intent) {
+        val uri = intent.data
+        uri?.let {
+            Analytics.logEvent(this, Event.SHORTCUTS_ABOUT)
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

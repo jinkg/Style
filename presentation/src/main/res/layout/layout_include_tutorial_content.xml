@@ -22,21 +22,21 @@
 
         <FrameLayout
             android:id="@+id/tutorialIconAffordance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
             android:layout_centerInParent="true"
             android:clickable="true"
             android:focusable="true">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:contentDescription="@string/app_name"
                 android:src="@drawable/tutorial_icon" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:duplicateParentState="true"
                 android:src="@drawable/tutorial_icon_on_overlay"
@@ -54,7 +54,7 @@
             android:paddingTop="4dp"
             android:text="@string/app_name"
             android:textColor="#fff"
-            android:textSize="@dimen/text_size_large"
+            android:textSize="@dimen/settings_text_size_large"
             app:shadowColor="#8000"
             app:shadowDx="0dp"
             app:shadowDy="1dp"

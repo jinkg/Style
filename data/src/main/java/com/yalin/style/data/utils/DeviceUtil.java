@@ -38,4 +38,14 @@ public class DeviceUtil {
         }
         return model;
     }
+
+    public static String getBrand() {
+        String brand = Build.BRAND;
+        if (brand != null) {
+            brand = brand.trim().replaceAll("\\s*", "");
+        } else {
+            brand = "";
+        }
+        return brand;
+    }
 }
