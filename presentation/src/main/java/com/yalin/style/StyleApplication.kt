@@ -8,7 +8,7 @@ import com.yalin.style.data.log.LogUtil
 import com.yalin.style.injection.component.ApplicationComponent
 import com.yalin.style.injection.component.DaggerApplicationComponent
 import com.yalin.style.injection.modules.ApplicationModule
-import com.yalin.weatherapp.extensions.DelegatesExt
+import com.yalin.style.extensions.DelegatesExt
 
 /**
  * @author jinyalin

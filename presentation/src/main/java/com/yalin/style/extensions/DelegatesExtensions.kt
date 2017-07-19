@@ -1,4 +1,4 @@
-package com.yalin.weatherapp.extensions
+package com.yalin.style.extensions
 
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
