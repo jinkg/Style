@@ -72,14 +72,6 @@
                 android:resource="@xml/wallpaper" />
         </service>
 
-        <receiver
-            android:name=".receiver.ShortcutsReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.yalin.style.ACTION_SWITCH_WALLPAPER" />
-            </intent-filter>
-        </receiver>
-
     </application>
 
 </manifest>
