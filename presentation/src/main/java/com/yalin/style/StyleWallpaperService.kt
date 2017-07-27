@@ -71,8 +71,8 @@ open class StyleWallpaperService : GLWallpaperService(), WallpaperServiceProxy.W
 
     private inner class SourcesRefreshObserver : DefaultObserver<Void>() {
         override fun onComplete() {
-            if ((getSelectedSourceUseCase.selectedSourceId xor currentSelectedSource)
-                    >= SourcesRepository.SOURCE_ID_ADVANCE) {
+            if (getSelectedSourceUseCase.selectedSourceId == SourcesRepository.SOURCE_ID_ADVANCE ||
+                    currentSelectedSource == SourcesRepository.SOURCE_ID_ADVANCE) {
                 pickWallpaper()
             }
         }

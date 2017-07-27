@@ -12,9 +12,9 @@ import io.reactivex.Observable;
  */
 
 public interface SourcesRepository {
-    int SOURCE_ID_STYLE = 1 << 1;
-    int SOURCE_ID_CUSTOM = 1 << 2;
-    int SOURCE_ID_ADVANCE = 1 << 3;
+    int SOURCE_ID_STYLE = 0;
+    int SOURCE_ID_CUSTOM = 1;
+    int SOURCE_ID_ADVANCE = 2;
 
     Observable<List<Source>> getSources();
 
