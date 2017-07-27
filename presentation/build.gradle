@@ -88,6 +88,7 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
 
     compile project(':domain')
+    compile project(':engine')
     demoCompile project(path: ':data', configuration: 'demoDebug')
     productionCompile project(path: ':data', configuration: 'productionRelease')
 

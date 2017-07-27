@@ -4,6 +4,9 @@
 
     <string name="authority">com.yalin.style</string>
 
+    <string name="advance_source_title">特效动态壁纸</string>
+    <string name="advance_source_description">富含各种炫酷效果</string>
+
     <string name="featuredart_source_title">Style</string>
     <string name="featuredart_source_description">每天自动更新艺术作品</string>
 

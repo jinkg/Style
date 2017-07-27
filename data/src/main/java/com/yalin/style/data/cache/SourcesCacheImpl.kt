@@ -7,6 +7,7 @@ import com.yalin.style.data.entity.SourceEntity
 import com.yalin.style.data.extensions.DelegateExt
 import com.yalin.style.data.repository.datasource.provider.StyleContract
 import com.yalin.style.data.repository.datasource.sync.gallery.GalleryScheduleService
+import com.yalin.style.domain.repository.SourcesRepository.*
 import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,17 +20,21 @@ import javax.inject.Singleton
 class SourcesCacheImpl @Inject
 constructor(val ctx: Context) : SourcesCache {
 
-    companion object {
-        val SOURCE_ID_STYLE = 0
-        val SOURCE_ID_CUSTOM = 1
-    }
-
     var selectedId: Int by DelegateExt.preferences(ctx, "selected_source_id", SOURCE_ID_STYLE)
 
+    val advanceSource: SourceEntity
     val featureSource: SourceEntity
     val gallerySource: SourceEntity
 
     init {
+        advanceSource = SourceEntity(SOURCE_ID_ADVANCE).apply {
+            title = ctx.getString(R.string.advance_source_title)
+            iconId = R.drawable.style_ic_source
+            description = ctx.getString(R.string.advance_source_description)
+            color = Color.WHITE
+            isSelected = selectedId == id
+            isHasSetting = false
+        }
         featureSource = SourceEntity(SOURCE_ID_STYLE).apply {
             title = ctx.getString(R.string.featuredart_source_title)
             iconId = R.drawable.style_ic_source
@@ -48,7 +53,7 @@ constructor(val ctx: Context) : SourcesCache {
             isHasSetting = true
         }
 
-        if (isUseCustomSource()) {
+        if (getUsedSourceId() == SOURCE_ID_CUSTOM) {
             GalleryScheduleService.startUp(ctx)
         }
     }
@@ -56,6 +61,7 @@ constructor(val ctx: Context) : SourcesCache {
     override fun getSources(ctx: Context): Observable<List<SourceEntity>> {
         return Observable.create { emitter ->
             val sources = ArrayList<SourceEntity>()
+            sources.add(advanceSource)
             sources.add(featureSource)
             sources.add(gallerySource)
             emitter.onNext(sources)
@@ -68,6 +74,7 @@ constructor(val ctx: Context) : SourcesCache {
         if (featureSource.id == selectSourceId) {
             featureSource.isSelected = true
             gallerySource.isSelected = false
+            advanceSource.isSelected = false
             selectedId = selectSourceId
             success = true
 
@@ -75,10 +82,19 @@ constructor(val ctx: Context) : SourcesCache {
         } else if (gallerySource.id == selectSourceId) {
             featureSource.isSelected = false
             gallerySource.isSelected = true
+            advanceSource.isSelected = false
             selectedId = selectSourceId
             success = true
 
             GalleryScheduleService.startUp(ctx)
+        } else if (advanceSource.id == selectSourceId) {
+            featureSource.isSelected = false
+            gallerySource.isSelected = false
+            advanceSource.isSelected = true
+            selectedId = selectSourceId
+            success = true
+
+            GalleryScheduleService.shutDown(ctx)
         }
         if (success) {
             notifyChanged()
@@ -86,8 +102,8 @@ constructor(val ctx: Context) : SourcesCache {
         return success
     }
 
-    override fun isUseCustomSource(): Boolean {
-        return gallerySource.isSelected
+    override fun getUsedSourceId(): Int {
+        return selectedId
     }
 
     private fun notifyChanged() {

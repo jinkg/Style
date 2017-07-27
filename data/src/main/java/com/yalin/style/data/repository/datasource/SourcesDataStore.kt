@@ -13,5 +13,5 @@ interface SourcesDataStore {
 
     fun selectSource(sourceId: Int): Observable<Boolean>
 
-    fun isUseCustomSource(): Boolean
+    fun getUsedSourceId(): Int
 }

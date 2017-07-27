@@ -3,6 +3,8 @@
 
     <string name="authority">com.yalin.style</string>
 
+    <string name="advance_source_title">Advance Wallpaper</string>
+    <string name="advance_source_description">Advance animation component</string>
 
     <string name="featuredart_source_title">Featured art</string>
     <string name="featuredart_source_description">A new painting every day</string>

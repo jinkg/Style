@@ -12,11 +12,16 @@ import io.reactivex.Observable;
  */
 
 public interface SourcesRepository {
+    int SOURCE_ID_STYLE = 1 << 1;
+    int SOURCE_ID_CUSTOM = 1 << 2;
+    int SOURCE_ID_ADVANCE = 1 << 3;
 
     Observable<List<Source>> getSources();
 
     Observable<Boolean> selectSource(int sourceId);
 
     WallpaperRepository getWallpaperRepository();
+
+    int getSelectedSource();
 
 }

@@ -6,12 +6,15 @@ import android.net.Uri
 import android.os.Handler
 import android.text.TextUtils
 import com.yalin.style.data.cache.SourcesCache
+import com.yalin.style.data.cache.SourcesCacheImpl
 import com.yalin.style.data.log.LogUtil
 import com.yalin.style.data.repository.datasource.StyleWallpaperDataStoreFactory
 import com.yalin.style.data.repository.datasource.provider.StyleContract
 import com.yalin.style.domain.interactor.DefaultObserver
 import com.yalin.style.domain.observable.SourcesObservable
 import com.yalin.style.domain.observable.WallpaperObservable
+import com.yalin.style.domain.repository.SourcesRepository.SOURCE_ID_CUSTOM
+import com.yalin.style.domain.repository.SourcesRepository.SOURCE_ID_STYLE
 import java.util.HashSet
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,10 +39,12 @@ constructor(val context: Context,
     private val mWallpaperObserver = object : ContentObserver(Handler()) {
         override fun onChange(selfChange: Boolean, uri: Uri) {
             LogUtil.D(TAG, "Wallpaper data changed notify observer to reload.")
-            if (sourcesCache.isUseCustomSource() && TextUtils.equals(uri.toString(),
+            if (sourcesCache.getUsedSourceId() == SOURCE_ID_CUSTOM
+                    && TextUtils.equals(uri.toString(),
                     StyleContract.GalleryWallpaper.CONTENT_URI.toString())) {
                 notifyObserver()
-            } else if (!sourcesCache.isUseCustomSource() && TextUtils.equals(uri.toString(),
+            } else if (sourcesCache.getUsedSourceId() == SOURCE_ID_STYLE
+                    && TextUtils.equals(uri.toString(),
                     StyleContract.Wallpaper.CONTENT_URI.toString())) {
                 notifyObserver()
             }

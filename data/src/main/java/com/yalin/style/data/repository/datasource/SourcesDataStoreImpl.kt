@@ -33,6 +33,6 @@ class SourcesDataStoreImpl(val context: Context,
         return sourcesCache.getSources(context)
     }
 
-    override fun isUseCustomSource() = sourcesCache.isUseCustomSource()
+    override fun getUsedSourceId() = sourcesCache.getUsedSourceId()
 
 }

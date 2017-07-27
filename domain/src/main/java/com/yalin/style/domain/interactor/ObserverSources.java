@@ -1,6 +1,6 @@
 package com.yalin.style.domain.interactor;
 
-import com.yalin.style.domain.observable.WallpaperObservable;
+import com.yalin.style.domain.observable.SourcesObservable;
 
 import javax.inject.Inject;
 
@@ -11,19 +11,19 @@ import javax.inject.Inject;
 
 public class ObserverSources {
 
-    private WallpaperObservable wallpaperObservable;
+    private SourcesObservable sourceObservable;
 
     @Inject
-    public ObserverSources(WallpaperObservable wallpaperObservable) {
-        this.wallpaperObservable = wallpaperObservable;
+    public ObserverSources(SourcesObservable sourceObservable) {
+        this.sourceObservable = sourceObservable;
     }
 
     public void registerObserver(DefaultObserver<Void> observer) {
-        wallpaperObservable.registerObserver(observer);
+        sourceObservable.registerObserver(observer);
     }
 
     public void unregisterObserver(DefaultObserver<Void> observer) {
-        wallpaperObservable.unregisterObserver(observer);
+        sourceObservable.unregisterObserver(observer);
     }
 
 }

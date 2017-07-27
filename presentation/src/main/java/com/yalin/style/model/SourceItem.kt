@@ -1,6 +1,6 @@
 package com.yalin.style.model
 
-import com.yalin.style.data.cache.SourcesCacheImpl
+import com.yalin.style.domain.repository.SourcesRepository
 
 /**
  * @author jinyalin
@@ -16,5 +16,5 @@ class SourceItem {
     var color: Int = 0
 
     val needPermission: Boolean
-        get() = id == SourcesCacheImpl.SOURCE_ID_CUSTOM
+        get() = id == SourcesRepository.SOURCE_ID_CUSTOM
 }
