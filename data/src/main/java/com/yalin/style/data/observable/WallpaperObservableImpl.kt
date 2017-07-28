@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Handler
 import android.text.TextUtils
 import com.yalin.style.data.cache.SourcesCache
-import com.yalin.style.data.cache.SourcesCacheImpl
 import com.yalin.style.data.log.LogUtil
 import com.yalin.style.data.repository.datasource.StyleWallpaperDataStoreFactory
 import com.yalin.style.data.repository.datasource.provider.StyleContract
@@ -58,32 +57,26 @@ constructor(val context: Context,
         }
     }
 
-    private var observerRegistered = false
+    init {
+        context.contentResolver
+                .registerContentObserver(StyleContract.Wallpaper.CONTENT_URI,
+                        true, mWallpaperObserver)
+        context.contentResolver
+                .registerContentObserver(StyleContract.GalleryWallpaper.CONTENT_URI,
+                        true, mWallpaperObserver)
+
+        sourcesObservable.registerObserver(sourceObserver)
+    }
 
     override fun registerObserver(observer: DefaultObserver<Void>) {
         synchronized(mObserverSet) {
             mObserverSet.add(observer)
-            if (!observerRegistered) {
-                context.contentResolver
-                        .registerContentObserver(StyleContract.Wallpaper.CONTENT_URI,
-                                true, mWallpaperObserver)
-                context.contentResolver
-                        .registerContentObserver(StyleContract.GalleryWallpaper.CONTENT_URI,
-                                true, mWallpaperObserver)
-
-                sourcesObservable.registerObserver(sourceObserver)
-                observerRegistered = true
-            }
         }
     }
 
     override fun unregisterObserver(observer: DefaultObserver<Void>) {
         synchronized(mObserverSet) {
             mObserverSet.remove(observer)
-            if (mObserverSet.isEmpty()) {
-                context.contentResolver.unregisterContentObserver(mWallpaperObserver)
-                observerRegistered = false
-            }
         }
     }
 
