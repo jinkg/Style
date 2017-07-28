@@ -15,27 +15,21 @@ import dalvik.system.DexClassLoader;
 
 public class WrapperClassLoader {
 
-    private static final String CORE_APK_FILE_NAME = "wallpaper.component";
-    private static volatile ClassLoader classLoader;
-
-    private static void init(Context context) {
+    private static ClassLoader getClassLoader(Context context, String componentFilePath) {
         if (context == null) {
             throw new IllegalArgumentException("Context can not be null.");
-        } else if (classLoader == null) {
-            synchronized (WrapperClassLoader.class) {
-                if (classLoader == null) {
-                    File coreFilePath =
-                            new File(Environment.getExternalStorageDirectory(), CORE_APK_FILE_NAME);
-                    classLoader = new DexClassLoader(coreFilePath.getAbsolutePath(),
-                            context.getCacheDir().getAbsolutePath(),
-                            null, context.getClassLoader());
-                }
-            }
+        }
+
+        synchronized (WrapperClassLoader.class) {
+            return new DexClassLoader(componentFilePath,
+                    context.getCacheDir().getAbsolutePath(),
+                    null, context.getClassLoader());
         }
     }
 
-    public static Class<?> loadClass(Context context, String str) throws Exception {
-        init(context);
-        return classLoader.loadClass(str);
+    public static Class<?> loadClass(Context context, String componentPath, String className)
+            throws Exception {
+        ClassLoader classLoader = getClassLoader(context, componentPath);
+        return classLoader.loadClass(className);
     }
 }

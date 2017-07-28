@@ -55,7 +55,7 @@ public class WallpapersHandler extends JSONHandler {
         for (WallpaperEntity wallpaper : mWallpapers) {
             Uri wallpaperUri = Wallpaper.buildWallpaperSaveUri(wallpaper.wallpaperId);
             if (!keepedEntity.contains(wallpaper) && downloadWallpaper(wallpaper, wallpaperUri)
-                    && WallpaperFileHelper.ensureChecksumValid(mContext,
+                    && WallpaperFileHelper.ensureWallpaperChecksumValid(mContext,
                     wallpaper.checksum, wallpaper.wallpaperId)) {
                 LogUtil.D(TAG, "download wallpaper " + wallpaperUri
                         + " success, do output wallpaper.");
@@ -64,7 +64,7 @@ public class WallpapersHandler extends JSONHandler {
             }
         }
         // delete old wallpapers
-        WallpaperFileHelper.deleteOldFiles(mContext, validFiles);
+        WallpaperFileHelper.deleteOldWallpapers(mContext, validFiles);
     }
 
     @Override

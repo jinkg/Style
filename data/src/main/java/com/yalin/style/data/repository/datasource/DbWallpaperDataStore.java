@@ -73,7 +73,7 @@ public class DbWallpaperDataStore implements WallpaperDataStore {
                 emitter.onNext(inputStream);
                 emitter.onComplete();
             } catch (IOException e) {
-                LogUtil.D(TAG, "Open input stream failed for id : " + wallpaperId);
+                LogUtil.D(TAG, "Open input stream failed for wallpaperId : " + wallpaperId);
                 emitter.onError(e);
             } finally {
                 openInputStreamLock.release();

@@ -33,7 +33,7 @@ constructor(val ctx: Context) : SourcesCache {
             description = ctx.getString(R.string.advance_source_description)
             color = Color.WHITE
             isSelected = selectedId == id
-            isHasSetting = false
+            isHasSetting = true
         }
         featureSource = SourceEntity(SOURCE_ID_STYLE).apply {
             title = ctx.getString(R.string.featuredart_source_title)

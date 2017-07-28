@@ -84,7 +84,9 @@ public class StyleProvider extends ContentProvider {
         switch (uriEnum) {
             case WALLPAPER:
             case WALLPAPER_ID:
-            case WALLPAPER_LIKED: {
+            case WALLPAPER_LIKED:
+            case ADVANCE_WALLPAPER:
+            case ADVANCE_WALLPAPER_ID: {
                 final SelectionBuilder builder = buildSimpleSelection(uri);
                 return builder.query(db, projection, Wallpaper._ID + " DESC");
             }
@@ -123,6 +125,10 @@ public class StyleProvider extends ContentProvider {
                         values.getAsString(StyleContract.Wallpaper.COLUMN_NAME_WALLPAPER_ID));
             case GALLERY:
                 return StyleContract.GalleryWallpaper.buildGalleryWallpaperUri(id);
+            case ADVANCE_WALLPAPER: {
+                return StyleContract.AdvanceWallpaper.buildWallpaperUri(
+                        values.getAsString(StyleContract.AdvanceWallpaper.COLUMN_NAME_WALLPAPER_ID));
+            }
             default: {
                 throw new UnsupportedOperationException("Unknown insert uri: " + uri);
             }
@@ -143,8 +149,8 @@ public class StyleProvider extends ContentProvider {
             case WALLPAPER: {
                 builder.where(Wallpaper.COLUMN_NAME_LIKED + " = ?", "0");
             }
-                break;
-            case GALLERY_URI:{
+            break;
+            case GALLERY_URI: {
                 return builder.delete(db);
             }
         }
@@ -204,7 +210,8 @@ public class StyleProvider extends ContentProvider {
         StyleUriEnum uriEnum = mUriMatcher.matchUri(uri);
 
         switch (uriEnum) {
-            case WALLPAPER: {
+            case WALLPAPER:
+            case ADVANCE_WALLPAPER: {
                 return builder.table(uriEnum.table);
             }
             case WALLPAPER_ID: {
@@ -230,11 +237,16 @@ public class StyleProvider extends ContentProvider {
                 return builder.table(StyleDatabase.Tables.GALLERY)
                         .where(GalleryWallpaper._ID + " = ?", galleryWallpaperId);
             }
-            case GALLERY_URI:{
+            case GALLERY_URI: {
                 String uriString
-                    = StyleContract.GalleryWallpaper.getGalleryWallpaperDeleteUri(uri);
+                        = StyleContract.GalleryWallpaper.getGalleryWallpaperDeleteUri(uri);
                 return builder.table(StyleDatabase.Tables.GALLERY)
-                    .where(GalleryWallpaper.COLUMN_NAME_CUSTOM_URI + " = ?", uriString);
+                        .where(GalleryWallpaper.COLUMN_NAME_CUSTOM_URI + " = ?", uriString);
+            }
+            case ADVANCE_WALLPAPER_ID:{
+                String wallpaperId = StyleContract.AdvanceWallpaper.getWallpaperId(uri);
+                return builder.table(StyleDatabase.Tables.ADVANCE_WALLPAPER)
+                        .where(Wallpaper.COLUMN_NAME_WALLPAPER_ID + " = ?", wallpaperId);
             }
             default: {
                 throw new UnsupportedOperationException("Unknown uri for " + uri);

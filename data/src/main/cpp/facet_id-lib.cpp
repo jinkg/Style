@@ -161,7 +161,7 @@ jstring get_facet_id(JNIEnv *env, jobject context, jint uId) {
 }
 
 int check_facet_id(JNIEnv *env, jstring facet_id) {
-    // modify to your app's facet id
+    // modify to your app's facet wallpaperId
     jstring valid_facet_id_string = env->NewStringUTF("unkown");
 
     const char *valid_facet_id = env->GetStringUTFChars(valid_facet_id_string, 0);

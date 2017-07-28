@@ -61,6 +61,11 @@
             android:label="@string/gallery_title"
             android:theme="@style/Theme.Style.Gallery" />
 
+        <activity
+            android:name=".view.activity.AdvanceSettingActivity"
+            android:label="@string/advance_source_title"
+            android:theme="@style/Theme.Style.Gallery" />
+
         <service
             android:name=".StyleWallpaperService"
             android:permission="android.permission.BIND_WALLPAPER">

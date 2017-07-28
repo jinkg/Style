@@ -8,7 +8,7 @@
   android:orientation="vertical">
 
   <!--<com.yalin.style.ui.AnimatedStyleLogoView-->
-  <!--android:id="@+id/animated_logo"-->
+  <!--android:wallpaperId="@+wallpaperId/animated_logo"-->
   <!--android:layout_width="225dp"-->
   <!--android:layout_height="75dp"-->
   <!--android:layout_marginBottom="16dp" />-->

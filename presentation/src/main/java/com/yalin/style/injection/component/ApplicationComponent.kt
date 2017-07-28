@@ -12,6 +12,7 @@ import com.yalin.style.domain.observable.WallpaperObservable
 import com.yalin.style.domain.repository.WallpaperRepository
 import com.yalin.style.engine.StyleWallpaperProxy
 import com.yalin.style.injection.modules.ApplicationModule
+import com.yalin.style.view.activity.AdvanceSettingActivity
 import com.yalin.style.view.activity.GallerySettingActivity
 import com.yalin.style.view.fragment.StyleRenderFragment
 
@@ -32,6 +33,7 @@ interface ApplicationComponent {
     fun inject(styleView: StyleRenderFragment.StyleView)
 
     fun inject(gallerySettingActivity: GallerySettingActivity)
+    fun inject(advanceSettingActivity: AdvanceSettingActivity)
 
     fun inject(styleWallpaperService: StyleWallpaperService)
     fun inject(styleWallpaperService: StyleWallpaperServiceMirror)

@@ -23,7 +23,8 @@ public class StyleDatabase extends SQLiteOpenHelper {
     private static final int VERSION_2016_12_30 = 1;
     private static final int VERSION_2017_4_30 = 2;
     private static final int VERSION_2017_5_24 = 3;
-    private static final int CUR_DATABASE_VERSION = VERSION_2017_5_24;
+    private static final int VERSION_2017_7_28 = 4;
+    private static final int CUR_DATABASE_VERSION = VERSION_2017_7_28;
 
     private final Context mContext;
 
@@ -31,6 +32,7 @@ public class StyleDatabase extends SQLiteOpenHelper {
 
         String WALLPAPER = StyleContract.Wallpaper.TABLE_NAME;
         String GALLERY = StyleContract.GalleryWallpaper.TABLE_NAME;
+        String ADVANCE_WALLPAPER = StyleContract.AdvanceWallpaper.TABLE_NAME;
     }
 
     public StyleDatabase(Context context) {
@@ -50,7 +52,8 @@ public class StyleDatabase extends SQLiteOpenHelper {
                 + StyleContract.Wallpaper.COLUMN_NAME_ADD_DATE + " INTEGER);");
 
         upgradeFrom20161230to20170430(db);
-        upgradeFrom20150430to20170524(db);
+        upgradeFrom20170430to20170524(db);
+        upgradeFrom20170525to20170728(db);
     }
 
     @Override
@@ -68,8 +71,12 @@ public class StyleDatabase extends SQLiteOpenHelper {
             version = VERSION_2017_4_30;
         }
         if (version == VERSION_2017_4_30) {
-            upgradeFrom20150430to20170524(db);
+            upgradeFrom20170430to20170524(db);
             version = VERSION_2017_5_24;
+        }
+        if (version == VERSION_2017_5_24) {
+            upgradeFrom20170525to20170728(db);
+            version = VERSION_2017_7_28;
         }
         if (version != CUR_DATABASE_VERSION) {
             LogUtil.E(TAG, "Upgrade unsuccessful -- destroying old data during upgrade");
@@ -88,7 +95,7 @@ public class StyleDatabase extends SQLiteOpenHelper {
                 + " ADD COLUMN " + Wallpaper.COLUMN_NAME_CHECKSUM + " TEXT");
     }
 
-    private void upgradeFrom20150430to20170524(SQLiteDatabase db) {
+    private void upgradeFrom20170430to20170524(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + Tables.GALLERY + " ("
                 + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI + " TEXT NOT NULL,"
@@ -98,6 +105,20 @@ public class StyleDatabase extends SQLiteOpenHelper {
                 + StyleContract.GalleryWallpaper.COLUMN_NAME_HAS_METADATA + " INTEGER DEFAULT 0,"
                 + "UNIQUE (" + StyleContract.GalleryWallpaper.COLUMN_NAME_CUSTOM_URI
                 + ") ON CONFLICT REPLACE);");
+    }
+
+    private void upgradeFrom20170525to20170728(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + Tables.ADVANCE_WALLPAPER + " ("
+                + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + StyleContract.AdvanceWallpaper.COLUMN_NAME_WALLPAPER_ID + " TEXT,"
+                + StyleContract.AdvanceWallpaper.COLUMN_NAME_ICON_URL + " TEXT,"
+                + StyleContract.AdvanceWallpaper.COLUMN_NAME_DOWNLOAD_URL + " TEXT,"
+                + StyleContract.AdvanceWallpaper.COLUMN_NAME_NAME + " TEXT,"
+                + StyleContract.AdvanceWallpaper.COLUMN_NAME_AUTHOR + " TEXT,"
+                + StyleContract.AdvanceWallpaper.COLUMN_NAME_STORE_PATH + " TEXT,"
+                + StyleContract.AdvanceWallpaper.COLUMN_NAME_LINK + " TEXT,"
+                + StyleContract.AdvanceWallpaper.COLUMN_NAME_PROVIDER_NAME + " TEXT,"
+                + StyleContract.AdvanceWallpaper.COLUMN_NAME_CHECKSUM + " TEXT);");
     }
 
     public static void deleteDatabase(Context context) {

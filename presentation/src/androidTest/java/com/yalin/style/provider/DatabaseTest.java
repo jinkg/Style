@@ -25,7 +25,7 @@ public class DatabaseTest {
     Context context = InstrumentationRegistry.getTargetContext();
 
     ContentValues contentValues = new ContentValues();
-    contentValues.put(Wallpaper.COLUMN_NAME_WALLPAPER_ID, "id");
+    contentValues.put(Wallpaper.COLUMN_NAME_WALLPAPER_ID, "wallpaperId");
     contentValues.put(Wallpaper.COLUMN_NAME_TITLE, "title111");
     contentValues.put(Wallpaper.COLUMN_NAME_ATTRIBUTION, "yalin...");
     contentValues.put(Wallpaper.COLUMN_NAME_BYLINE, "byline111");

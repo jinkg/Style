@@ -49,7 +49,7 @@ public class SyncHelper {
 
     LogUtil.D(TAG, "Starting remote sync.");
 
-    String data = new RemoteStyleDataFetcher(mContext).fetchStyleDataIfNewer();
+    String data = new RemoteStyleDataFetcher(mContext).fetchDataIfNewer();
     if (!TextUtils.isEmpty(data)) {
       mDataHandler.applyStyleData(new String[]{data});
     }

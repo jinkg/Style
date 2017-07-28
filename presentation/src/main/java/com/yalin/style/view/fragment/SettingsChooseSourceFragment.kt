@@ -18,10 +18,12 @@ import com.yalin.style.R
 import com.yalin.style.analytics.Analytics
 import com.yalin.style.analytics.Event
 import com.yalin.style.data.log.LogUtil
+import com.yalin.style.domain.repository.SourcesRepository
 import com.yalin.style.injection.component.SourceComponent
 import com.yalin.style.model.SourceItem
 import com.yalin.style.presenter.SettingsChooseSourcePresenter
 import com.yalin.style.view.SourceChooseView
+import com.yalin.style.view.activity.AdvanceSettingActivity
 import com.yalin.style.view.activity.GallerySettingActivity
 import com.yalin.style.view.component.ObservableHorizontalScrollView
 import kotlinx.android.synthetic.main.layout_settings_choose_source.*
@@ -181,7 +183,7 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
                 val settingsButton = findViewById(R.id.source_settings_button)
                 settingsButton.setOnClickListener {
                     Analytics.logEvent(context, Event.CUSTOM_WALLPAPER_SETTINGS)
-                    launchSourceSettings()
+                    launchSourceSettings(source)
                 }
 
                 animateSettingsButton(settingsButton, false, false)
@@ -315,10 +317,15 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
         }
     }
 
-    private fun launchSourceSettings() {
+    private fun launchSourceSettings(source: SourceItem) {
         try {
-            val settingsIntent = Intent(activity, GallerySettingActivity::class.java)
-            startActivity(settingsIntent)
+            if (source.id == SourcesRepository.SOURCE_ID_CUSTOM) {
+                val settingsIntent = Intent(activity, GallerySettingActivity::class.java)
+                startActivity(settingsIntent)
+            } else if (source.id == SourcesRepository.SOURCE_ID_ADVANCE) {
+                val settingsIntent = Intent(activity, AdvanceSettingActivity::class.java)
+                startActivity(settingsIntent)
+            }
         } catch (e: ActivityNotFoundException) {
             LogUtil.E(TAG, "Can't launch source settings.", e)
         } catch (e: SecurityException) {

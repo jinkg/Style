@@ -51,7 +51,7 @@ public class WallpaperEntity {
                     is.close();
                 }
             } catch (Exception e) {
-                LogUtil.D(TAG, "File not found with wallpaper id : "
+                LogUtil.D(TAG, "File not found with wallpaper wallpaperId : "
                         + wallpaperEntity.wallpaperId);
             }
         }

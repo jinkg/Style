@@ -2,6 +2,7 @@ package com.yalin.style.data.repository
 
 import com.yalin.style.data.entity.mapper.WallpaperEntityMapper
 import com.yalin.style.data.repository.datasource.GalleryWallpaperDataStoreFactory
+import com.yalin.style.domain.AdvanceWallpaper
 import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.Wallpaper
 import com.yalin.style.domain.repository.WallpaperRepository
@@ -19,6 +20,7 @@ class GalleryWallpaperDataRepository @Inject
 constructor(val galleryWallpaperDataStoreFactory: GalleryWallpaperDataStoreFactory,
             val wallpaperEntityMapper: WallpaperEntityMapper) :
         WallpaperRepository {
+
     override fun getWallpaper(): Observable<Wallpaper> =
             galleryWallpaperDataStoreFactory.create()
                     .wallPaperEntity.map(wallpaperEntityMapper::transform)
@@ -50,6 +52,18 @@ constructor(val galleryWallpaperDataStoreFactory: GalleryWallpaperDataStoreFacto
     override fun getGalleryWallpapers(): Observable<List<GalleryWallpaper>> =
             galleryWallpaperDataStoreFactory.create()
                     .getGalleryWallpaperUris().map(wallpaperEntityMapper::transformGalleryWallpaper)
+
+    override fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaper>> {
+        return Observable.create<List<AdvanceWallpaper>> { emitter ->
+            emitter.onError(IllegalStateException(
+                    "StyleWallpaperRepository have not gallery wallpapers."))
+        }
+    }
+
+    override fun getAdvanceWallpaper(): AdvanceWallpaper {
+        throw IllegalStateException(
+                "StyleWallpaperRepository have not gallery wallpapers.")
+    }
 
     override fun foreNow(wallpaperUri: String): Observable<Boolean> =
             galleryWallpaperDataStoreFactory.create().forceNow(wallpaperUri)

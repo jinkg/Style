@@ -46,7 +46,6 @@
 
     </style>
 
-
     <style name="Style.SimpleFadeFragmentAnimation" parent="">
         <item name="android:fragmentFadeEnterAnimation">@animator/fade_in</item>
         <item name="android:fragmentFadeExitAnimation">@animator/fade_out</item>

@@ -25,6 +25,7 @@ public class WallpaperFileHelper {
     private static final String TAG = "WallpaperFileHelper";
 
     public static final String WALLPAPER_FOLDER = "wallpaper";
+    public static final String ADVANCE_WALLPAPER_FOLDER = "component";
 
     public static ParcelFileDescriptor openReadFile(Context context, Uri uri, String mode)
             throws FileNotFoundException {
@@ -113,7 +114,7 @@ public class WallpaperFileHelper {
         }
     }
 
-    public static void deleteOldFiles(Context context, Set<String> excludeIds) {
+    public static void deleteOldWallpapers(Context context, Set<String> excludeIds) {
         File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
         if (!directory.exists()) {
             return;
@@ -130,7 +131,24 @@ public class WallpaperFileHelper {
         }
     }
 
-    public static void deleteOldFiles(Context context, String... excludeIds) {
+    public static void deleteOldFiles(Context context, File dir, Set<String> excludeIds) {
+        if (!dir.exists()) {
+            return;
+        }
+        Set<String> namesSet = new HashSet<>();
+        for (String wallpaperId : excludeIds) {
+            namesSet.add(generateFileName(wallpaperId));
+        }
+        File[] files = dir.listFiles(fileName ->
+                !namesSet.contains(fileName.getName()));
+        for (File file : files) {
+            //noinspection ResultOfMethodCallIgnored
+            file.delete();
+        }
+    }
+
+
+    public static void deleteOldWallpapers(Context context, String... excludeIds) {
         File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
         if (!directory.exists()) {
             return;
@@ -147,8 +165,8 @@ public class WallpaperFileHelper {
         }
     }
 
-    public static boolean ensureChecksumValid(Context context,
-                                              String checksum, String wallpaperId) {
+    public static boolean ensureWallpaperChecksumValid(Context context,
+                                                       String checksum, String wallpaperId) {
         File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
         if (!directory.exists()) {
             return false;
@@ -162,5 +180,26 @@ public class WallpaperFileHelper {
         //noinspection ResultOfMethodCallIgnored
         file.delete();
         return false;
+    }
+
+    public static boolean ensureChecksumValid(Context context,
+                                              String checksum, String filePath) {
+        File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
+        if (!directory.exists()) {
+            return false;
+        }
+
+        File file = new File(filePath);
+        String computedChecksum = ChecksumUtil.getChecksum(file);
+        if (TextUtils.equals(checksum, computedChecksum)) {
+            return true;
+        }
+        //noinspection ResultOfMethodCallIgnored
+        file.delete();
+        return false;
+    }
+
+    public static File getAdvanceWallpaperDir(Context context) {
+        return new File(context.getFilesDir(), ADVANCE_WALLPAPER_FOLDER);
     }
 }

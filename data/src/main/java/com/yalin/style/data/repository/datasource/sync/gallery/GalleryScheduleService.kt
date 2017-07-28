@@ -176,7 +176,7 @@ class GalleryScheduleService : IntentService(TAG) {
             }
         }
 
-        LogUtil.D(TAG, "Current select wallpaper id : $currentShowWallpaperId ")
+        LogUtil.D(TAG, "Current select wallpaper wallpaperId : $currentShowWallpaperId ")
         notifyChange(this, StyleContract.GalleryWallpaper.CONTENT_URI)
     }
 }

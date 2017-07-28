@@ -1,5 +1,6 @@
 package com.yalin.style.domain.repository;
 
+import com.yalin.style.domain.AdvanceWallpaper;
 import com.yalin.style.domain.GalleryWallpaper;
 import com.yalin.style.domain.Wallpaper;
 
@@ -30,6 +31,10 @@ public interface WallpaperRepository {
     Observable<Boolean> removeGalleryWallpaperUris(List<GalleryWallpaper> uris);
 
     Observable<List<GalleryWallpaper>> getGalleryWallpapers();
+
+    Observable<List<AdvanceWallpaper>> getAdvanceWallpapers();
+
+    AdvanceWallpaper getAdvanceWallpaper();
 
     Observable<Boolean> foreNow(String wallpaperUri);
 

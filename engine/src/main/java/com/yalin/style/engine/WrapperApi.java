@@ -15,29 +15,25 @@ public class WrapperApi {
             "com.yalin.component.ProviderImpl";
 
 
-    private static IProvider sProvider = null;
-
-    private static void check(Context context) throws Exception {
-        if (sProvider == null) {
-            synchronized (WrapperApi.class) {
-                if (sProvider == null) {
-                    IProvider provider;
-                    Class providerClazz = WrapperClassLoader.loadClass(context, ADVANCE_PROXY_CLASS);
-                    if (providerClazz != null) {
-                        provider = (IProvider) providerClazz.newInstance();
-                    } else {
-                        throw new IllegalStateException("Load Provider error.");
-                    }
-                    sProvider = provider;
-                }
+    private static IProvider getProvider(Context context, String componentPath, String providerName)
+            throws Exception {
+        synchronized (WrapperApi.class) {
+            IProvider provider;
+            Class providerClazz = WrapperClassLoader.loadClass(context, componentPath, providerName);
+            if (providerClazz != null) {
+                provider = (IProvider) providerClazz.newInstance();
+                return provider;
+            } else {
+                throw new IllegalStateException("Load Provider error.");
             }
         }
     }
 
-    public static WallpaperServiceProxy getProxy(Context context) {
+    public static WallpaperServiceProxy getProxy(Context context,
+                                                 String componentPath, String providerName) {
         try {
-            check(context);
-            return sProvider.provideProxy(context);
+            IProvider provider = getProvider(context, componentPath, providerName);
+            return provider.provideProxy(context);
         } catch (Exception e) {
             e.printStackTrace();
         }
