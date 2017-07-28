@@ -7,6 +7,7 @@ import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.Wallpaper
 import com.yalin.style.domain.repository.WallpaperRepository
 import io.reactivex.Observable
+import io.reactivex.functions.Function
 import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,7 +24,10 @@ class AdvanceWallpaperDataRepository
     : WallpaperRepository {
 
     override fun getWallpaper(): Observable<Wallpaper> {
-        return styleRepository.wallpaper
+        return Observable.create<Wallpaper> { emitter ->
+            emitter.onNext(wallpaperMapper.mapToWallpaper(factory.create().getWallPaperEntity()))
+            emitter.onComplete()
+        }
     }
 
     override fun switchWallpaper(): Observable<Wallpaper> {
@@ -34,11 +38,18 @@ class AdvanceWallpaperDataRepository
     }
 
     override fun openInputStream(wallpaperId: String?): Observable<InputStream> {
-        return styleRepository.openInputStream(wallpaperId)
+        var id: String? = null
+        styleRepository.wallpaper.subscribe(
+                { wallpaper -> id = wallpaper.wallpaperId })
+
+        return styleRepository.openInputStream(id)
     }
 
     override fun getWallpaperCount(): Observable<Int> {
-        return styleRepository.wallpaperCount
+        return Observable.create<Int> { emitter ->
+            emitter.onNext(1)
+            emitter.onComplete()
+        }
     }
 
     override fun likeWallpaper(wallpaperId: String?): Observable<Boolean> {

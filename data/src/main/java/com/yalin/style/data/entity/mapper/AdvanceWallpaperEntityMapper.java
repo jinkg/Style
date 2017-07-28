@@ -3,6 +3,7 @@ package com.yalin.style.data.entity.mapper;
 import com.fernandocejas.arrow.checks.Preconditions;
 import com.yalin.style.data.entity.AdvanceWallpaperEntity;
 import com.yalin.style.domain.AdvanceWallpaper;
+import com.yalin.style.domain.Wallpaper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,5 +43,16 @@ public class AdvanceWallpaperEntityMapper {
             sources.add(transform(entity));
         }
         return sources;
+    }
+
+    public Wallpaper mapToWallpaper(AdvanceWallpaperEntity wallpaperEntity) {
+        Preconditions.checkNotNull(wallpaperEntity, "Wallpaper can not be null.");
+        Wallpaper wallpaper = new Wallpaper();
+        wallpaper.wallpaperId = wallpaperEntity.wallpaperId;
+        wallpaper.byline = wallpaperEntity.author;
+        wallpaper.title = wallpaperEntity.name;
+        wallpaper.attribution = wallpaperEntity.link;
+        wallpaper.canLike = false;
+        return wallpaper;
     }
 }
