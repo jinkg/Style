@@ -10,4 +10,6 @@ interface AdvanceSettingView : LoadingDataView {
     fun renderWallpapers(wallpapers: List<AdvanceWallpaperItem>)
 
     fun showDownloading()
+
+    fun showEmpty()
 }

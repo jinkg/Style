@@ -3,6 +3,7 @@ package com.yalin.style.presenter
 import com.yalin.style.domain.AdvanceWallpaper
 import com.yalin.style.domain.interactor.DefaultObserver
 import com.yalin.style.domain.interactor.GetAdvanceWallpapers
+import com.yalin.style.mapper.AdvanceWallpaperItemMapper
 import com.yalin.style.view.AdvanceSettingView
 import javax.inject.Inject
 
@@ -10,7 +11,9 @@ import javax.inject.Inject
  * @author jinyalin
  * @since 2017/7/28.
  */
-class AdvanceSettingPresenter @Inject constructor(val getAdvanceWallpapers: GetAdvanceWallpapers)
+class AdvanceSettingPresenter
+@Inject constructor(val getAdvanceWallpapers: GetAdvanceWallpapers,
+                    val advanceWallpaperItemMapper: AdvanceWallpaperItemMapper)
     : Presenter {
 
     private val wallpaperObserver = WallpapersObserver()
@@ -34,10 +37,16 @@ class AdvanceSettingPresenter @Inject constructor(val getAdvanceWallpapers: GetA
 
     override fun destroy() {
         getAdvanceWallpapers.dispose()
+        view = null
     }
 
-    private class WallpapersObserver : DefaultObserver<List<AdvanceWallpaper>>() {
-        override fun onNext(t: List<AdvanceWallpaper>) {
+    private inner class WallpapersObserver : DefaultObserver<List<AdvanceWallpaper>>() {
+        override fun onNext(wallpapers: List<AdvanceWallpaper>) {
+            if (wallpapers.isEmpty()) {
+                view?.showEmpty()
+            } else {
+                view?.renderWallpapers(advanceWallpaperItemMapper.transformList(wallpapers))
+            }
         }
 
         override fun onComplete() {

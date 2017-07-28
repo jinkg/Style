@@ -9,7 +9,7 @@ public class AdvanceWallpaperItem {
     public String wallpaperId;
     public String link;
     public String name;
-    public String authur;
+    public String author;
     public String iconUrl;
     public String downloadUrl;
 
