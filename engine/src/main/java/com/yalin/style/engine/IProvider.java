@@ -9,5 +9,5 @@ import android.content.Context;
 
 public interface IProvider {
 
-  WallpaperServiceProxy provideProxy(Context context);
+    WallpaperServiceProxy provideProxy(Context host);
 }

@@ -29,31 +29,31 @@ open class StyleWallpaperService : GLWallpaperService(), WallpaperServiceProxy.W
     @Inject lateinit var sourcesObserverUseCase: ObserverSources
     @Inject lateinit var getSelectedSourceUseCase: GetSelectedSource
 
-    private var proxy: WallpaperServiceProxy
+    private var proxy: WallpaperServiceProxy? = null
     private val sourcesObserver = SourcesRefreshObserver()
 
     private var currentSelectedSource: Int
 
     init {
         StyleApplication.instance.applicationComponent.inject(this)
-        proxy = proxyProvider.provideProxy(this)
         currentSelectedSource = getSelectedSourceUseCase.selectedSourceId
     }
 
     override fun onCreateEngine(): WallpaperService.Engine {
-        return proxy.onCreateEngine()
+        return proxy!!.onCreateEngine()
     }
 
     override fun onCreate() {
         super.onCreate()
-        proxy.onCreate()
+        proxy = proxyProvider.provideProxy(this)
+        proxy?.onCreate()
 
         sourcesObserverUseCase.registerObserver(sourcesObserver)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        proxy.onDestroy()
+        proxy?.onDestroy()
 
         sourcesObserverUseCase.unregisterObserver(sourcesObserver)
     }
