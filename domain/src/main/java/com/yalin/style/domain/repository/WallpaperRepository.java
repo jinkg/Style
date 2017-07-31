@@ -34,6 +34,8 @@ public interface WallpaperRepository {
 
     Observable<List<AdvanceWallpaper>> getAdvanceWallpapers();
 
+    Observable<List<AdvanceWallpaper>> loadAdvanceWallpapers();
+
     AdvanceWallpaper getAdvanceWallpaper();
 
     Observable<Boolean> foreNow(String wallpaperUri);

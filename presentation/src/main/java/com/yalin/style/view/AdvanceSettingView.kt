@@ -9,7 +9,5 @@ import com.yalin.style.model.AdvanceWallpaperItem
 interface AdvanceSettingView : LoadingDataView {
     fun renderWallpapers(wallpapers: List<AdvanceWallpaperItem>)
 
-    fun showDownloading()
-
     fun showEmpty()
 }

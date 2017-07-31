@@ -15,4 +15,8 @@ constructor(val context: Context) {
     fun create(): AdvanceWallpaperDataStore {
         return AdvanceWallpaperDataStoreImpl(context)
     }
+
+    fun createRemoteDataStore(): AdvanceWallpaperDataStore {
+        return RemoteAdvanceWallpaperDataStore(context)
+    }
 }

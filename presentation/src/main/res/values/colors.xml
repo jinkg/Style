@@ -16,4 +16,9 @@
 
     <color name="gallery_window_background">#111</color>
     <color name="gallery_chosen_photo_placeholder">#5666</color>
+
+    <color name="red">#FFC93437</color>
+    <color name="blue">#FF375BF1</color>
+    <color name="yellow">#FFF7D23E</color>
+    <color name="green">#FF34A350</color>
 </resources>

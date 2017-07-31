@@ -84,6 +84,11 @@ class AdvanceWallpaperDataRepository
         return factory.create().getAdvanceWallpapers().map(wallpaperMapper::transformList)
     }
 
+    override fun loadAdvanceWallpapers(): Observable<List<AdvanceWallpaper>> {
+        return factory.createRemoteDataStore().getAdvanceWallpapers()
+                .map(wallpaperMapper::transformList)
+    }
+
     override fun getAdvanceWallpaper(): AdvanceWallpaper {
         return wallpaperMapper.transform(factory.create().getWallPaperEntity())
     }

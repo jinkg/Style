@@ -184,12 +184,10 @@ public class WallpaperFileHelper {
 
     public static boolean ensureChecksumValid(Context context,
                                               String checksum, String filePath) {
-        File directory = new File(context.getFilesDir(), WALLPAPER_FOLDER);
-        if (!directory.exists()) {
+        File file = new File(filePath);
+        if (!file.exists()) {
             return false;
         }
-
-        File file = new File(filePath);
         String computedChecksum = ChecksumUtil.getChecksum(file);
         if (TextUtils.equals(checksum, computedChecksum)) {
             return true;

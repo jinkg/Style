@@ -16,6 +16,7 @@ import com.yalin.style.presenter.AdvanceSettingPresenter
 import com.yalin.style.util.ImageLoader
 import com.yalin.style.view.AdvanceSettingView
 import kotlinx.android.synthetic.main.activity_advance_setting.*
+import org.jetbrains.anko.toast
 import javax.inject.Inject
 
 /**
@@ -23,6 +24,13 @@ import javax.inject.Inject
  * @since 2017/7/28.
  */
 class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
+    companion object {
+        val LOAD_STATE = "load_state"
+
+        val LOAD_STATE_NORMAL = 0
+        val LOAD_STATE_LOADING = 1
+        val LOAD_STATE_RETRY = 2
+    }
 
     @Inject
     lateinit internal var presenter: AdvanceSettingPresenter
@@ -30,6 +38,8 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     var wallpapers: List<AdvanceWallpaperItem>? = null
 
     var imageLoader: ImageLoader? = null
+
+    var loadState = LOAD_STATE_NORMAL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +52,22 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
         imageLoader = ImageLoader(this)
         presenter.setView(this)
-        presenter.initialize()
+
+        if (savedInstanceState != null) {
+            loadState = savedInstanceState.getInt(LOAD_STATE)
+        }
+
+        handleState()
+    }
+
+    private fun handleState() {
+        if (loadState == LOAD_STATE_NORMAL) {
+            presenter.initialize()
+        } else if (loadState == LOAD_STATE_LOADING) {
+            presenter.loadAdvanceWallpaper()
+        } else if (loadState == LOAD_STATE_RETRY) {
+            showRetry()
+        }
     }
 
     private fun initViews() {
@@ -55,6 +80,13 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
         wallpaperList.adapter = advanceWallpaperAdapter
 
+        btnLoadAdvanceWallpaper.setOnClickListener { presenter.loadAdvanceWallpaper() }
+        btnRetry.setOnClickListener { presenter.loadAdvanceWallpaper() }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(LOAD_STATE, loadState)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onResume() {
@@ -73,16 +105,24 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     }
 
     override fun renderWallpapers(wallpapers: List<AdvanceWallpaperItem>) {
+        loadState = LOAD_STATE_NORMAL
+
         this.wallpapers = wallpapers
+
+        wallpaperList.visibility = View.VISIBLE
+        empty.visibility = View.GONE
+        loading.visibility = View.GONE
+        retry.visibility = View.GONE
         advanceWallpaperAdapter.notifyDataSetChanged()
     }
 
     override fun showLoading() {
+        loadState = LOAD_STATE_LOADING
 
-    }
-
-    override fun showDownloading() {
-
+        wallpaperList.visibility = View.GONE
+        empty.visibility = View.GONE
+        loading.visibility = View.VISIBLE
+        retry.visibility = View.GONE
     }
 
     override fun hideLoading() {
@@ -90,7 +130,12 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     }
 
     override fun showRetry() {
+        loadState = LOAD_STATE_RETRY
 
+        wallpaperList.visibility = View.GONE
+        empty.visibility = View.GONE
+        loading.visibility = View.GONE
+        retry.visibility = View.VISIBLE
     }
 
     override fun hideRetry() {
@@ -98,11 +143,14 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     }
 
     override fun showError(message: String) {
-
+        toast(message)
     }
 
     override fun showEmpty() {
-
+        wallpaperList.visibility = View.GONE
+        empty.visibility = View.VISIBLE
+        loading.visibility = View.GONE
+        retry.visibility = View.GONE
     }
 
     override fun context(): Context {

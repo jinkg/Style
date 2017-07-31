@@ -22,4 +22,8 @@
     <declare-styleable name="TintableImageButton">
         <attr name="tint" format="reference|color" />
     </declare-styleable>
+
+    <declare-styleable name="CircularProgress">
+        <attr name="progress_borderWidth" format="dimension" />
+    </declare-styleable>
 </resources>

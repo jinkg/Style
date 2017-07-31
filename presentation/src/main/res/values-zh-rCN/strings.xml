@@ -31,6 +31,7 @@
     <string name="exception_message_generic">操作出现了一个错误。</string>
     <string name="exception_message_no_connection">网络不可用，请检查网络连接。</string>
     <string name="exception_message_resync">正在同步…</string>
+    <string name="exception_message_remote_service">远程服务不可用，请联系开发者。</string>
 
     <string name="tutorial_main">打开Style以预览当前作品</string>
     <string name="tutorial_subtitle">在桌面双击空白模糊位置，临时查看清晰作品
@@ -53,6 +54,12 @@
     <string name="share_title">分享壁纸</string>
     <string name="share_text">我今天的壁纸是 \' %1$s \' 由 %2$s 所画.  #StyleWallpaper\n\n
         %3$s</string>
+
+    <string name="advance_empty_load">获取特效壁纸</string>
+    <string name="advance_empty_description">还没有特效壁纸，你可以点击按钮从服务器获取。</string>
+
+    <string name="advance_retry">重试获取</string>
+    <string name="advance_retry_description">获取壁纸出现了一些问题，你可以重试获取，也可以联系开发者。</string>
 
     <string name="gallery_empty">自定义壁纸</string>
     <string name="gallery_empty_subtitle">选择指定的图片充当壁纸</string>
