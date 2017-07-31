@@ -23,6 +23,7 @@ class AdvanceWallpaperItemMapper @Inject constructor() {
         wallpaperItem.downloadUrl = wallpaper.downloadUrl
         wallpaperItem.providerName = wallpaper.providerName
         wallpaperItem.storePath = wallpaper.storePath
+        wallpaperItem.isSelected = wallpaper.isSelected
         return wallpaperItem
     }
 

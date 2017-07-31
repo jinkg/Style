@@ -216,7 +216,7 @@ public class StyleContract {
                 BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_ADVANCE_WALLPAPER).build();
 
         public static final Uri CONTENT_SELECTED_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_WALLPAPER)
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_ADVANCE_WALLPAPER)
                         .appendPath(PATH_SELECTED_WALLPAPER).build();
 
 

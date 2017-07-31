@@ -34,6 +34,8 @@ public class AdvanceWallpaperEntityMapper {
         wallpaper.providerName = wallpaperEntity.providerName;
         wallpaper.storePath = wallpaperEntity.storePath;
         wallpaper.isDefault = wallpaperEntity.isDefault;
+        wallpaper.isSelected = wallpaperEntity.isSelected;
+
         return wallpaper;
     }
 

@@ -23,8 +23,8 @@ class RemoteAdvanceWallpaperDataStore(val context: Context) : AdvanceWallpaperDa
         val TAG = "RemoteAdvanceWallpaper"
     }
 
-    override fun getWallPaperEntity(): AdvanceWallpaperEntity? {
-        throw UnsupportedOperationException("Cache data store not support open input stream.")
+    override fun getWallPaperEntity(): AdvanceWallpaperEntity {
+        throw UnsupportedOperationException("Remote data store not support get wallpaper.")
     }
 
     override fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaperEntity>> {
@@ -69,5 +69,9 @@ class RemoteAdvanceWallpaperDataStore(val context: Context) : AdvanceWallpaperDa
             }
             emitter.onComplete()
         }
+    }
+
+    override fun selectWallpaper(wallpaperId: String): Observable<Boolean> {
+        throw UnsupportedOperationException("Remote data store not support select wallpaper.")
     }
 }

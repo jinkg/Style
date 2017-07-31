@@ -44,4 +44,7 @@
     <dimen name="gallery_fab_margin">16dp</dimen>
     <dimen name="gallery_fab_toolbar_height">56dp</dimen>
     <dimen name="gallery_header_elevation">4dp</dimen>
+
+    <dimen name="advance_name_margin">16dp</dimen>
+    <dimen name="advance_name_top_margin">8dp</dimen>
 </resources>

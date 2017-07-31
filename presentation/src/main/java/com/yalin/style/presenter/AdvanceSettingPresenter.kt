@@ -1,14 +1,17 @@
 package com.yalin.style.presenter
 
+import android.text.TextUtils
+import com.yalin.style.data.log.LogUtil
 import com.yalin.style.domain.AdvanceWallpaper
-import com.yalin.style.domain.interactor.DefaultObserver
-import com.yalin.style.domain.interactor.GetAdvanceWallpapers
-import com.yalin.style.domain.interactor.LoadAdvanceWallpaper
+import com.yalin.style.domain.interactor.*
+import com.yalin.style.event.SwitchWallpaperServiceEvent
+import com.yalin.style.event.WallpaperActivateEvent
 import com.yalin.style.exception.ErrorMessageFactory
 import com.yalin.style.mapper.AdvanceWallpaperItemMapper
 import com.yalin.style.view.AdvanceSettingView
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.lang.Exception
-import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 /**
@@ -18,11 +21,17 @@ import javax.inject.Inject
 class AdvanceSettingPresenter
 @Inject constructor(val getAdvanceWallpapers: GetAdvanceWallpapers,
                     val loadAdvanceWallpaper: LoadAdvanceWallpaper,
+                    val selectAdvanceWallpaper: SelectAdvanceWallpaper,
+                    val getSelectedAdvanceWallpaper: GetSelectedAdvanceWallpaper,
                     val advanceWallpaperItemMapper: AdvanceWallpaperItemMapper)
     : Presenter {
 
     private val wallpaperObserver = WallpapersObserver()
     private var view: AdvanceSettingView? = null
+
+    private var mLastSelectedItemId: String? = null
+
+    private var selecting = false
 
     fun setView(view: AdvanceSettingView) {
         this.view = view
@@ -30,6 +39,8 @@ class AdvanceSettingPresenter
 
     fun initialize() {
         getAdvanceWallpapers.execute(wallpaperObserver, null)
+        mLastSelectedItemId = getSelectedAdvanceWallpaper.selected.wallpaperId
+        EventBus.getDefault().register(this)
     }
 
     fun loadAdvanceWallpaper() {
@@ -51,8 +62,40 @@ class AdvanceSettingPresenter
         }, null)
     }
 
-    override fun resume() {
+    fun selectAdvanceWallpaper(wallpaperId: String, rollback: Boolean) {
+        if (!rollback && TextUtils.equals(wallpaperId, mLastSelectedItemId)) {
+            view?.complete()
+            return
+        }
+        selecting = false
+        if (!rollback) {
+            selecting = true
+        }
+        selectAdvanceWallpaper.execute(object : DefaultObserver<Boolean>() {
+            override fun onNext(success: Boolean) {
+                if (!rollback && success) {
+                    EventBus.getDefault().post(SwitchWallpaperServiceEvent())
+                }
+            }
 
+            override fun onComplete() {
+                view?.wallpaperSelected(wallpaperId)
+            }
+        }, SelectAdvanceWallpaper.Params.selectWallpaper(wallpaperId))
+    }
+
+    override fun resume() {
+        maybeResetWallpaper()
+    }
+
+    private fun maybeResetWallpaper() {
+        if (selecting && !TextUtils.isEmpty(mLastSelectedItemId)) {
+            view?.executeDelay(Runnable {
+                LogUtil.D(SettingsChooseSourcePresenter.TAG,
+                        "restore wallpaper to $mLastSelectedItemId")
+                selectAdvanceWallpaper(mLastSelectedItemId!!, true)
+            }, 300)
+        }
     }
 
     override fun pause() {
@@ -60,7 +103,10 @@ class AdvanceSettingPresenter
     }
 
     override fun destroy() {
+        EventBus.getDefault().unregister(this)
         getAdvanceWallpapers.dispose()
+        loadAdvanceWallpaper.dispose()
+        selectAdvanceWallpaper.dispose()
         view = null
     }
 
@@ -77,6 +123,17 @@ class AdvanceSettingPresenter
         }
 
         override fun onError(exception: Throwable?) {
+        }
+    }
+
+    @Subscribe
+    fun onEventMainThread(e: WallpaperActivateEvent) {
+        // we cannot known if the user cancel the wallpaper set
+        // so we need listen wallpaper be reactivated
+        if (!e.isWallpaperActivate) {
+            selecting = false
+        } else {
+            mLastSelectedItemId = getSelectedAdvanceWallpaper.selected.wallpaperId
         }
     }
 }

@@ -18,4 +18,5 @@ public class AdvanceWallpaper {
     public String storePath;
 
     public boolean isDefault;
+    public boolean isSelected;
 }

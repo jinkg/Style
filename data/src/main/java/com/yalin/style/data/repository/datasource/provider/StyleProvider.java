@@ -150,11 +150,12 @@ public class StyleProvider extends ContentProvider {
         switch (uriEnum) {
             case WALLPAPER: {
                 builder.where(Wallpaper.COLUMN_NAME_LIKED + " = ?", "0");
+                break;
             }
             case ADVANCE_WALLPAPER_SELECTED: {
                 builder.where(AdvanceWallpaper.COLUMN_NAME_SELECTED + " = ?", "0");
+                break;
             }
-            break;
             case GALLERY_URI: {
                 return builder.delete(db);
             }

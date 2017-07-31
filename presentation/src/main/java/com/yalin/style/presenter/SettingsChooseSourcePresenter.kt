@@ -90,10 +90,10 @@ constructor(val getSourcesUseCase: GetSources,
     }
 
     override fun resume() {
-        maybeRestoreWallpaper()
+        maybeResetSoure()
     }
 
-    private fun maybeRestoreWallpaper() {
+    private fun maybeResetSoure() {
         if (selecting) {
             mSourceChooseView?.executeDelay(Runnable {
                 LogUtil.D(TAG, "restore wallpaper to $mLastSelectedItemId")

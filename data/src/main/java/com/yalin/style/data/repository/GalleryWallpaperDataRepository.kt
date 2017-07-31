@@ -67,6 +67,13 @@ constructor(val galleryWallpaperDataStoreFactory: GalleryWallpaperDataStoreFacto
         }
     }
 
+    override fun selectAdvanceWallpaper(wallpaperId: String): Observable<Boolean> {
+        return Observable.create<Boolean> { emitter ->
+            emitter.onError(IllegalStateException(
+                    "StyleWallpaperRepository have not gallery wallpapers."))
+        }
+    }
+
     override fun getAdvanceWallpaper(): AdvanceWallpaper {
         throw IllegalStateException(
                 "StyleWallpaperRepository have not gallery wallpapers.")

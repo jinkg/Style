@@ -16,4 +16,6 @@ public class AdvanceWallpaperItem {
     public String providerName;
 
     public String storePath;
+
+    public boolean isSelected;
 }

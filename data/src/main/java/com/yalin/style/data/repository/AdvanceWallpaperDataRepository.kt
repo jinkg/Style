@@ -89,6 +89,10 @@ class AdvanceWallpaperDataRepository
                 .map(wallpaperMapper::transformList)
     }
 
+    override fun selectAdvanceWallpaper(wallpaperId: String): Observable<Boolean> {
+        return factory.create().selectWallpaper(wallpaperId)
+    }
+
     override fun getAdvanceWallpaper(): AdvanceWallpaper {
         return wallpaperMapper.transform(factory.create().getWallPaperEntity())
     }

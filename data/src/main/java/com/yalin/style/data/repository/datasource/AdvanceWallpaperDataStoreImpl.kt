@@ -1,5 +1,6 @@
 package com.yalin.style.data.repository.datasource
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import com.yalin.style.data.entity.AdvanceWallpaperEntity
@@ -54,6 +55,28 @@ class AdvanceWallpaperDataStoreImpl(val context: Context) : AdvanceWallpaperData
             }
 
             emitter.onNext(validWallpapers)
+            emitter.onComplete()
+        }
+    }
+
+    override fun selectWallpaper(wallpaperId: String): Observable<Boolean> {
+        return Observable.create { emitter ->
+            val selectValue = ContentValues()
+            selectValue.put(StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED, 1)
+            val unselectedValue = ContentValues()
+            unselectedValue.put(StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED, 0)
+            // unselected old
+            context.contentResolver.update(
+                    StyleContract.AdvanceWallpaper.CONTENT_SELECTED_URI,
+                    unselectedValue, null, null)
+            // select new
+            val uri = StyleContract.AdvanceWallpaper.buildWallpaperUri(wallpaperId)
+            val selectedCount = context.contentResolver.update(uri, selectValue, null, null)
+            if (selectedCount > 0) {
+                emitter.onNext(true)
+            } else {
+                emitter.onNext(false)
+            }
             emitter.onComplete()
         }
     }

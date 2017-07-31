@@ -1,14 +1,21 @@
 package com.yalin.style.view.activity
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
+import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.yalin.style.R
 import com.yalin.style.StyleApplication
 import com.yalin.style.model.AdvanceWallpaperItem
@@ -39,7 +46,12 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
     var imageLoader: ImageLoader? = null
 
-    var loadState = LOAD_STATE_NORMAL
+    private var loadState = LOAD_STATE_NORMAL
+
+    private val handler = Handler()
+
+    private var placeHolderDrawable: ColorDrawable? = null
+    private var mItemSize = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +60,8 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
         setSupportActionBar(appBar)
 
+        placeHolderDrawable = ColorDrawable(ContextCompat.getColor(this,
+                R.color.gallery_chosen_photo_placeholder))
         initViews()
 
         imageLoader = ImageLoader(this)
@@ -78,10 +92,42 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
         val gridLayoutManager = GridLayoutManager(this, 2)
         wallpaperList.layoutManager = gridLayoutManager
 
-        wallpaperList.adapter = advanceWallpaperAdapter
-
         btnLoadAdvanceWallpaper.setOnClickListener { presenter.loadAdvanceWallpaper() }
         btnRetry.setOnClickListener { presenter.loadAdvanceWallpaper() }
+
+        wallpaperList.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        val width = wallpaperList.width -
+                                wallpaperList.paddingStart - wallpaperList.paddingEnd
+                        if (width <= 0) {
+                            return
+                        }
+
+                        // Compute number of columns
+                        val maxItemWidth = resources.getDimensionPixelSize(
+                                R.dimen.gallery_chosen_photo_grid_max_item_size)
+                        var numColumns = 1
+                        while (true) {
+                            if (width / numColumns > maxItemWidth) {
+                                ++numColumns
+                            } else {
+                                break
+                            }
+                        }
+
+                        val spacing = resources.getDimensionPixelSize(
+                                R.dimen.gallery_chosen_photo_grid_spacing)
+                        mItemSize = (width - spacing * (numColumns - 1)) / numColumns
+
+                        // Complete setup
+                        gridLayoutManager.spanCount = numColumns
+                        advanceWallpaperAdapter.setHasStableIds(true)
+                        wallpaperList.adapter = advanceWallpaperAdapter
+
+                        wallpaperList.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -157,17 +203,44 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
         return applicationContext
     }
 
+    override fun executeDelay(runnable: Runnable, ms: Long) {
+        handler.postDelayed(runnable, ms)
+    }
+
+    override fun complete() {
+        finish()
+    }
+
+    override fun wallpaperSelected(wallpaperId: String) {
+        wallpapers?.forEach { it ->
+            it.isSelected = TextUtils.equals(it.wallpaperId, wallpaperId)
+        }
+        advanceWallpaperAdapter.notifyDataSetChanged()
+    }
+
     class AdvanceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var checkedOverlayView: View = itemView.findViewById(R.id.checked_overlay)
         var thumbnail: ImageView = itemView.findViewById(R.id.thumbnail) as ImageView
+        var tvName: TextView = itemView.findViewById(R.id.tvName) as TextView
     }
 
     private val advanceWallpaperAdapter = object : RecyclerView.Adapter<AdvanceViewHolder>() {
         override fun onBindViewHolder(holder: AdvanceViewHolder, position: Int) {
             wallpapers?.apply {
                 val item = this[position]
-                imageLoader?.loadImage(item.iconUrl, holder.thumbnail,
-                        null, getDrawable(R.drawable.logo))
+                Glide.with(this@AdvanceSettingActivity)
+                        .load(item.iconUrl)
+                        .override(mItemSize, mItemSize)
+                        .placeholder(placeHolderDrawable)
+                        .into(holder.thumbnail)
+
+                if (item.isSelected) {
+                    holder.checkedOverlayView.visibility = View.VISIBLE
+                } else {
+                    holder.checkedOverlayView.visibility = View.GONE
+                }
+
+                holder.tvName.text = item.name
             }
         }
 
@@ -179,7 +252,13 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
             val view = LayoutInflater.from(this@AdvanceSettingActivity)
                     .inflate(R.layout.advance_chosen_wallpaper_item, parent, false)
 
-            return AdvanceViewHolder(view)
+            val vh = AdvanceViewHolder(view)
+            view.setOnClickListener {
+                val item = wallpapers!![vh.adapterPosition]
+                presenter.selectAdvanceWallpaper(item.wallpaperId, false)
+            }
+
+            return vh
         }
 
     }

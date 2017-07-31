@@ -118,6 +118,14 @@ public class StyleWallpaperDataRepository implements WallpaperRepository {
         );
     }
 
+    @Override
+    public Observable<Boolean> selectAdvanceWallpaper(String wallpaperId) {
+        return Observable.create(emitter ->
+                emitter.onError(new IllegalStateException(
+                        "StyleWallpaperRepository have not gallery wallpapers."))
+        );
+    }
+
     public AdvanceWallpaper getAdvanceWallpaper() {
         throw new IllegalStateException(
                 "StyleWallpaperRepository have not gallery wallpapers.");

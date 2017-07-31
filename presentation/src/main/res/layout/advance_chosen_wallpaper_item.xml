@@ -1,14 +1,37 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
     android:foreground="?selectableItemBackground">
 
-    <ImageView
-        android:id="@+id/thumbnail"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <com.yalin.style.view.component.ShadowDipsTextView
+            android:id="@+id/tvName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:background="#88666666"
+            android:paddingBottom="@dimen/advance_name_top_margin"
+            android:paddingEnd="@dimen/advance_name_margin"
+            android:paddingStart="@dimen/advance_name_margin"
+            android:paddingTop="@dimen/advance_name_top_margin"
+            android:textColor="@color/wallpaper_detail_text_color"
+            android:textSize="@dimen/text_size_medium"
+            app:shadowColor="@color/shadow_color"
+            app:shadowDx="0dp"
+            app:shadowDy="1dp"
+            app:shadowRadius="3dp" />
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/checked_overlay"

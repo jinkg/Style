@@ -10,4 +10,10 @@ interface AdvanceSettingView : LoadingDataView {
     fun renderWallpapers(wallpapers: List<AdvanceWallpaperItem>)
 
     fun showEmpty()
+
+    fun executeDelay(runnable: Runnable, ms: Long)
+
+    fun complete()
+
+    fun wallpaperSelected(wallpaperId: String)
 }
