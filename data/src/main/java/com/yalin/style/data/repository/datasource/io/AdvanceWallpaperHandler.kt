@@ -115,6 +115,14 @@ class AdvanceWallpaperHandler(context: Context) : JSONHandler(context) {
         var _is: InputStream? = null
         try {
             val outputFile = File(wallpaper.storePath)
+            if (outputFile.exists()) {
+                if (WallpaperFileHelper.ensureChecksumValid(mContext,
+                        wallpaper.checkSum, wallpaper.storePath)) {
+                    return true
+                } else {
+                    outputFile.delete()
+                }
+            }
             val storePath = outputFile.parentFile
             storePath.mkdirs()
             os = FileOutputStream(outputFile)
