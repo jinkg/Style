@@ -5,6 +5,7 @@ import com.yalin.style.domain.AdvanceWallpaper
 import com.yalin.style.domain.interactor.GetSelectedAdvanceWallpaper
 import com.yalin.style.domain.interactor.GetSelectedSource
 import com.yalin.style.domain.repository.SourcesRepository
+import com.yalin.style.engine.advance.DefaultAdvanceWallpaperProxy
 import javax.inject.Inject
 
 /**
@@ -20,9 +21,13 @@ class ProxyProvider @Inject constructor(val getSelectedSourceUseCase: GetSelecte
     fun provideProxy(host: Context): WallpaperServiceProxy {
         if (getSelectedSourceUseCase.selectedSourceId == SourcesRepository.SOURCE_ID_ADVANCE) {
             val selected = getAdvanceWallpaper.selected
-            val proxy = WrapperApi.getProxy(host, selected.storePath, selected.providerName)
-            if (proxy != null) {
-                return proxy
+            if (selected.isDefault) {
+                return DefaultAdvanceWallpaperProxy(host)
+            } else {
+                val proxy = WrapperApi.getProxy(host, selected.storePath, selected.providerName)
+                if (proxy != null) {
+                    return proxy
+                }
             }
         }
 

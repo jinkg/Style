@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yalin.style.data.log.LogUtil;
+import com.yalin.style.data.repository.datasource.provider.StyleContract.AdvanceWallpaper;
 import com.yalin.style.data.repository.datasource.provider.StyleContract.GalleryWallpaper;
 import com.yalin.style.data.repository.datasource.provider.StyleContract.Wallpaper;
 import com.yalin.style.data.utils.SelectionBuilder;
@@ -86,7 +87,8 @@ public class StyleProvider extends ContentProvider {
             case WALLPAPER_ID:
             case WALLPAPER_LIKED:
             case ADVANCE_WALLPAPER:
-            case ADVANCE_WALLPAPER_ID: {
+            case ADVANCE_WALLPAPER_ID:
+            case ADVANCE_WALLPAPER_SELECTED: {
                 final SelectionBuilder builder = buildSimpleSelection(uri);
                 return builder.query(db, projection, Wallpaper._ID + " DESC");
             }
@@ -126,8 +128,8 @@ public class StyleProvider extends ContentProvider {
             case GALLERY:
                 return StyleContract.GalleryWallpaper.buildGalleryWallpaperUri(id);
             case ADVANCE_WALLPAPER: {
-                return StyleContract.AdvanceWallpaper.buildWallpaperUri(
-                        values.getAsString(StyleContract.AdvanceWallpaper.COLUMN_NAME_WALLPAPER_ID));
+                return AdvanceWallpaper.buildWallpaperUri(
+                        values.getAsString(AdvanceWallpaper.COLUMN_NAME_WALLPAPER_ID));
             }
             default: {
                 throw new UnsupportedOperationException("Unknown insert uri: " + uri);
@@ -148,6 +150,9 @@ public class StyleProvider extends ContentProvider {
         switch (uriEnum) {
             case WALLPAPER: {
                 builder.where(Wallpaper.COLUMN_NAME_LIKED + " = ?", "0");
+            }
+            case ADVANCE_WALLPAPER_SELECTED: {
+                builder.where(AdvanceWallpaper.COLUMN_NAME_SELECTED + " = ?", "0");
             }
             break;
             case GALLERY_URI: {
@@ -243,10 +248,14 @@ public class StyleProvider extends ContentProvider {
                 return builder.table(StyleDatabase.Tables.GALLERY)
                         .where(GalleryWallpaper.COLUMN_NAME_CUSTOM_URI + " = ?", uriString);
             }
-            case ADVANCE_WALLPAPER_ID:{
-                String wallpaperId = StyleContract.AdvanceWallpaper.getWallpaperId(uri);
+            case ADVANCE_WALLPAPER_ID: {
+                String wallpaperId = AdvanceWallpaper.getWallpaperId(uri);
                 return builder.table(StyleDatabase.Tables.ADVANCE_WALLPAPER)
-                        .where(Wallpaper.COLUMN_NAME_WALLPAPER_ID + " = ?", wallpaperId);
+                        .where(AdvanceWallpaper.COLUMN_NAME_WALLPAPER_ID + " = ?", wallpaperId);
+            }
+            case ADVANCE_WALLPAPER_SELECTED: {
+                return builder.table(StyleDatabase.Tables.ADVANCE_WALLPAPER)
+                        .where(AdvanceWallpaper.COLUMN_NAME_SELECTED + " = ?", String.valueOf(1));
             }
             default: {
                 throw new UnsupportedOperationException("Unknown uri for " + uri);

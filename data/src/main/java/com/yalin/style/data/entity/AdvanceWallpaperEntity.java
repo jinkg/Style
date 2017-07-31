@@ -1,6 +1,7 @@
 package com.yalin.style.data.entity;
 
 import android.database.Cursor;
+import android.text.TextUtils;
 
 import com.yalin.style.data.log.LogUtil;
 import com.yalin.style.data.repository.datasource.provider.StyleContract;
@@ -29,6 +30,10 @@ public class AdvanceWallpaperEntity {
 
     public String storePath;
     public String checkSum;
+
+    public boolean isDefault = false;
+
+    public boolean isSelected = false;
 
     public static List<AdvanceWallpaperEntity> readCursor(Cursor cursor) {
         List<AdvanceWallpaperEntity> validWallpapers = new ArrayList<>();
@@ -71,7 +76,28 @@ public class AdvanceWallpaperEntity {
                 StyleContract.AdvanceWallpaper.COLUMN_NAME_STORE_PATH));
         wallpaperEntity.providerName = cursor.getString(cursor.getColumnIndex(
                 StyleContract.AdvanceWallpaper.COLUMN_NAME_PROVIDER_NAME));
+        wallpaperEntity.isSelected = cursor.getInt(cursor.getColumnIndex(
+                StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED)) == 1;
 
         return wallpaperEntity;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof AdvanceWallpaperEntity) {
+            if (TextUtils.equals(((AdvanceWallpaperEntity) obj).name, name)
+                    && TextUtils.equals(((AdvanceWallpaperEntity) obj).checkSum, checkSum)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 0;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + checkSum.hashCode();
+        return result;
     }
 }

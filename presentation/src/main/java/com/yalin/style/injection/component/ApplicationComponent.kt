@@ -5,6 +5,7 @@ import com.yalin.style.StyleWallpaperService
 import com.yalin.style.StyleWallpaperServiceMirror
 
 import com.yalin.style.domain.executor.PostExecutionThread
+import com.yalin.style.domain.executor.SerialThreadExecutor
 import com.yalin.style.domain.executor.ThreadExecutor
 import com.yalin.style.domain.observable.SourcesObservable
 import com.yalin.style.domain.repository.SourcesRepository
@@ -42,6 +43,7 @@ interface ApplicationComponent {
     fun context(): Context
 
     fun threadExecutor(): ThreadExecutor
+    fun serialThreadExecutor(): SerialThreadExecutor
     fun postExecutionThread(): PostExecutionThread
     fun wallpaperRepository(): WallpaperRepository
     fun sourcesRepository(): SourcesRepository

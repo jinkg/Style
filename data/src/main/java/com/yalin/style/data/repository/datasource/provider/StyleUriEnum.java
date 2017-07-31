@@ -16,6 +16,7 @@ public enum StyleUriEnum {
     GALLERY_ID(201, "gallery/*", null),
 
     ADVANCE_WALLPAPER(300, "advance_wallpaper", StyleDatabase.Tables.ADVANCE_WALLPAPER),
+    ADVANCE_WALLPAPER_SELECTED(302, "advance_wallpaper/selected", null),
     ADVANCE_WALLPAPER_ID(301, "advance_wallpaper/*", null);
 
 

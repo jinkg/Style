@@ -16,4 +16,6 @@ public class AdvanceWallpaper {
     public String providerName;
 
     public String storePath;
+
+    public boolean isDefault;
 }

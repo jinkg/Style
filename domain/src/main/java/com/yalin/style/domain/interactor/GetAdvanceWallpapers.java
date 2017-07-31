@@ -2,6 +2,7 @@ package com.yalin.style.domain.interactor;
 
 import com.yalin.style.domain.AdvanceWallpaper;
 import com.yalin.style.domain.executor.PostExecutionThread;
+import com.yalin.style.domain.executor.SerialThreadExecutor;
 import com.yalin.style.domain.executor.ThreadExecutor;
 import com.yalin.style.domain.repository.SourcesRepository;
 
@@ -21,9 +22,10 @@ public class GetAdvanceWallpapers extends UseCase<List<AdvanceWallpaper>, Void> 
 
     @Inject
     public GetAdvanceWallpapers(ThreadExecutor threadExecutor,
+                                SerialThreadExecutor serialThreadExecutor,
                                 PostExecutionThread postExecutionThread,
                                 SourcesRepository sourcesRepository) {
-        super(threadExecutor, postExecutionThread);
+        super(threadExecutor, serialThreadExecutor, postExecutionThread);
         this.sourcesRepository = sourcesRepository;
     }
 

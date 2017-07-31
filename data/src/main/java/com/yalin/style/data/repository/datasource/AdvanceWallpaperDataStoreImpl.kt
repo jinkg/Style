@@ -13,22 +13,29 @@ import io.reactivex.Observable
 class AdvanceWallpaperDataStoreImpl(val context: Context) : AdvanceWallpaperDataStore {
     companion object {
         val TAG = "AdvanceDataStore"
+
+        val DEFAULT_WALLPAPER_ID = "-1"
     }
 
     override fun getWallPaperEntity(): AdvanceWallpaperEntity {
         var cursor: Cursor? = null
-        val validWallpapers = ArrayList<AdvanceWallpaperEntity>()
+        var entity: AdvanceWallpaperEntity? = null
         try {
             val contentResolver = context.contentResolver
-            cursor = contentResolver.query(StyleContract.AdvanceWallpaper.CONTENT_URI,
+            cursor = contentResolver.query(StyleContract.AdvanceWallpaper.CONTENT_SELECTED_URI,
                     null, null, null, null)
-            validWallpapers.addAll(AdvanceWallpaperEntity.readCursor(cursor))
+            if (cursor != null && cursor.moveToFirst()) {
+                entity = AdvanceWallpaperEntity.readEntityFromCursor(cursor)
+            }
         } finally {
             if (cursor != null) {
                 cursor.close()
             }
         }
-        return validWallpapers[0]
+        if (entity == null) {
+            entity = buildDefaultWallpaper()
+        }
+        return entity
     }
 
     override fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaperEntity>> {
@@ -51,4 +58,15 @@ class AdvanceWallpaperDataStoreImpl(val context: Context) : AdvanceWallpaperData
         }
     }
 
+    private fun buildDefaultWallpaper(): AdvanceWallpaperEntity {
+        val entity = AdvanceWallpaperEntity()
+        entity.isDefault = true
+        entity.id = -1
+        entity.wallpaperId = DEFAULT_WALLPAPER_ID
+        entity.author = "Yalin"
+        entity.link = "kinglloy.com"
+        entity.name = "The Blue"
+
+        return entity
+    }
 }

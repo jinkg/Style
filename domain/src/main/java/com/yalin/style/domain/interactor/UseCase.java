@@ -2,6 +2,7 @@ package com.yalin.style.domain.interactor;
 
 import com.fernandocejas.arrow.checks.Preconditions;
 import com.yalin.style.domain.executor.PostExecutionThread;
+import com.yalin.style.domain.executor.SerialThreadExecutor;
 import com.yalin.style.domain.executor.ThreadExecutor;
 
 import io.reactivex.Observable;
@@ -17,11 +18,14 @@ import io.reactivex.schedulers.Schedulers;
 
 public abstract class UseCase<T, Params> {
     private final ThreadExecutor threadExecutor;
+    private final SerialThreadExecutor serialThreadExecutor;
     private final PostExecutionThread postExecutionThread;
     private final CompositeDisposable disposables;
 
-    public UseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
+    public UseCase(ThreadExecutor threadExecutor, SerialThreadExecutor serialThreadExecutor,
+                   PostExecutionThread postExecutionThread) {
         this.threadExecutor = threadExecutor;
+        this.serialThreadExecutor = serialThreadExecutor;
         this.postExecutionThread = postExecutionThread;
         this.disposables = new CompositeDisposable();
     }
@@ -36,6 +40,13 @@ public abstract class UseCase<T, Params> {
         addDisposable(observable.subscribeWith(observer));
     }
 
+    public void executeSerial(DisposableObserver<T> observer, Params params) {
+        Preconditions.checkNotNull(observer);
+        final Observable<T> observable = this.buildUseCaseObservable(params)
+                .subscribeOn(Schedulers.from(serialThreadExecutor))
+                .observeOn(postExecutionThread.getScheduler());
+        addDisposable(observable.subscribeWith(observer));
+    }
 
     public void dispose() {
         if (!disposables.isDisposed()) {

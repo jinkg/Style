@@ -2,6 +2,7 @@ package com.yalin.style.data.repository.datasource.io
 
 import android.content.ContentProviderOperation
 import android.content.Context
+import android.database.Cursor
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.yalin.style.data.SyncConfig
@@ -35,9 +36,11 @@ class AdvanceWallpaperHandler(context: Context) : JSONHandler(context) {
         list.add(ContentProviderOperation.newDelete(uri).build())
 
         val validFiles = HashSet<String>()
+        val selectedEntities = querySelectedWallpapers()
+        validFiles.addAll(getWallpaperNameSet(selectedEntities))
         for (wallpaper in this.wallpapers) {
             wallpaper.storePath = makeStorePath(wallpaper)
-            if (downloadWallpaperComponent(wallpaper)
+            if (!selectedEntities.contains(wallpaper) && downloadWallpaperComponent(wallpaper)
                     && WallpaperFileHelper.ensureChecksumValid(mContext,
                     wallpaper.checkSum, wallpaper.storePath)) {
                 LogUtil.D(TAG, "download wallpaper component "
@@ -66,6 +69,14 @@ class AdvanceWallpaperHandler(context: Context) : JSONHandler(context) {
         return File(outputDir, makeFilename(wallpaper.wallpaperId)).absolutePath
     }
 
+    private fun getWallpaperNameSet(entities: List<AdvanceWallpaperEntity>): Set<String> {
+        val ids = HashSet<String>()
+        for (entity in entities) {
+            ids.add(makeFilename(entity.wallpaperId))
+        }
+        return ids
+    }
+
     private fun outputWallpaper(wallpaper: AdvanceWallpaperEntity,
                                 list: ArrayList<ContentProviderOperation>) {
         val uri = StyleContractHelper.setUriAsCalledFromSyncAdapter(
@@ -82,6 +93,19 @@ class AdvanceWallpaperHandler(context: Context) : JSONHandler(context) {
         builder.withValue(StyleContract.AdvanceWallpaper.COLUMN_NAME_PROVIDER_NAME, wallpaper.providerName)
 
         list.add(builder.build())
+    }
+
+    private fun querySelectedWallpapers(): List<AdvanceWallpaperEntity> {
+        var cursor: Cursor? = null
+        try {
+            cursor = mContext.contentResolver.query(
+                    StyleContract.AdvanceWallpaper.CONTENT_SELECTED_URI, null, null, null, null)
+            return AdvanceWallpaperEntity.readCursor(cursor)
+        } finally {
+            if (cursor != null) {
+                cursor.close()
+            }
+        }
     }
 
 

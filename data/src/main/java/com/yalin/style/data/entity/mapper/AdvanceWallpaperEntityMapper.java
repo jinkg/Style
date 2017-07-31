@@ -33,6 +33,7 @@ public class AdvanceWallpaperEntityMapper {
         wallpaper.downloadUrl = wallpaperEntity.downloadUrl;
         wallpaper.providerName = wallpaperEntity.providerName;
         wallpaper.storePath = wallpaperEntity.storePath;
+        wallpaper.isDefault = wallpaperEntity.isDefault;
         return wallpaper;
     }
 

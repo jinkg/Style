@@ -18,7 +18,7 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class JobExecutor implements ThreadExecutor {
-    private final ThreadPoolExecutor threadPoolExecutor;
+    protected final ThreadPoolExecutor threadPoolExecutor;
 
     @Inject
     JobExecutor() {

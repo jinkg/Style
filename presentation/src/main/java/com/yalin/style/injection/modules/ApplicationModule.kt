@@ -5,11 +5,13 @@ import android.content.Context
 import com.yalin.style.UIThread
 import com.yalin.style.data.cache.*
 import com.yalin.style.data.executor.JobExecutor
+import com.yalin.style.data.executor.SerialJobExecutor
 import com.yalin.style.data.observable.SourcesObservableImpl
 import com.yalin.style.data.repository.SourcesDataRepository
 import com.yalin.style.data.repository.StyleWallpaperDataRepository
 import com.yalin.style.data.observable.WallpaperObservableImpl
 import com.yalin.style.domain.executor.PostExecutionThread
+import com.yalin.style.domain.executor.SerialThreadExecutor
 import com.yalin.style.domain.executor.ThreadExecutor
 import com.yalin.style.domain.observable.SourcesObservable
 import com.yalin.style.domain.repository.SourcesRepository
@@ -39,6 +41,12 @@ class ApplicationModule(context: Context) {
     @Provides
     @Singleton
     internal fun provideThreadExecutor(jobExecutor: JobExecutor): ThreadExecutor {
+        return jobExecutor
+    }
+
+    @Provides
+    @Singleton
+    internal fun provideSerialThreadExecutor(jobExecutor: SerialJobExecutor): SerialThreadExecutor {
         return jobExecutor
     }
 

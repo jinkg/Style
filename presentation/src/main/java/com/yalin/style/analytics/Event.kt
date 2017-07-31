@@ -26,6 +26,7 @@ object Event {
 
     // custom settings
     val SELECT_WALLPAPER_SOURCE = "select_wallpaper_source"
+    val SELECT_ADVANCE_WALLPAPER_SOURCE = "select_advance_wallpaper_source"
     val CUSTOM_WALLPAPER_SETTINGS = "custom_wallpaper_settings"
     val SETUP_UPDATE_INTERVAL = "setup_update_interval"
     val IMPORT_FROM_GALLERY = "import_from_gallery"

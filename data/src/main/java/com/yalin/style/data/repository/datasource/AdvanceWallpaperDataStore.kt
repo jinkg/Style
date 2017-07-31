@@ -9,7 +9,7 @@ import io.reactivex.Observable
  */
 interface AdvanceWallpaperDataStore {
 
-    fun getWallPaperEntity(): AdvanceWallpaperEntity
+    fun getWallPaperEntity(): AdvanceWallpaperEntity?
 
     fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaperEntity>>
 }

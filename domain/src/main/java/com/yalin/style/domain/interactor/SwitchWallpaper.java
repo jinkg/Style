@@ -2,6 +2,7 @@ package com.yalin.style.domain.interactor;
 
 import com.yalin.style.domain.Wallpaper;
 import com.yalin.style.domain.executor.PostExecutionThread;
+import com.yalin.style.domain.executor.SerialThreadExecutor;
 import com.yalin.style.domain.executor.ThreadExecutor;
 import com.yalin.style.domain.repository.SourcesRepository;
 
@@ -19,9 +20,10 @@ public class SwitchWallpaper extends UseCase<Wallpaper, Void> {
 
     @Inject
     public SwitchWallpaper(ThreadExecutor threadExecutor,
+                           SerialThreadExecutor serialThreadExecutor,
                            PostExecutionThread postExecutionThread,
                            SourcesRepository sourcesRepository) {
-        super(threadExecutor, postExecutionThread);
+        super(threadExecutor, serialThreadExecutor, postExecutionThread);
         this.sourcesRepository = sourcesRepository;
     }
 

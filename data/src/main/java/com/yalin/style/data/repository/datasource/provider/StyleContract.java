@@ -114,6 +114,10 @@ public class StyleContract {
          * Type: TEXT
          */
         String COLUMN_NAME_PROVIDER_NAME = "provider_name";
+        /**
+         * Type: INTEGER
+         */
+        String COLUMN_NAME_SELECTED = "selected";
     }
 
     public static final Uri BASE_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY);
@@ -206,10 +210,15 @@ public class StyleContract {
     public static final class AdvanceWallpaper implements AdvanceWallpaperColumns, BaseColumns {
         public static final String TABLE_NAME = "advance_wallpaper";
 
-        public static final String PATH_SAVE_WALLPAPER = "save";
+        public static final String PATH_SELECTED_WALLPAPER = "selected";
 
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendEncodedPath(PATH_ADVANCE_WALLPAPER).build();
+
+        public static final Uri CONTENT_SELECTED_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_WALLPAPER)
+                        .appendPath(PATH_SELECTED_WALLPAPER).build();
+
 
         public static Uri buildWallpaperUri(String wallpaperId) {
             return CONTENT_URI.buildUpon().appendPath(wallpaperId).build();
@@ -218,5 +227,6 @@ public class StyleContract {
         public static String getWallpaperId(Uri uri) {
             return uri.getPathSegments().get(1);
         }
+
     }
 }

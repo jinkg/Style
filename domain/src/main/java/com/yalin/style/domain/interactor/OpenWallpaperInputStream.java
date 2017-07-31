@@ -2,6 +2,7 @@ package com.yalin.style.domain.interactor;
 
 import com.fernandocejas.arrow.checks.Preconditions;
 import com.yalin.style.domain.executor.PostExecutionThread;
+import com.yalin.style.domain.executor.SerialThreadExecutor;
 import com.yalin.style.domain.executor.ThreadExecutor;
 import com.yalin.style.domain.repository.SourcesRepository;
 
@@ -22,9 +23,10 @@ public class OpenWallpaperInputStream
 
     @Inject
     public OpenWallpaperInputStream(ThreadExecutor threadExecutor,
+                                    SerialThreadExecutor serialThreadExecutor,
                                     PostExecutionThread postExecutionThread,
                                     SourcesRepository sourcesRepository) {
-        super(threadExecutor, postExecutionThread);
+        super(threadExecutor, serialThreadExecutor, postExecutionThread);
         this.sourcesRepository = sourcesRepository;
     }
 

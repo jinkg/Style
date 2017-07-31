@@ -7,16 +7,16 @@ import android.content.Intent
 import android.service.wallpaper.WallpaperService
 import com.yalin.style.analytics.Analytics
 import com.yalin.style.analytics.Event
-import com.yalin.style.domain.interactor.DefaultObserver
 import com.yalin.style.domain.interactor.GetSelectedSource
 import com.yalin.style.domain.interactor.ObserverSources
-import com.yalin.style.domain.repository.SourcesRepository
 import com.yalin.style.engine.ProxyProvider
 import com.yalin.style.engine.WallpaperServiceProxy
+import com.yalin.style.event.SwitchWallpaperServiceEvent
 import com.yalin.style.event.WallpaperActivateEvent
 
 import net.rbgrn.android.glwallpaperservice.GLWallpaperService
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import org.jetbrains.anko.toast
 import javax.inject.Inject
 
@@ -30,7 +30,6 @@ open class StyleWallpaperService : GLWallpaperService(), WallpaperServiceProxy.W
     @Inject lateinit var getSelectedSourceUseCase: GetSelectedSource
 
     private var proxy: WallpaperServiceProxy? = null
-    private val sourcesObserver = SourcesRefreshObserver()
 
     private var currentSelectedSource: Int
 
@@ -48,14 +47,14 @@ open class StyleWallpaperService : GLWallpaperService(), WallpaperServiceProxy.W
         proxy = proxyProvider.provideProxy(this)
         proxy?.onCreate()
 
-        sourcesObserverUseCase.registerObserver(sourcesObserver)
+        EventBus.getDefault().register(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         proxy?.onDestroy()
 
-        sourcesObserverUseCase.unregisterObserver(sourcesObserver)
+        EventBus.getDefault().unregister(this)
     }
 
 
@@ -67,15 +66,6 @@ open class StyleWallpaperService : GLWallpaperService(), WallpaperServiceProxy.W
     override fun onWallpaperDeactivate() {
         Analytics.logEvent(this, Event.WALLPAPER_DESTROYED)
         EventBus.getDefault().postSticky(WallpaperActivateEvent(false))
-    }
-
-    private inner class SourcesRefreshObserver : DefaultObserver<Void>() {
-        override fun onComplete() {
-            if (getSelectedSourceUseCase.selectedSourceId == SourcesRepository.SOURCE_ID_ADVANCE ||
-                    currentSelectedSource == SourcesRepository.SOURCE_ID_ADVANCE) {
-                pickWallpaper()
-            }
-        }
     }
 
     open fun getWallpaperTargetClass(): Class<*> {
@@ -97,5 +87,10 @@ open class StyleWallpaperService : GLWallpaperService(), WallpaperServiceProxy.W
                 Analytics.logEvent(this, Event.DEVICE_UNSUPPORTED)
             }
         }
+    }
+
+    @Subscribe
+    fun onEventMainThread(e: SwitchWallpaperServiceEvent) {
+        pickWallpaper()
     }
 }

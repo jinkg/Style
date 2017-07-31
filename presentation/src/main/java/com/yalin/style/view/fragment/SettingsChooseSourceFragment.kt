@@ -77,6 +77,7 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
         getComponent(SourceComponent::class.java).inject(this)
 
         prepareGenerateSourceImages()
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -98,6 +99,7 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
 
         })
 
+        settingsPresenter.restoreInstanceState(savedInstanceState)
         settingsPresenter.initialize()
     }
 
@@ -116,12 +118,21 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
         settingsPresenter.destroy()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        settingsPresenter.saveInstanceState(outState)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun renderSources(sources: List<SourceItem>) {
         redrawSources(sources)
     }
 
     override fun sourceSelected(sources: List<SourceItem>, selectedItem: SourceItem) {
         updateSelectedItem(sources, selectedItem, true)
+    }
+
+    override fun executeDelay(runnable: Runnable, ms: Long) {
+        mHandler.postDelayed(runnable, ms)
     }
 
     override fun showLoading() {

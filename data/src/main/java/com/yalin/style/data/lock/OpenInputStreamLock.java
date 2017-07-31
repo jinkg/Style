@@ -26,6 +26,6 @@ public class OpenInputStreamLock extends ResourceLock {
 
     @Override
     protected Observable<Void> appendDelay(Observable<Void> observable) {
-        return observable.delaySubscription(1, TimeUnit.SECONDS);
+        return observable.delaySubscription(500, TimeUnit.MILLISECONDS);
     }
 }
