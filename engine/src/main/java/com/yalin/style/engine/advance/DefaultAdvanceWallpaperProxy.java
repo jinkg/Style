@@ -3,14 +3,14 @@ package com.yalin.style.engine.advance;
 import android.content.Context;
 import android.service.wallpaper.WallpaperService;
 
-import com.yalin.style.engine.WallpaperServiceProxy;
+import com.yalin.style.engine.GLWallpaperServiceProxy;
 
 /**
  * @author jinyalin
  * @since 2017/7/31.
  */
 
-public class DefaultAdvanceWallpaperProxy extends WallpaperServiceProxy {
+public class DefaultAdvanceWallpaperProxy extends GLWallpaperServiceProxy {
     public DefaultAdvanceWallpaperProxy(Context host) {
         super(host);
     }
@@ -20,7 +20,7 @@ public class DefaultAdvanceWallpaperProxy extends WallpaperServiceProxy {
         return new MyEngine();
     }
 
-    private class MyEngine extends ActiveEngine {
+    private class MyEngine extends GLActiveEngine {
         MyRenderer renderer;
 
         public MyEngine() {

@@ -10,11 +10,10 @@ import com.yalin.style.analytics.Event
 import com.yalin.style.domain.interactor.GetSelectedSource
 import com.yalin.style.domain.interactor.ObserverSources
 import com.yalin.style.engine.ProxyProvider
-import com.yalin.style.engine.WallpaperServiceProxy
+import com.yalin.style.engine.WallpaperActiveCallback
 import com.yalin.style.event.SwitchWallpaperServiceEvent
 import com.yalin.style.event.WallpaperActivateEvent
 
-import net.rbgrn.android.glwallpaperservice.GLWallpaperService
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.jetbrains.anko.toast
@@ -24,12 +23,12 @@ import javax.inject.Inject
 /**
  * YaLin 2016/12/30.
  */
-open class StyleWallpaperService : GLWallpaperService(), WallpaperServiceProxy.WallpaperActiveCallback {
+open class StyleWallpaperService : WallpaperService(), WallpaperActiveCallback {
     @Inject lateinit var proxyProvider: ProxyProvider
     @Inject lateinit var sourcesObserverUseCase: ObserverSources
     @Inject lateinit var getSelectedSourceUseCase: GetSelectedSource
 
-    private var proxy: WallpaperServiceProxy? = null
+    private var proxy: WallpaperService? = null
 
     private var currentSelectedSource: Int
 

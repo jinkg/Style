@@ -5,17 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
-import android.service.wallpaper.WallpaperService
 import android.support.v4.os.UserManagerCompat
 import android.view.SurfaceHolder
+import net.rbgrn.android.glwallpaperservice.GLWallpaperService
 
 /**
  * @author jinyalin
  * *
  * @since 2017/7/27.
  */
-open class WallpaperServiceProxy(var host: Context) : WallpaperService() {
 
+open class GLWallpaperServiceProxy(var host: Context) : GLWallpaperService() {
     private val activateCallback: WallpaperActiveCallback?
 
     init {
@@ -26,24 +26,20 @@ open class WallpaperServiceProxy(var host: Context) : WallpaperService() {
             host as WallpaperActiveCallback else null
     }
 
-    override fun onCreateEngine(): WallpaperService.Engine? {
-        return null
-    }
-
     override fun onCreate() {
     }
 
     override fun onDestroy() {
     }
 
-    open inner class ActiveEngine : Engine() {
+    open inner class GLActiveEngine : GLEngine() {
         private var mWallpaperActivate = false
 
         private var mEngineUnlockReceiver: BroadcastReceiver? = null
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
             if (!isPreview) {
-                if (UserManagerCompat.isUserUnlocked(this@WallpaperServiceProxy)) {
+                if (UserManagerCompat.isUserUnlocked(this@GLWallpaperServiceProxy)) {
                     activateWallpaper()
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     mEngineUnlockReceiver = object : BroadcastReceiver() {
@@ -53,7 +49,7 @@ open class WallpaperServiceProxy(var host: Context) : WallpaperService() {
                         }
                     }
                     val filter = IntentFilter(Intent.ACTION_USER_UNLOCKED)
-                    this@WallpaperServiceProxy.registerReceiver(mEngineUnlockReceiver, filter)
+                    this@GLWallpaperServiceProxy.registerReceiver(mEngineUnlockReceiver, filter)
                 }
             }
         }

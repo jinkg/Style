@@ -28,7 +28,7 @@ import javax.inject.Inject
  * @author jinyalin
  * @since 2017/7/27.
  */
-class StyleWallpaperProxy(host: Context) : WallpaperServiceProxy(host) {
+class StyleWallpaperProxy(host: Context) : GLWallpaperServiceProxy(host) {
 
     companion object {
         private val TEMPORARY_FOCUS_DURATION_MILLIS: Long = 3000
@@ -71,7 +71,7 @@ class StyleWallpaperProxy(host: Context) : WallpaperServiceProxy(host) {
         }
     }
 
-    inner class StyleWallpaperEngine : ActiveEngine(),
+    inner class StyleWallpaperEngine : GLActiveEngine(),
             StyleBlurRenderer.Callbacks, RenderController.Callbacks {
 
 

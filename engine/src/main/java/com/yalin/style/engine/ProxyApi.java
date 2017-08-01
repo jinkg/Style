@@ -1,6 +1,7 @@
 package com.yalin.style.engine;
 
 import android.content.Context;
+import android.service.wallpaper.WallpaperService;
 
 import com.yalin.style.engine.classloader.WrapperClassLoader;
 
@@ -9,15 +10,11 @@ import com.yalin.style.engine.classloader.WrapperClassLoader;
  * On 2017/7/27.
  */
 
-public class WrapperApi {
-
-    public static final String ADVANCE_PROXY_CLASS =
-            "com.yalin.component.ProviderImpl";
-
+public class ProxyApi {
 
     private static IProvider getProvider(Context context, String componentPath, String providerName)
             throws Exception {
-        synchronized (WrapperApi.class) {
+        synchronized (ProxyApi.class) {
             IProvider provider;
             Class providerClazz = WrapperClassLoader.loadClass(context, componentPath, providerName);
             if (providerClazz != null) {
@@ -29,8 +26,8 @@ public class WrapperApi {
         }
     }
 
-    public static WallpaperServiceProxy getProxy(Context context,
-                                                 String componentPath, String providerName) {
+    public static WallpaperService getProxy(Context context,
+                                            String componentPath, String providerName) {
         try {
             IProvider provider = getProvider(context, componentPath, providerName);
             return provider.provideProxy(context);
