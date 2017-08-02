@@ -5,7 +5,7 @@ import android.service.wallpaper.WallpaperService
 import com.yalin.style.domain.interactor.GetSelectedAdvanceWallpaper
 import com.yalin.style.domain.interactor.GetSelectedSource
 import com.yalin.style.domain.repository.SourcesRepository
-import com.yalin.style.engine.advance.DefaultAdvanceWallpaperProxy
+import com.yalin.style.engine.advance.BokehRainbowWallpaper
 import javax.inject.Inject
 
 /**
@@ -22,7 +22,7 @@ class ProxyProvider @Inject constructor(val getSelectedSourceUseCase: GetSelecte
         if (getSelectedSourceUseCase.selectedSourceId == SourcesRepository.SOURCE_ID_ADVANCE) {
             val selected = getAdvanceWallpaper.selected
             if (selected.isDefault) {
-                return DefaultAdvanceWallpaperProxy(host)
+                return BokehRainbowWallpaper(host)
             } else {
                 val proxy = ProxyApi.getProxy(host, selected.storePath, selected.providerName)
                 if (proxy != null) {
