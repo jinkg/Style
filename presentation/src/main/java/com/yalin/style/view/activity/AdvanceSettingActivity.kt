@@ -231,6 +231,8 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
         override fun onBindViewHolder(holder: AdvanceViewHolder, position: Int) {
             wallpapers?.apply {
                 val item = this[position]
+                holder.thumbnail.layoutParams.width = mItemSize
+                holder.thumbnail.layoutParams.height = mItemSize
                 Glide.with(this@AdvanceSettingActivity)
                         .load(item.iconUrl)
                         .override(mItemSize, mItemSize)
