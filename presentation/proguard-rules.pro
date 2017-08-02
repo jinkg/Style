@@ -113,3 +113,26 @@
 }
 
 -dontwarn kotlin.**
+
+# for component
+-keep public class com.yalin.style.engine.StyleWallpaperProxy{
+    *;
+}
+
+-keep public class com.yalin.style.engine.GLWallpaperServiceProxy{
+    *;
+}
+-keep public class com.yalin.style.engine.GLWallpaperServiceProxy$GLActiveEngine{
+    *;
+}
+
+-keep public class com.yalin.style.engine.WallpaperServiceProxy{
+    *;
+}
+-keep public class com.yalin.style.engine.WallpaperServiceProxy$ActiveEngine{
+    *;
+}
+
+-keep interface com.yalin.style.engine.IProvider{
+    *;
+}
