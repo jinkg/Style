@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
+import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -90,7 +91,7 @@ public class StyleProvider extends ContentProvider {
             case ADVANCE_WALLPAPER_ID:
             case ADVANCE_WALLPAPER_SELECTED: {
                 final SelectionBuilder builder = buildSimpleSelection(uri);
-                return builder.query(db, projection, Wallpaper._ID + " DESC");
+                return builder.query(db, projection, BaseColumns._ID + " DESC");
             }
             case GALLERY:
             case GALLERY_ID: {
@@ -152,7 +153,7 @@ public class StyleProvider extends ContentProvider {
                 builder.where(Wallpaper.COLUMN_NAME_LIKED + " = ?", "0");
                 break;
             }
-            case ADVANCE_WALLPAPER_SELECTED: {
+            case ADVANCE_WALLPAPER: {
                 builder.where(AdvanceWallpaper.COLUMN_NAME_SELECTED + " = ?", "0");
                 break;
             }

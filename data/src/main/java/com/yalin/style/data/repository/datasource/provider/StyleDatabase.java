@@ -119,7 +119,7 @@ public class StyleDatabase extends SQLiteOpenHelper {
                 + StyleContract.AdvanceWallpaper.COLUMN_NAME_LINK + " TEXT,"
                 + StyleContract.AdvanceWallpaper.COLUMN_NAME_PROVIDER_NAME + " TEXT,"
                 + StyleContract.AdvanceWallpaper.COLUMN_NAME_CHECKSUM + " TEXT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED + " INTEGER);");
+                + StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED + " INTEGER DEFAULT 0);");
     }
 
     public static void deleteDatabase(Context context) {

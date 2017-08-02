@@ -14,6 +14,7 @@ import com.yalin.style.domain.observable.SourcesObservable
 import com.yalin.style.domain.observable.WallpaperObservable
 import com.yalin.style.domain.repository.SourcesRepository.SOURCE_ID_CUSTOM
 import com.yalin.style.domain.repository.SourcesRepository.SOURCE_ID_STYLE
+import com.yalin.style.domain.repository.SourcesRepository.SOURCE_ID_ADVANCE
 import java.util.HashSet
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,6 +47,10 @@ constructor(val context: Context,
                     && TextUtils.equals(uri.toString(),
                     StyleContract.Wallpaper.CONTENT_URI.toString())) {
                 notifyObserver()
+            } else if (sourcesCache.getUsedSourceId() == SOURCE_ID_ADVANCE
+                    && TextUtils.equals(uri.toString(),
+                    StyleContract.AdvanceWallpaper.CONTENT_URI.toString())) {
+                notifyObserver()
             }
             styleWallpaperDataStoreFactory.onDataRefresh()
         }
@@ -63,6 +68,9 @@ constructor(val context: Context,
                         true, mWallpaperObserver)
         context.contentResolver
                 .registerContentObserver(StyleContract.GalleryWallpaper.CONTENT_URI,
+                        true, mWallpaperObserver)
+        context.contentResolver
+                .registerContentObserver(StyleContract.AdvanceWallpaper.CONTENT_URI,
                         true, mWallpaperObserver)
 
         sourcesObservable.registerObserver(sourceObserver)

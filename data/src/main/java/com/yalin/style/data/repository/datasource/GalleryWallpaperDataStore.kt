@@ -112,7 +112,7 @@ class GalleryWallpaperDataStore(val context: Context,
                         }
                     }
                 }
-                emitter.onNext(inputStream)
+                emitter.onNext(inputStream!!)
                 emitter.onComplete()
             } catch (e: IOException) {
                 emitter.onError(e)

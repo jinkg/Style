@@ -91,6 +91,7 @@ class AdvanceWallpaperHandler(context: Context) : JSONHandler(context) {
         builder.withValue(StyleContract.AdvanceWallpaper.COLUMN_NAME_CHECKSUM, wallpaper.checkSum)
         builder.withValue(StyleContract.AdvanceWallpaper.COLUMN_NAME_STORE_PATH, wallpaper.storePath)
         builder.withValue(StyleContract.AdvanceWallpaper.COLUMN_NAME_PROVIDER_NAME, wallpaper.providerName)
+        builder.withValue(StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED, 0)
 
         list.add(builder.build())
     }

@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
-            android:background="#88666666"
+            android:background="#8666"
             android:paddingBottom="@dimen/advance_name_top_margin"
             android:paddingEnd="@dimen/advance_name_margin"
             android:paddingStart="@dimen/advance_name_margin"
@@ -37,7 +37,7 @@
         android:id="@+id/checked_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#bfff"
+        android:background="#8fff"
         android:visibility="gone">
 
         <ImageView

@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import com.yalin.style.data.entity.AdvanceWallpaperEntity
 import com.yalin.style.data.repository.datasource.provider.StyleContract
+import com.yalin.style.data.utils.notifyChange
 import io.reactivex.Observable
 
 /**
@@ -78,6 +79,7 @@ class AdvanceWallpaperDataStoreImpl(val context: Context) : AdvanceWallpaperData
                 emitter.onNext(false)
             }
             emitter.onComplete()
+            notifyChange(context, StyleContract.AdvanceWallpaper.CONTENT_URI)
         }
     }
 

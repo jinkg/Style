@@ -89,7 +89,7 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
         itemAnimator.supportsChangeAnimations = false
         wallpaperList.itemAnimator = itemAnimator
 
-        val gridLayoutManager = GridLayoutManager(this, 2)
+        val gridLayoutManager = GridLayoutManager(this, 1)
         wallpaperList.layoutManager = gridLayoutManager
 
         btnLoadAdvanceWallpaper.setOnClickListener { presenter.loadAdvanceWallpaper() }
@@ -124,6 +124,9 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
                         gridLayoutManager.spanCount = numColumns
                         advanceWallpaperAdapter.setHasStableIds(true)
                         wallpaperList.adapter = advanceWallpaperAdapter
+                        // I don't know why the wallpaperList's padding has being set to 100
+                        wallpaperList.setPadding(wallpaperList.paddingLeft, 0,
+                                wallpaperList.paddingLeft, 0)
 
                         wallpaperList.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }
