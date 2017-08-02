@@ -19,8 +19,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!--Bugly-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!--Bugly-->
     <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application

@@ -3,7 +3,7 @@ package com.yalin.style.engine;
 import android.content.Context;
 import android.service.wallpaper.WallpaperService;
 
-import com.yalin.style.engine.classloader.WrapperClassLoader;
+import com.yalin.style.engine.component.ComponentContext;
 
 /**
  * YaLin
@@ -12,11 +12,11 @@ import com.yalin.style.engine.classloader.WrapperClassLoader;
 
 public class ProxyApi {
 
-    private static IProvider getProvider(Context context, String componentPath, String providerName)
+    private static IProvider getProvider(ComponentContext context, String providerName)
             throws Exception {
         synchronized (ProxyApi.class) {
             IProvider provider;
-            Class providerClazz = WrapperClassLoader.loadClass(context, componentPath, providerName);
+            Class providerClazz = context.getClassLoader().loadClass(providerName);
             if (providerClazz != null) {
                 provider = (IProvider) providerClazz.newInstance();
                 return provider;
@@ -29,8 +29,9 @@ public class ProxyApi {
     public static WallpaperService getProxy(Context context,
                                             String componentPath, String providerName) {
         try {
-            IProvider provider = getProvider(context, componentPath, providerName);
-            return provider.provideProxy(context);
+            ComponentContext componentContext = new ComponentContext(context, componentPath);
+            IProvider provider = getProvider(componentContext, providerName);
+            return provider.provideProxy(componentContext);
         } catch (Exception e) {
             e.printStackTrace();
         }
