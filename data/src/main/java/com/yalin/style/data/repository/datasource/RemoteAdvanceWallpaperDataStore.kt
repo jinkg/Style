@@ -1,11 +1,13 @@
 package com.yalin.style.data.repository.datasource
 
 import android.content.ContentProviderOperation
+import android.content.ContentResolver
 import android.content.Context
 import android.content.OperationApplicationException
 import android.database.Cursor
 import android.os.RemoteException
 import com.google.gson.JsonParser
+import com.yalin.style.data.R
 import com.yalin.style.data.entity.AdvanceWallpaperEntity
 import com.yalin.style.data.exception.NoContentException
 import com.yalin.style.data.exception.RemoteServerException
@@ -13,6 +15,7 @@ import com.yalin.style.data.log.LogUtil
 import com.yalin.style.data.repository.datasource.io.AdvanceWallpaperHandler
 import com.yalin.style.data.repository.datasource.net.RemoteAdvanceWallpaperFetcher
 import com.yalin.style.data.repository.datasource.provider.StyleContract
+import com.yalin.style.data.repository.datasource.sync.account.Account
 import io.reactivex.Observable
 
 /**
@@ -30,6 +33,10 @@ class RemoteAdvanceWallpaperDataStore(val context: Context) : AdvanceWallpaperDa
 
     override fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaperEntity>> {
         return Observable.create { emitter ->
+            val account = Account.getAccount()
+            val authority = context.getString(R.string.authority)
+            ContentResolver.cancelSync(account, authority)
+
             val batch = ArrayList<ContentProviderOperation>()
             try {
                 val wallpapers = RemoteAdvanceWallpaperFetcher(context).fetchDataIfNewer()
