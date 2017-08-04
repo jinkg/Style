@@ -2,22 +2,22 @@ package com.yalin.style.data.lock;
 
 import com.yalin.style.domain.executor.ThreadExecutor;
 
-import io.reactivex.Observable;
-
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import io.reactivex.Observable;
 
 /**
  * YaLin
  * On 2017/4/30.
  */
 @Singleton
-public class OpenInputStreamLock extends ResourceLock {
+public class SelectSourceLock extends ResourceLock {
 
     @Inject
-    public OpenInputStreamLock(ThreadExecutor threadExecutor) {
+    public SelectSourceLock(ThreadExecutor threadExecutor) {
         super(threadExecutor);
     }
 

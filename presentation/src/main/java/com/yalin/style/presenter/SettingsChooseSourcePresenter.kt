@@ -60,8 +60,10 @@ constructor(val getSourcesUseCase: GetSources,
         selecting = false
         mLastSelectedItemId = mSelectedSource!!.id
 
+        var tempSelect = false
         if (!force && needSwitchWallpaper(sourceId)) {
             selecting = true
+            tempSelect = true
             LogUtil.D(TAG, "Select source Last Selected $mLastSelectedItemId")
         }
         selectSourceUseCae.executeSerial(object : DefaultObserver<Boolean>() {
@@ -81,7 +83,7 @@ constructor(val getSourcesUseCase: GetSources,
                     }
                 }
             }
-        }, SelectSource.Params.selectSource(sourceId))
+        }, SelectSource.Params.selectSource(sourceId, tempSelect))
     }
 
     private fun needSwitchWallpaper(sourceId: Int): Boolean {
@@ -95,10 +97,8 @@ constructor(val getSourcesUseCase: GetSources,
 
     private fun maybeResetSource() {
         if (selecting) {
-            mSourceChooseView?.executeDelay(Runnable {
-                LogUtil.D(TAG, "restore wallpaper to $mLastSelectedItemId")
-                selectSource(mLastSelectedItemId, true)
-            }, 300)
+            LogUtil.D(TAG, "restore wallpaper to $mLastSelectedItemId")
+            selectSource(mLastSelectedItemId, true)
         }
     }
 

@@ -18,7 +18,7 @@ public interface SourcesRepository {
 
     Observable<List<Source>> getSources();
 
-    Observable<Boolean> selectSource(int sourceId);
+    Observable<Boolean> selectSource(int sourceId, boolean tempSelect);
 
     WallpaperRepository getWallpaperRepository();
 

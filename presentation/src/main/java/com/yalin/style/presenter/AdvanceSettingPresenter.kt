@@ -68,8 +68,10 @@ class AdvanceSettingPresenter
             return
         }
         selecting = false
+        var tempSelect = false
         if (!rollback) {
             selecting = true
+            tempSelect = true
         }
         selectAdvanceWallpaper.execute(object : DefaultObserver<Boolean>() {
             override fun onNext(success: Boolean) {
@@ -81,7 +83,7 @@ class AdvanceSettingPresenter
             override fun onComplete() {
                 view?.wallpaperSelected(wallpaperId)
             }
-        }, SelectAdvanceWallpaper.Params.selectWallpaper(wallpaperId))
+        }, SelectAdvanceWallpaper.Params.selectWallpaper(wallpaperId, tempSelect))
     }
 
     override fun resume() {
@@ -90,11 +92,9 @@ class AdvanceSettingPresenter
 
     private fun maybeResetWallpaper() {
         if (selecting && !TextUtils.isEmpty(mLastSelectedItemId)) {
-            view?.executeDelay(Runnable {
-                LogUtil.D(SettingsChooseSourcePresenter.TAG,
-                        "restore wallpaper to $mLastSelectedItemId")
-                selectAdvanceWallpaper(mLastSelectedItemId!!, true)
-            }, 300)
+            LogUtil.D(SettingsChooseSourcePresenter.TAG,
+                    "restore wallpaper to $mLastSelectedItemId")
+            selectAdvanceWallpaper(mLastSelectedItemId!!, true)
         }
     }
 

@@ -3,7 +3,6 @@ package com.yalin.style.view.activity
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
@@ -47,8 +46,6 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     var imageLoader: ImageLoader? = null
 
     private var loadState = LOAD_STATE_NORMAL
-
-    private val handler = Handler()
 
     private var placeHolderDrawable: ColorDrawable? = null
     private var mItemSize = 10
@@ -204,10 +201,6 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
     override fun context(): Context {
         return applicationContext
-    }
-
-    override fun executeDelay(runnable: Runnable, ms: Long) {
-        handler.postDelayed(runnable, ms)
     }
 
     override fun complete() {

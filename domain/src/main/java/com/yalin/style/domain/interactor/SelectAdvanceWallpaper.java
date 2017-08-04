@@ -29,18 +29,20 @@ public class SelectAdvanceWallpaper extends UseCase<Boolean, SelectAdvanceWallpa
     @Override
     Observable<Boolean> buildUseCaseObservable(SelectAdvanceWallpaper.Params params) {
         return sourcesRepository.getWallpaperRepository()
-                .selectAdvanceWallpaper(params.wallpaperId);
+                .selectAdvanceWallpaper(params.wallpaperId, params.tempSelect);
     }
 
     public static final class Params {
         private final String wallpaperId;
+        private final boolean tempSelect;
 
-        private Params(String wallpaperId) {
+        private Params(String wallpaperId, boolean tempSelect) {
             this.wallpaperId = wallpaperId;
+            this.tempSelect = tempSelect;
         }
 
-        public static Params selectWallpaper(String wallpaperId) {
-            return new Params(wallpaperId);
+        public static Params selectWallpaper(String wallpaperId, boolean tempSelect) {
+            return new Params(wallpaperId, tempSelect);
         }
     }
 }

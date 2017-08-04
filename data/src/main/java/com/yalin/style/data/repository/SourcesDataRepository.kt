@@ -29,9 +29,9 @@ constructor(val context: Context,
         return sourcesDataStore.getSources().map(wallpaperEntityMapper::transformSources)
     }
 
-    override fun selectSource(sourceId: Int): Observable<Boolean> {
+    override fun selectSource(sourceId: Int, tempSelect: Boolean): Observable<Boolean> {
         val sourcesDataStore = sourcesDataStoreFactory.create()
-        return sourcesDataStore.selectSource(sourceId)
+        return sourcesDataStore.selectSource(sourceId, tempSelect)
     }
 
     override fun getWallpaperRepository(): WallpaperRepository {

@@ -13,5 +13,5 @@ interface AdvanceWallpaperDataStore {
 
     fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaperEntity>>
 
-    fun selectWallpaper(wallpaperId: String): Observable<Boolean>
+    fun selectWallpaper(wallpaperId: String, tempSelect: Boolean): Observable<Boolean>
 }

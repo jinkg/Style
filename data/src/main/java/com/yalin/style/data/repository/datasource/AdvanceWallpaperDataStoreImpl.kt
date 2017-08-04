@@ -3,6 +3,7 @@ package com.yalin.style.data.repository.datasource
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import com.yalin.style.data.cache.AdvanceWallpaperCache
 import com.yalin.style.data.entity.AdvanceWallpaperEntity
 import com.yalin.style.data.repository.datasource.provider.StyleContract
 import com.yalin.style.data.utils.notifyChange
@@ -12,7 +13,9 @@ import io.reactivex.Observable
  * @author jinyalin
  * @since 2017/7/28.
  */
-class AdvanceWallpaperDataStoreImpl(val context: Context) : AdvanceWallpaperDataStore {
+class AdvanceWallpaperDataStoreImpl(val context: Context,
+                                    val advanceWallpaperCache: AdvanceWallpaperCache)
+    : AdvanceWallpaperDataStore {
     companion object {
         val TAG = "AdvanceDataStore"
 
@@ -20,6 +23,9 @@ class AdvanceWallpaperDataStoreImpl(val context: Context) : AdvanceWallpaperData
     }
 
     override fun getWallPaperEntity(): AdvanceWallpaperEntity {
+        if (!advanceWallpaperCache.isDirty()) {
+            return advanceWallpaperCache.getSelectedWallpaper()
+        }
         var cursor: Cursor? = null
         var entity: AdvanceWallpaperEntity? = null
         try {
@@ -41,27 +47,14 @@ class AdvanceWallpaperDataStoreImpl(val context: Context) : AdvanceWallpaperData
     }
 
     override fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaperEntity>> {
-        return Observable.create { emitter ->
-            var cursor: Cursor? = null
-            val validWallpapers = ArrayList<AdvanceWallpaperEntity>()
-            try {
-                val contentResolver = context.contentResolver
-                cursor = contentResolver.query(StyleContract.AdvanceWallpaper.CONTENT_URI,
-                        null, null, null, null)
-                validWallpapers.addAll(AdvanceWallpaperEntity.readCursor(cursor))
-            } finally {
-                if (cursor != null) {
-                    cursor.close()
-                }
-            }
-
-            emitter.onNext(validWallpapers)
-            emitter.onComplete()
-        }
+        return createAdvanceWallpapersFromDB().doOnNext(advanceWallpaperCache::put)
     }
 
-    override fun selectWallpaper(wallpaperId: String): Observable<Boolean> {
+    override fun selectWallpaper(wallpaperId: String, tempSelect: Boolean): Observable<Boolean> {
         return Observable.create { emitter ->
+            if (!advanceWallpaperCache.isDirty()) {
+                advanceWallpaperCache.selectWallpaper(wallpaperId)
+            }
             val selectValue = ContentValues()
             selectValue.put(StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED, 1)
             val unselectedValue = ContentValues()
@@ -80,6 +73,26 @@ class AdvanceWallpaperDataStoreImpl(val context: Context) : AdvanceWallpaperData
             }
             emitter.onComplete()
             notifyChange(context, StyleContract.AdvanceWallpaper.CONTENT_URI)
+        }
+    }
+
+    private fun createAdvanceWallpapersFromDB(): Observable<List<AdvanceWallpaperEntity>> {
+        return Observable.create { emitter ->
+            var cursor: Cursor? = null
+            val validWallpapers = ArrayList<AdvanceWallpaperEntity>()
+            try {
+                val contentResolver = context.contentResolver
+                cursor = contentResolver.query(StyleContract.AdvanceWallpaper.CONTENT_URI,
+                        null, null, null, null)
+                validWallpapers.addAll(AdvanceWallpaperEntity.readCursor(cursor))
+            } finally {
+                if (cursor != null) {
+                    cursor.close()
+                }
+            }
+
+            emitter.onNext(validWallpapers)
+            emitter.onComplete()
         }
     }
 

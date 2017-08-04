@@ -77,7 +77,7 @@ class RemoteAdvanceWallpaperDataStore(val context: Context) : AdvanceWallpaperDa
         }
     }
 
-    override fun selectWallpaper(wallpaperId: String): Observable<Boolean> {
+    override fun selectWallpaper(wallpaperId: String, tempSelect: Boolean): Observable<Boolean> {
         throw UnsupportedOperationException("Remote data store not support select wallpaper.")
     }
 }

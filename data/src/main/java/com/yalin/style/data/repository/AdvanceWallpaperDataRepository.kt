@@ -1,13 +1,12 @@
 package com.yalin.style.data.repository
 
 import com.yalin.style.data.entity.mapper.AdvanceWallpaperEntityMapper
-import com.yalin.style.data.repository.datasource.AdvanceWallpaperDataStoreFacotry
+import com.yalin.style.data.repository.datasource.AdvanceWallpaperDataStoreFactory
 import com.yalin.style.domain.AdvanceWallpaper
 import com.yalin.style.domain.GalleryWallpaper
 import com.yalin.style.domain.Wallpaper
 import com.yalin.style.domain.repository.WallpaperRepository
 import io.reactivex.Observable
-import io.reactivex.functions.Function
 import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,7 +17,7 @@ import javax.inject.Singleton
  */
 @Singleton
 class AdvanceWallpaperDataRepository
-@Inject constructor(val factory: AdvanceWallpaperDataStoreFacotry,
+@Inject constructor(val factory: AdvanceWallpaperDataStoreFactory,
                     val wallpaperMapper: AdvanceWallpaperEntityMapper,
                     val styleRepository: StyleWallpaperDataRepository)
     : WallpaperRepository {
@@ -89,8 +88,9 @@ class AdvanceWallpaperDataRepository
                 .map(wallpaperMapper::transformList)
     }
 
-    override fun selectAdvanceWallpaper(wallpaperId: String): Observable<Boolean> {
-        return factory.create().selectWallpaper(wallpaperId)
+    override fun selectAdvanceWallpaper(wallpaperId: String, tempSelect: Boolean):
+            Observable<Boolean> {
+        return factory.create().selectWallpaper(wallpaperId, tempSelect)
     }
 
     override fun getAdvanceWallpaper(): AdvanceWallpaper {

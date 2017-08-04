@@ -84,6 +84,13 @@ class ApplicationModule(context: Context) {
 
     @Provides
     @Singleton
+    internal fun provideAdvanceWallpaperCache(cache: AdvanceWallpaperCacheImpl):
+            AdvanceWallpaperCache {
+        return cache
+    }
+
+    @Provides
+    @Singleton
     internal fun provideWallpaperObservable(observable: WallpaperObservableImpl):
             WallpaperObservable {
         return observable

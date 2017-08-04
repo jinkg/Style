@@ -131,10 +131,6 @@ class SettingsChooseSourceFragment : BaseFragment(), SourceChooseView {
         updateSelectedItem(sources, selectedItem, true)
     }
 
-    override fun executeDelay(runnable: Runnable, ms: Long) {
-        mHandler.postDelayed(runnable, ms)
-    }
-
     override fun showLoading() {
     }
 

@@ -2,7 +2,7 @@ package com.yalin.style.data.repository.datasource
 
 import android.content.Context
 import com.yalin.style.data.cache.SourcesCache
-import com.yalin.style.data.lock.OpenInputStreamLock
+import com.yalin.style.data.lock.SelectSourceLock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,9 +14,9 @@ import javax.inject.Singleton
 class SourcesDataStoreFactory @Inject
 constructor(val context: Context,
             val sourcesCache: SourcesCache,
-            val inputStreamLock: OpenInputStreamLock) {
+            val selectSourceLock: SelectSourceLock) {
 
     fun create(): SourcesDataStore {
-        return SourcesDataStoreImpl(context, sourcesCache, inputStreamLock)
+        return SourcesDataStoreImpl(context, sourcesCache, selectSourceLock)
     }
 }

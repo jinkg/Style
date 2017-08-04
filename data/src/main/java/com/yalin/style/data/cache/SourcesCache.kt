@@ -11,7 +11,7 @@ import io.reactivex.Observable
 interface SourcesCache {
     fun getSources(ctx: Context): Observable<List<SourceEntity>>
 
-    fun selectSource(selectSourceId: Int): Boolean
+    fun selectSource(selectSourceId: Int, tempSelect: Boolean): Boolean
 
     fun getUsedSourceId(): Int
 }

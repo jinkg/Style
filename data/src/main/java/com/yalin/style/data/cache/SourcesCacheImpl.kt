@@ -19,7 +19,6 @@ import javax.inject.Singleton
 @Singleton
 class SourcesCacheImpl @Inject
 constructor(val ctx: Context) : SourcesCache {
-
     var selectedId: Int by DelegateExt.preferences(ctx, "selected_source_id", SOURCE_ID_STYLE)
 
     val advanceSource: SourceEntity
@@ -69,13 +68,12 @@ constructor(val ctx: Context) : SourcesCache {
         }
     }
 
-    override fun selectSource(selectSourceId: Int): Boolean {
+    override fun selectSource(selectSourceId: Int, tempSelect: Boolean): Boolean {
         var success = false
         if (featureSource.id == selectSourceId) {
             featureSource.isSelected = true
             gallerySource.isSelected = false
             advanceSource.isSelected = false
-            selectedId = selectSourceId
             success = true
 
             GalleryScheduleService.shutDown(ctx)
@@ -83,7 +81,6 @@ constructor(val ctx: Context) : SourcesCache {
             featureSource.isSelected = false
             gallerySource.isSelected = true
             advanceSource.isSelected = false
-            selectedId = selectSourceId
             success = true
 
             GalleryScheduleService.startUp(ctx)
@@ -91,11 +88,12 @@ constructor(val ctx: Context) : SourcesCache {
             featureSource.isSelected = false
             gallerySource.isSelected = false
             advanceSource.isSelected = true
-            selectedId = selectSourceId
+
             success = true
 
             GalleryScheduleService.shutDown(ctx)
         }
+        selectedId = selectSourceId
         if (success) {
             notifyChanged()
         }

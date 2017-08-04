@@ -46,7 +46,7 @@ class AdvanceWallpaperHandler(context: Context) : JSONHandler(context) {
                 LogUtil.D(TAG, "download wallpaper component "
                         + " success, do output wallpaper.")
                 outputWallpaper(wallpaper, list)
-                validFiles.add(makeFilename(wallpaper.wallpaperId))
+                validFiles.add(makeFilename(wallpaper))
             }
         }
         // delete old wallpapers
@@ -60,19 +60,19 @@ class AdvanceWallpaperHandler(context: Context) : JSONHandler(context) {
         this.wallpapers.addAll(wallpapers)
     }
 
-    private fun makeFilename(wallpaperId: String): String {
-        return wallpaperId + "_component.apk"
+    private fun makeFilename(wallpaper: AdvanceWallpaperEntity): String {
+        return wallpaper.hashCode().toString() + "_component.apk"
     }
 
     private fun makeStorePath(wallpaper: AdvanceWallpaperEntity): String {
         val outputDir = WallpaperFileHelper.getAdvanceWallpaperDir(mContext)
-        return File(outputDir, makeFilename(wallpaper.wallpaperId)).absolutePath
+        return File(outputDir, makeFilename(wallpaper)).absolutePath
     }
 
     private fun getWallpaperNameSet(entities: List<AdvanceWallpaperEntity>): Set<String> {
         val ids = HashSet<String>()
         for (entity in entities) {
-            ids.add(makeFilename(entity.wallpaperId))
+            ids.add(makeFilename(entity))
         }
         return ids
     }

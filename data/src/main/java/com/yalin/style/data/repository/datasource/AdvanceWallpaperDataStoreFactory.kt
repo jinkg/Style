@@ -1,6 +1,7 @@
 package com.yalin.style.data.repository.datasource
 
 import android.content.Context
+import com.yalin.style.data.cache.AdvanceWallpaperCache
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -9,11 +10,12 @@ import javax.inject.Singleton
  * @since 2017/7/28.
  */
 @Singleton
-class AdvanceWallpaperDataStoreFacotry @Inject
-constructor(val context: Context) {
+class AdvanceWallpaperDataStoreFactory @Inject
+constructor(val context: Context,
+            val advanceWallpaperCache: AdvanceWallpaperCache) {
 
     fun create(): AdvanceWallpaperDataStore {
-        return AdvanceWallpaperDataStoreImpl(context)
+        return AdvanceWallpaperDataStoreImpl(context, advanceWallpaperCache)
     }
 
     fun createRemoteDataStore(): AdvanceWallpaperDataStore {

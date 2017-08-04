@@ -28,19 +28,21 @@ public class SelectSource extends UseCase<Boolean, SelectSource.Params> {
 
     @Override
     Observable<Boolean> buildUseCaseObservable(Params params) {
-        return sourcesRepository.selectSource(params.sourceId);
+        return sourcesRepository.selectSource(params.sourceId, params.tempSelect);
     }
 
     public static final class Params {
 
         private final int sourceId;
+        private final boolean tempSelect;
 
-        private Params(int sourceId) {
+        public Params(int sourceId, boolean tempSelect) {
             this.sourceId = sourceId;
+            this.tempSelect = tempSelect;
         }
 
-        public static Params selectSource(int sourceId) {
-            return new Params(sourceId);
+        public static Params selectSource(int sourceId, boolean tempSelect) {
+            return new Params(sourceId, tempSelect);
         }
     }
 

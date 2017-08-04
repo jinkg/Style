@@ -11,7 +11,7 @@ interface SourcesDataStore {
 
     fun getSources(): Observable<List<SourceEntity>>
 
-    fun selectSource(sourceId: Int): Observable<Boolean>
+    fun selectSource(sourceId: Int, tempSelect: Boolean): Observable<Boolean>
 
     fun getUsedSourceId(): Int
 }

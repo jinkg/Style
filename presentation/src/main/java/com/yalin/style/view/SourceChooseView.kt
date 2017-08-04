@@ -10,6 +10,4 @@ interface SourceChooseView : LoadingDataView {
     fun renderSources(sources: List<SourceItem>)
 
     fun sourceSelected(sources: List<SourceItem>, selectedItem: SourceItem)
-
-    fun executeDelay(runnable: Runnable, ms: Long)
 }
