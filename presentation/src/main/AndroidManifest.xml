@@ -65,7 +65,7 @@
         <activity
             android:name=".view.activity.AdvanceSettingActivity"
             android:label="@string/advance_source_title"
-            android:theme="@style/Theme.Style.Gallery" />
+            android:theme="@style/Theme.Style.Advance" />
 
         <service
             android:name=".StyleWallpaperService"

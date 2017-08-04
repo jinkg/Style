@@ -46,6 +46,10 @@
 
     </style>
 
+    <style name="Theme.Style.Advance" parent="Theme.Style.Gallery.Base">
+        <item name="android:windowBackground">@color/advance_window_background</item>
+    </style>
+
     <style name="Style.SimpleFadeFragmentAnimation" parent="">
         <item name="android:fragmentFadeEnterAnimation">@animator/fade_in</item>
         <item name="android:fragmentFadeExitAnimation">@animator/fade_out</item>

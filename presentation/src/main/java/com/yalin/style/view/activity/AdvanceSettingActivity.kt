@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -124,6 +125,18 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
                         wallpaperList.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }
                 })
+
+        ViewCompat.setOnApplyWindowInsetsListener(wallpaperList) { v, insets ->
+            val gridSpacing = resources
+                    .getDimensionPixelSize(R.dimen.gallery_chosen_photo_grid_spacing)
+            ViewCompat.onApplyWindowInsets(v, insets.replaceSystemWindowInsets(
+                    insets.systemWindowInsetLeft + gridSpacing,
+                    gridSpacing,
+                    insets.systemWindowInsetRight + gridSpacing,
+                    insets.systemWindowInsetBottom + insets.systemWindowInsetTop + gridSpacing))
+
+            insets
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
