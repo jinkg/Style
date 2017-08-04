@@ -1,7 +1,7 @@
 package com.yalin.style
 
 import android.app.Application
-import com.facebook.stetho.Stetho
+//import com.facebook.stetho.Stetho
 
 import com.tencent.bugly.crashreport.CrashReport
 import com.yalin.style.analytics.Analytics
@@ -37,15 +37,15 @@ class StyleApplication : Application() {
                 BuildConfig.BUGLY_APP_ID, LogUtil.LOG_ENABLE)
         CrashReport.setAppChannel(applicationContext, com.yalin.style.data.BuildConfig.CHANNEL)
 
-        if (BuildConfig.DEBUG) {
-            Stetho.initialize(
-                    Stetho.newInitializerBuilder(this)
-                            .enableDumpapp(
-                                    Stetho.defaultDumperPluginsProvider(this))
-                            .enableWebKitInspector(
-                                    Stetho.defaultInspectorModulesProvider(this))
-                            .build())
-        }
+//        if (BuildConfig.DEMO_MODE) {
+//            Stetho.initialize(
+//                    Stetho.newInitializerBuilder(this)
+//                            .enableDumpapp(
+//                                    Stetho.defaultDumperPluginsProvider(this))
+//                            .enableWebKitInspector(
+//                                    Stetho.defaultInspectorModulesProvider(this))
+//                            .build())
+//        }
     }
 
     private fun initializeInjector() = DaggerApplicationComponent.builder()

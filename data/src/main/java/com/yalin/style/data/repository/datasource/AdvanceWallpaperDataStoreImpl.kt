@@ -90,7 +90,7 @@ class AdvanceWallpaperDataStoreImpl(val context: Context) : AdvanceWallpaperData
         entity.wallpaperId = DEFAULT_WALLPAPER_ID
         entity.author = "Yalin"
         entity.link = "kinglloy.com"
-        entity.name = "The Blue"
+        entity.name = "Rainbow"
 
         return entity
     }

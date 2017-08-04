@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.yalin.style.R;
 import com.yalin.style.data.exception.NetworkConnectionException;
+import com.yalin.style.data.exception.RemoteServerException;
 import com.yalin.style.data.exception.ReswitchException;
 
 import java.net.SocketTimeoutException;
@@ -34,8 +35,9 @@ public class ErrorMessageFactory {
             message = context.getString(R.string.exception_message_resync);
         } else if (exception instanceof SocketTimeoutException) {
             message = context.getString(R.string.exception_message_remote_service);
+        } else if (exception instanceof RemoteServerException) {
+            message = context.getString(R.string.exception_message_remote_service);
         }
-
         return message;
     }
 }

@@ -8,6 +8,7 @@ import android.os.RemoteException
 import com.google.gson.JsonParser
 import com.yalin.style.data.entity.AdvanceWallpaperEntity
 import com.yalin.style.data.exception.NoContentException
+import com.yalin.style.data.exception.RemoteServerException
 import com.yalin.style.data.log.LogUtil
 import com.yalin.style.data.repository.datasource.io.AdvanceWallpaperHandler
 import com.yalin.style.data.repository.datasource.net.RemoteAdvanceWallpaperFetcher
@@ -29,12 +30,17 @@ class RemoteAdvanceWallpaperDataStore(val context: Context) : AdvanceWallpaperDa
 
     override fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaperEntity>> {
         return Observable.create { emitter ->
-            val wallpapers = RemoteAdvanceWallpaperFetcher(context).fetchDataIfNewer()
-            val parser = JsonParser()
-            val handler = AdvanceWallpaperHandler(context)
-            handler.process(parser.parse(wallpapers))
             val batch = ArrayList<ContentProviderOperation>()
-            handler.makeContentProviderOperations(batch)
+            try {
+                val wallpapers = RemoteAdvanceWallpaperFetcher(context).fetchDataIfNewer()
+                val parser = JsonParser()
+                val handler = AdvanceWallpaperHandler(context)
+                handler.process(parser.parse(wallpapers))
+                handler.makeContentProviderOperations(batch)
+            } catch (e: Exception) {
+                emitter.onError(RemoteServerException())
+                return@create
+            }
 
             try {
                 val operations = batch.size

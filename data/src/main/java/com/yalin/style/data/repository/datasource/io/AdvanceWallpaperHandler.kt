@@ -61,7 +61,7 @@ class AdvanceWallpaperHandler(context: Context) : JSONHandler(context) {
     }
 
     private fun makeFilename(wallpaperId: String): String {
-        return wallpaperId + ".component"
+        return wallpaperId + "_component.apk"
     }
 
     private fun makeStorePath(wallpaper: AdvanceWallpaperEntity): String {
