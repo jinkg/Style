@@ -13,8 +13,7 @@ import io.reactivex.Observable
  * @author jinyalin
  * @since 2017/7/28.
  */
-class AdvanceWallpaperDataStoreImpl(val context: Context,
-                                    val advanceWallpaperCache: AdvanceWallpaperCache)
+class AdvanceWallpaperDataStoreImpl(val context: Context)
     : AdvanceWallpaperDataStore {
     companion object {
         val TAG = "AdvanceDataStore"
@@ -23,9 +22,6 @@ class AdvanceWallpaperDataStoreImpl(val context: Context,
     }
 
     override fun getWallPaperEntity(): AdvanceWallpaperEntity {
-        if (!advanceWallpaperCache.isDirty()) {
-            return advanceWallpaperCache.getSelectedWallpaper()
-        }
         var cursor: Cursor? = null
         var entity: AdvanceWallpaperEntity? = null
         try {
@@ -47,14 +43,11 @@ class AdvanceWallpaperDataStoreImpl(val context: Context,
     }
 
     override fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaperEntity>> {
-        return createAdvanceWallpapersFromDB().doOnNext(advanceWallpaperCache::put)
+        return createAdvanceWallpapersFromDB()
     }
 
     override fun selectWallpaper(wallpaperId: String, tempSelect: Boolean): Observable<Boolean> {
         return Observable.create { emitter ->
-            if (!advanceWallpaperCache.isDirty()) {
-                advanceWallpaperCache.selectWallpaper(wallpaperId)
-            }
             val selectValue = ContentValues()
             selectValue.put(StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED, 1)
             val unselectedValue = ContentValues()
