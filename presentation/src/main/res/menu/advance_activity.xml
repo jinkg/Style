@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_advance_hint"
+        android:icon="@drawable/advance_wallpaper_msg"
+        android:title="@string/advance_action_msg"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -7,13 +7,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.yalin.style.R
 import com.yalin.style.StyleApplication
@@ -148,6 +147,26 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     override fun onDestroy() {
         super.onDestroy()
         presenter.destroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.advance_activity, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_advance_hint) {
+            val dialogBuilder = MaterialDialog.Builder(this)
+                    .iconRes(R.drawable.advance_wallpaper_msg)
+                    .title(R.string.hint)
+                    .content(Html.fromHtml(getString(R.string.advance_hint)))
+                    .positiveText(R.string.confirm)
+
+            dialogBuilder.build().show()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun renderWallpapers(wallpapers: List<AdvanceWallpaperItem>) {

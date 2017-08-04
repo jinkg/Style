@@ -17,6 +17,8 @@
     <string name="action_share">Share</string>
 
     <string name="done">Done</string>
+    <string name="confirm">Confirm</string>
+    <string name="hint">Hint</string>
 
     <string name="section_choose_source">Sources</string>
     <string name="section_advanced">Advanced</string>
@@ -49,6 +51,16 @@
     ]]></string>
     <string name="about_version_template">v%1$s</string>
 
+    <string name="advance_hint"><![CDATA[
+        Advance wallpaper is developed by different developers.<br><br>
+        Use them may give you the equipment to bring different power consumption, performance consumption.<br><br>
+        If you find such a problem, you can switch to other advance wallpaper, or contact Style developers.
+
+        <br><br><b><a href="mailto:jinkg@live.cn">jinkg@live.cn</a></b><br>
+
+        <b><a href="http://www.kinglloy.com/">Visit home page</a></b>
+    ]]></string>
+
     <string name="share_title">Share wallpaper</string>
     <string name="share_text">My Android wallpaper today is \' %1$s \' by %2$s. #StyleWallpaper\n\n
         %3$s</string>
@@ -58,6 +70,8 @@
 
     <string name="advance_retry">Retry</string>
     <string name="advance_retry_description">There has some problem.\nYou can reload the wallpaper,\nOr you can contact the developer.</string>
+
+    <string name="advance_action_msg">Hint</string>
 
     <string name="gallery_empty">Random camera photos</string>
     <string name="gallery_empty_subtitle">Choose specific photos instead</string>
