@@ -61,6 +61,9 @@ android {
         production {
             buildConfigField("boolean", "DEMO_MODE", "false")
         }
+        googleprod {
+            buildConfigField("boolean", "DEMO_MODE", "false")
+        }
     }
 
 }
@@ -82,9 +85,9 @@ dependencies {
     compile "com.tencent.bugly:crashreport:${BUGLY_VERSION}"
     compile "com.flurry.android:analytics:${FLURRY_VERSION}"
 
-    compile "com.google.firebase:firebase-core:${FIRE_BASE_VERSION}"
+    googleprodCompile "com.google.firebase:firebase-core:${FIRE_BASE_VERSION}"
     // Only use crash reporting in the "prod" product flavor
-    productionCompile "com.google.firebase:firebase-crash:${FIRE_BASE_VERSION}"
+    googleprodCompile "com.google.firebase:firebase-crash:${FIRE_BASE_VERSION}"
 
 //    annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
     kapt "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
@@ -95,6 +98,7 @@ dependencies {
     compile project(':engine')
     demoCompile project(path: ':data', configuration: 'demoDebug')
     productionCompile project(path: ':data', configuration: 'productionRelease')
+    googleprodCompile project(path: ':data', configuration: 'productionRelease')
 
     demoCompile 'com.facebook.stetho:stetho:1.5.0'
 
