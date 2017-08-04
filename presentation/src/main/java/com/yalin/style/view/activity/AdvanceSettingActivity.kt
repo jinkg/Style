@@ -102,7 +102,7 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
                         // Compute number of columns
                         val maxItemWidth = resources.getDimensionPixelSize(
-                                R.dimen.gallery_chosen_photo_grid_max_item_size)
+                                R.dimen.advance_grid_max_item_size)
                         var numColumns = 1
                         while (true) {
                             if (width / numColumns > maxItemWidth) {
@@ -120,9 +120,6 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
                         gridLayoutManager.spanCount = numColumns
                         advanceWallpaperAdapter.setHasStableIds(true)
                         wallpaperList.adapter = advanceWallpaperAdapter
-                        // I don't know why the wallpaperList's padding has being set to 100
-                        wallpaperList.setPadding(wallpaperList.paddingLeft, 0,
-                                wallpaperList.paddingLeft, 0)
 
                         wallpaperList.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     }

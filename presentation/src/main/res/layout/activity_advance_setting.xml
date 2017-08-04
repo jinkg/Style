@@ -13,7 +13,6 @@
         android:clipToPadding="false"
         android:drawSelectorOnTop="true"
         android:fitsSystemWindows="true"
-        android:gravity="center"
         android:horizontalSpacing="@dimen/gallery_chosen_photo_grid_spacing"
         android:scrollbarStyle="outsideOverlay"
         android:scrollbars="vertical"

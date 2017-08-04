@@ -47,4 +47,6 @@
 
     <dimen name="advance_name_margin">16dp</dimen>
     <dimen name="advance_name_top_margin">8dp</dimen>
+
+    <dimen name="advance_grid_max_item_size">300dp</dimen>
 </resources>
