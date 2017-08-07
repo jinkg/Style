@@ -15,6 +15,7 @@ class AdvanceWallpaperItemMapper @Inject constructor() {
     fun transform(wallpaper: AdvanceWallpaper): AdvanceWallpaperItem {
         Preconditions.checkNotNull(wallpaper, "Wallpaper can not be null.")
         val wallpaperItem = AdvanceWallpaperItem()
+        wallpaperItem.id = wallpaper.id
         wallpaperItem.wallpaperId = wallpaper.wallpaperId
         wallpaperItem.link = wallpaper.link
         wallpaperItem.name = wallpaper.name

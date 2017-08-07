@@ -6,6 +6,7 @@ package com.yalin.style.model;
  */
 
 public class AdvanceWallpaperItem {
+    public long id;
     public String wallpaperId;
     public String link;
     public String name;

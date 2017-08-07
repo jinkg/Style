@@ -6,6 +6,7 @@ package com.yalin.style.domain;
  */
 
 public class AdvanceWallpaper {
+    public long id;
     public String wallpaperId;
     public String link;
     public String name;

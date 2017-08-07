@@ -23,6 +23,7 @@ import com.yalin.style.util.ImageLoader
 import com.yalin.style.view.AdvanceSettingView
 import kotlinx.android.synthetic.main.activity_advance_setting.*
 import org.jetbrains.anko.toast
+import java.util.ArrayList
 import javax.inject.Inject
 
 /**
@@ -41,7 +42,7 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     @Inject
     lateinit internal var presenter: AdvanceSettingPresenter
 
-    var wallpapers: List<AdvanceWallpaperItem>? = null
+    val wallpapers = ArrayList<AdvanceWallpaperItem>()
 
     var imageLoader: ImageLoader? = null
 
@@ -182,7 +183,8 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     override fun renderWallpapers(wallpapers: List<AdvanceWallpaperItem>) {
         loadState = LOAD_STATE_NORMAL
 
-        this.wallpapers = wallpapers
+        this.wallpapers.clear()
+        this.wallpapers.addAll(wallpapers)
 
         wallpaperList.visibility = View.VISIBLE
         empty.visibility = View.GONE
@@ -237,7 +239,7 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     }
 
     override fun wallpaperSelected(wallpaperId: String) {
-        wallpapers?.forEach { it ->
+        wallpapers.forEach { it ->
             it.isSelected = TextUtils.equals(it.wallpaperId, wallpaperId)
         }
         advanceWallpaperAdapter.notifyDataSetChanged()
@@ -251,28 +253,26 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
     private val advanceWallpaperAdapter = object : RecyclerView.Adapter<AdvanceViewHolder>() {
         override fun onBindViewHolder(holder: AdvanceViewHolder, position: Int) {
-            wallpapers?.apply {
-                val item = this[position]
-                holder.thumbnail.layoutParams.width = mItemSize
-                holder.thumbnail.layoutParams.height = mItemSize
-                Glide.with(this@AdvanceSettingActivity)
-                        .load(item.iconUrl)
-                        .override(mItemSize, mItemSize)
-                        .placeholder(placeHolderDrawable)
-                        .into(holder.thumbnail)
+            val item = wallpapers[position]
+            holder.thumbnail.layoutParams.width = mItemSize
+            holder.thumbnail.layoutParams.height = mItemSize
+            Glide.with(this@AdvanceSettingActivity)
+                    .load(item.iconUrl)
+                    .override(mItemSize, mItemSize)
+                    .placeholder(placeHolderDrawable)
+                    .into(holder.thumbnail)
 
-                if (item.isSelected) {
-                    holder.checkedOverlayView.visibility = View.VISIBLE
-                } else {
-                    holder.checkedOverlayView.visibility = View.GONE
-                }
-
-                holder.tvName.text = item.name
+            if (item.isSelected) {
+                holder.checkedOverlayView.visibility = View.VISIBLE
+            } else {
+                holder.checkedOverlayView.visibility = View.GONE
             }
+
+            holder.tvName.text = item.name
         }
 
         override fun getItemCount(): Int {
-            return if (wallpapers == null) 0 else wallpapers!!.size
+            return wallpapers.size
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AdvanceViewHolder {
@@ -281,12 +281,15 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
             val vh = AdvanceViewHolder(view)
             view.setOnClickListener {
-                val item = wallpapers!![vh.adapterPosition]
+                val item = wallpapers[vh.adapterPosition]
                 presenter.selectAdvanceWallpaper(item.wallpaperId, false)
             }
 
             return vh
         }
 
+        override fun getItemId(position: Int): Long {
+            return wallpapers[position].id
+        }
     }
 }

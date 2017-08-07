@@ -25,6 +25,7 @@ public class AdvanceWallpaperEntityMapper {
     public AdvanceWallpaper transform(AdvanceWallpaperEntity wallpaperEntity) {
         Preconditions.checkNotNull(wallpaperEntity, "Wallpaper can not be null.");
         AdvanceWallpaper wallpaper = new AdvanceWallpaper();
+        wallpaper.id = wallpaperEntity.id;
         wallpaper.wallpaperId = wallpaperEntity.wallpaperId;
         wallpaper.link = wallpaperEntity.link;
         wallpaper.name = wallpaperEntity.name;
