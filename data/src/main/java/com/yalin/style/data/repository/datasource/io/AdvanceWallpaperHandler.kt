@@ -50,8 +50,7 @@ class AdvanceWallpaperHandler(context: Context) : JSONHandler(context) {
             }
         }
         // delete old wallpapers
-        WallpaperFileHelper.deleteOldFiles(mContext,
-                WallpaperFileHelper.getAdvanceWallpaperDir(mContext), validFiles)
+        WallpaperFileHelper.deleteOldComponent(mContext, validFiles)
     }
 
     override fun process(element: JsonElement) {

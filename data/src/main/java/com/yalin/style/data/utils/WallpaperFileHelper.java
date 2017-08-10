@@ -131,19 +131,17 @@ public class WallpaperFileHelper {
         }
     }
 
-    public static void deleteOldFiles(Context context, File dir, Set<String> excludeIds) {
+    public static void deleteOldComponent(Context context ,Set<String> excludeNames) {
+        File dir = getAdvanceWallpaperDir(context);
         if (!dir.exists()) {
             return;
         }
-        Set<String> namesSet = new HashSet<>();
-        for (String wallpaperId : excludeIds) {
-            namesSet.add(generateFileName(wallpaperId));
-        }
         File[] files = dir.listFiles(fileName ->
-                !namesSet.contains(fileName.getName()));
+                !excludeNames.contains(fileName.getName()));
         for (File file : files) {
             //noinspection ResultOfMethodCallIgnored
             file.delete();
+            NativeFileHelperKt.clearNativeFiles(context, file.getAbsolutePath());
         }
     }
 
