@@ -85,11 +85,9 @@ dependencies {
     compile "com.tencent.bugly:crashreport:${BUGLY_VERSION}"
     compile "com.flurry.android:analytics:${FLURRY_VERSION}"
 
-    demoCompile "com.google.firebase:firebase-core:${FIRE_BASE_VERSION}"
-    demoCompile "com.google.firebase:firebase-crash:${FIRE_BASE_VERSION}"
+    compile "com.google.firebase:firebase-core:${FIRE_BASE_VERSION}"
+    compile "com.google.firebase:firebase-crash:${FIRE_BASE_VERSION}"
     demoCompile "com.google.firebase:firebase-ads:${FIRE_BASE_VERSION}"
-    googleprodCompile "com.google.firebase:firebase-core:${FIRE_BASE_VERSION}"
-    googleprodCompile "com.google.firebase:firebase-crash:${FIRE_BASE_VERSION}"
     googleprodCompile "com.google.firebase:firebase-ads:${FIRE_BASE_VERSION}"
 
 //    annotationProcessor "com.google.dagger:dagger-compiler:${DAGGER_VERSION}"
