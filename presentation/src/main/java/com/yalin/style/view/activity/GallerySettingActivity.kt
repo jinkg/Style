@@ -37,6 +37,7 @@ import com.yalin.style.data.utils.getImagesFromTreeUri
 import com.yalin.style.model.GalleryWallpaperItem
 import com.yalin.style.presenter.GallerySettingPresenter
 import com.yalin.style.util.MultiSelectionController
+import com.yalin.style.util.maybeAttachAd
 import com.yalin.style.view.GallerySettingView
 import kotlinx.android.synthetic.main.activity_gallery_setting.*
 import org.jetbrains.anko.toast
@@ -118,6 +119,8 @@ class GallerySettingActivity : BaseActivity(), GallerySettingView {
 
         presenter.setView(this)
         presenter.initialize()
+
+        maybeAttachAd(this)
     }
 
     override fun onResume() {

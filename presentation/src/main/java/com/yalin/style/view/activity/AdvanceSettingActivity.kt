@@ -20,11 +20,13 @@ import com.yalin.style.StyleApplication
 import com.yalin.style.model.AdvanceWallpaperItem
 import com.yalin.style.presenter.AdvanceSettingPresenter
 import com.yalin.style.util.ImageLoader
+import com.yalin.style.util.maybeAttachAd
 import com.yalin.style.view.AdvanceSettingView
-import kotlinx.android.synthetic.main.activity_advance_setting.*
 import org.jetbrains.anko.toast
 import java.util.ArrayList
 import javax.inject.Inject
+import kotlinx.android.synthetic.googleprod.activity_advance_setting.*
+
 
 /**
  * @author jinyalin
@@ -70,6 +72,8 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
         }
 
         handleState()
+
+        maybeAttachAd(this)
     }
 
     private fun handleState() {

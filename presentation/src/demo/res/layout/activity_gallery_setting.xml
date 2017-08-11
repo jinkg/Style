@@ -1,0 +1,170 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/photoGrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:drawSelectorOnTop="true"
+        android:fitsSystemWindows="true"
+        android:gravity="center"
+        android:horizontalSpacing="@dimen/gallery_chosen_photo_grid_spacing"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="vertical"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="@dimen/gallery_chosen_photo_grid_spacing"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:title="@string/gallery_title" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        app:adSize="BANNER"
+        app:adUnitId="@string/banner_ad_unit_id" />
+
+    <FrameLayout
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp">
+
+            <ViewAnimator
+                android:id="@+id/emptyAnimator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:measureAllChildren="false">
+
+                <com.yalin.style.view.component.GalleryEmptyStateGraphicView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btnGalleryEnableRandom"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gallery_enable_random" />
+
+                <Button
+                    android:id="@+id/btnGalleryEditPermissionSettings"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gallery_edit_settings" />
+            </ViewAnimator>
+
+            <TextView
+                android:id="@+id/emptyDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="64dp"
+                android:layout_marginTop="16dp"
+                android:breakStrategy="balanced"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center_horizontal"
+                android:text="@string/gallery_empty"
+                android:textColor="@color/gallery_theme"
+                android:textSize="22sp"
+                android:textStyle="italic"
+                tools:targetApi="M" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="88dp"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@string/gallery_empty_subtitle"
+            android:textColor="@color/gallery_theme_dark"
+            android:textSize="16sp"
+            android:textStyle="italic" />
+
+    </FrameLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/gallery_fab_margin"
+        android:contentDescription="@string/gallery_add_fab"
+        android:src="@drawable/gallery_ic_add" />
+
+    <LinearLayout
+        android:id="@+id/addToolbar"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/gallery_fab_toolbar_height"
+        android:layout_gravity="bottom"
+        android:background="@color/gallery_theme_dark"
+        android:orientation="horizontal"
+        android:visibility="invisible">
+
+        <ImageButton
+            android:id="@+id/addPhotos"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="@string/gallery_add_photos"
+            android:src="@drawable/gallery_ic_add_photo" />
+
+        <ImageButton
+            android:id="@+id/addFolder"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:contentDescription="@string/gallery_add_folder"
+            android:src="@drawable/gallery_ic_add_folder" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/selectionToolbarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/gallery_header_elevation"
+        android:orientation="vertical"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:visibility="invisible"
+        tools:targetApi="LOLLIPOP">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/selectionToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="@color/gallery_theme_dark"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:title="@string/gallery_title" />
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
