@@ -13,17 +13,15 @@ import javax.inject.Singleton
 class AdvanceWallpaperCacheImpl @Inject constructor() : AdvanceWallpaperCache {
     private var wallpapers: List<AdvanceWallpaperEntity>? = null
 
-    override fun put(wallpapers: List<AdvanceWallpaperEntity>) {
+    @Synchronized override fun put(wallpapers: List<AdvanceWallpaperEntity>) {
         this.wallpapers = wallpapers
     }
 
-    override fun getSelectedWallpaper(): AdvanceWallpaperEntity {
+    override fun getSelectedWallpaper(): AdvanceWallpaperEntity? {
         if (isDirty()) {
-            throw IllegalStateException("Cache is dirty.")
+            return null
         }
-        wallpapers!!.filter { it.isSelected }.forEach { return it }
-
-        throw IllegalStateException("Cache is dirty.")
+        return wallpapers!!.firstOrNull { it.isSelected }
     }
 
     override fun selectWallpaper(wallpaperId: String) {
@@ -42,7 +40,14 @@ class AdvanceWallpaperCacheImpl @Inject constructor() : AdvanceWallpaperCache {
         return ArrayList(wallpapers!!)
     }
 
-    override fun evictAll() {
+    override fun getWallpaper(wallpaperId: String): AdvanceWallpaperEntity? {
+        if (!isCached(wallpaperId)) {
+            throw IllegalStateException("WallpaperId $wallpaperId is not cached.")
+        }
+        return wallpapers!!.firstOrNull { TextUtils.equals(wallpaperId, it.wallpaperId) }
+    }
+
+    @Synchronized override fun evictAll() {
         wallpapers = null
     }
 

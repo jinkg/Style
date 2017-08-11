@@ -8,6 +8,7 @@ import android.provider.BaseColumns;
 
 import com.yalin.style.data.R;
 import com.yalin.style.data.log.LogUtil;
+import com.yalin.style.data.repository.datasource.provider.StyleContract.AdvanceWallpaper;
 import com.yalin.style.data.repository.datasource.provider.StyleContract.Wallpaper;
 import com.yalin.style.data.repository.datasource.sync.account.Account;
 
@@ -24,7 +25,8 @@ public class StyleDatabase extends SQLiteOpenHelper {
     private static final int VERSION_2017_4_30 = 2;
     private static final int VERSION_2017_5_24 = 3;
     private static final int VERSION_2017_7_28 = 4;
-    private static final int CUR_DATABASE_VERSION = VERSION_2017_7_28;
+    private static final int VERSION_2017_8_11 = 5;
+    private static final int CUR_DATABASE_VERSION = VERSION_2017_8_11;
 
     private final Context mContext;
 
@@ -32,7 +34,7 @@ public class StyleDatabase extends SQLiteOpenHelper {
 
         String WALLPAPER = StyleContract.Wallpaper.TABLE_NAME;
         String GALLERY = StyleContract.GalleryWallpaper.TABLE_NAME;
-        String ADVANCE_WALLPAPER = StyleContract.AdvanceWallpaper.TABLE_NAME;
+        String ADVANCE_WALLPAPER = AdvanceWallpaper.TABLE_NAME;
     }
 
     public StyleDatabase(Context context) {
@@ -54,6 +56,7 @@ public class StyleDatabase extends SQLiteOpenHelper {
         upgradeFrom20161230to20170430(db);
         upgradeFrom20170430to20170524(db);
         upgradeFrom20170525to20170728(db);
+        upgradeFrom20170728to20170811(db);
     }
 
     @Override
@@ -77,6 +80,10 @@ public class StyleDatabase extends SQLiteOpenHelper {
         if (version == VERSION_2017_5_24) {
             upgradeFrom20170525to20170728(db);
             version = VERSION_2017_7_28;
+        }
+        if (version == VERSION_2017_7_28) {
+            upgradeFrom20170728to20170811(db);
+            version = VERSION_2017_8_11;
         }
         if (version != CUR_DATABASE_VERSION) {
             LogUtil.E(TAG, "Upgrade unsuccessful -- destroying old data during upgrade");
@@ -110,16 +117,25 @@ public class StyleDatabase extends SQLiteOpenHelper {
     private void upgradeFrom20170525to20170728(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + Tables.ADVANCE_WALLPAPER + " ("
                 + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_WALLPAPER_ID + " TEXT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_ICON_URL + " TEXT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_DOWNLOAD_URL + " TEXT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_NAME + " TEXT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_AUTHOR + " TEXT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_STORE_PATH + " TEXT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_LINK + " TEXT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_PROVIDER_NAME + " TEXT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_CHECKSUM + " TEXT,"
-                + StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED + " INTEGER DEFAULT 0);");
+                + AdvanceWallpaper.COLUMN_NAME_WALLPAPER_ID + " TEXT,"
+                + AdvanceWallpaper.COLUMN_NAME_ICON_URL + " TEXT,"
+                + AdvanceWallpaper.COLUMN_NAME_DOWNLOAD_URL + " TEXT,"
+                + AdvanceWallpaper.COLUMN_NAME_NAME + " TEXT,"
+                + AdvanceWallpaper.COLUMN_NAME_AUTHOR + " TEXT,"
+                + AdvanceWallpaper.COLUMN_NAME_STORE_PATH + " TEXT,"
+                + AdvanceWallpaper.COLUMN_NAME_LINK + " TEXT,"
+                + AdvanceWallpaper.COLUMN_NAME_PROVIDER_NAME + " TEXT,"
+                + AdvanceWallpaper.COLUMN_NAME_CHECKSUM + " TEXT,"
+                + AdvanceWallpaper.COLUMN_NAME_SELECTED + " INTEGER DEFAULT 0);");
+    }
+
+    private void upgradeFrom20170728to20170811(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE " + Tables.ADVANCE_WALLPAPER
+                + " ADD COLUMN " + AdvanceWallpaper.COLUMN_NAME_LAZY_DOWNLOAD
+                + " INTEGER NOT NULL DEFAULT 0");
+        db.execSQL("ALTER TABLE " + Tables.ADVANCE_WALLPAPER
+                + " ADD COLUMN " + AdvanceWallpaper.COLUMN_NAME_NEED_AD
+                + " INTEGER NOT NULL DEFAULT 0");
     }
 
     public static void deleteDatabase(Context context) {

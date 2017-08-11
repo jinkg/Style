@@ -49,4 +49,20 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/download_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#afff"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/advance_chosen_download"
+            android:tint="@color/gallery_theme_dark" />
+
+    </FrameLayout>
+
 </FrameLayout>

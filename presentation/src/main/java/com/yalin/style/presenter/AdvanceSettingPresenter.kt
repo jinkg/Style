@@ -1,17 +1,19 @@
 package com.yalin.style.presenter
 
+import android.os.Bundle
 import android.text.TextUtils
 import com.yalin.style.data.log.LogUtil
+import com.yalin.style.data.utils.WallpaperFileHelper
 import com.yalin.style.domain.AdvanceWallpaper
 import com.yalin.style.domain.interactor.*
 import com.yalin.style.event.SwitchWallpaperServiceEvent
 import com.yalin.style.event.WallpaperActivateEvent
 import com.yalin.style.exception.ErrorMessageFactory
 import com.yalin.style.mapper.AdvanceWallpaperItemMapper
+import com.yalin.style.model.AdvanceWallpaperItem
 import com.yalin.style.view.AdvanceSettingView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -23,8 +25,18 @@ class AdvanceSettingPresenter
                     val loadAdvanceWallpaper: LoadAdvanceWallpaper,
                     val selectAdvanceWallpaper: SelectAdvanceWallpaper,
                     val getSelectedAdvanceWallpaper: GetSelectedAdvanceWallpaper,
-                    val advanceWallpaperItemMapper: AdvanceWallpaperItemMapper)
+                    val advanceWallpaperItemMapper: AdvanceWallpaperItemMapper,
+                    val downloadAdvanceWallpaper: DownloadAdvanceWallpaper)
     : Presenter {
+
+    companion object {
+        val DOWNLOAD_STATE = "download_state"
+        val DOWNLOADING_ITEM = "download_item"
+
+        val DOWNLOAD_NONE = 0
+        val DOWNLOADING = 1
+        val DOWNLOAD_ERROR = 2
+    }
 
     private val wallpaperObserver = WallpapersObserver()
     private var view: AdvanceSettingView? = null
@@ -32,6 +44,10 @@ class AdvanceSettingPresenter
     private var mLastSelectedItemId: String? = null
 
     private var selecting = false
+
+    private var downloadingWallpaper: AdvanceWallpaperItem? = null
+
+    private var downloadState = DOWNLOAD_NONE
 
     fun setView(view: AdvanceSettingView) {
         this.view = view
@@ -46,8 +62,8 @@ class AdvanceSettingPresenter
     fun loadAdvanceWallpaper() {
         view?.showLoading()
         loadAdvanceWallpaper.execute(object : DefaultObserver<List<AdvanceWallpaper>>() {
-            override fun onNext(wallpapers: List<AdvanceWallpaper>) {
-                view?.renderWallpapers(advanceWallpaperItemMapper.transformList(wallpapers))
+            override fun onNext(needDownload: List<AdvanceWallpaper>) {
+                view?.renderWallpapers(advanceWallpaperItemMapper.transformList(needDownload))
             }
 
             override fun onComplete() {
@@ -62,7 +78,65 @@ class AdvanceSettingPresenter
         }, null)
     }
 
-    fun selectAdvanceWallpaper(wallpaperId: String, rollback: Boolean) {
+    fun selectAdvanceWallpaper(item: AdvanceWallpaperItem) {
+        if (WallpaperFileHelper.isNeedDownloadAdvanceComponent(item.lazyDownload,
+                item.storePath) || (downloadingWallpaper != null
+                && TextUtils.equals(downloadingWallpaper!!.wallpaperId, item.wallpaperId))) {
+            view?.showDownloadHintDialog(item)
+        } else {
+            selectAdvanceWallpaper(item.wallpaperId, false)
+        }
+    }
+
+    fun requestDownload(item: AdvanceWallpaperItem) {
+        view?.showDownloadingDialog(item)
+        downloadingWallpaper = item
+        downloadState = DOWNLOADING
+        downloadAdvanceWallpaper.execute(object : DefaultObserver<Long>() {
+            override fun onNext(progress: Long) {
+                view?.updateDownloadingProgress(progress)
+            }
+
+            override fun onComplete() {
+                view?.downloadComplete(item)
+                downloadingWallpaper = null
+                downloadState = DOWNLOAD_NONE
+            }
+
+            override fun onError(exception: Throwable) {
+                view?.showDownloadError(item, exception as Exception)
+                downloadingWallpaper = null
+                downloadState = DOWNLOAD_ERROR
+            }
+        }, DownloadAdvanceWallpaper.Params.download(item.wallpaperId))
+    }
+
+    fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(DOWNLOAD_STATE, downloadState)
+        if (downloadingWallpaper != null) {
+            outState.putParcelable(DOWNLOADING_ITEM, downloadingWallpaper!!)
+        }
+    }
+
+    fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        downloadState = savedInstanceState.getInt(DOWNLOAD_STATE)
+        downloadingWallpaper = savedInstanceState.getParcelable(DOWNLOADING_ITEM)
+
+        if (downloadingWallpaper != null) {
+            if (downloadState == DOWNLOADING) {
+                requestDownload(downloadingWallpaper!!)
+            } else if (downloadState == DOWNLOAD_ERROR) {
+
+            }
+        }
+    }
+
+    fun getDownloadingItem(): AdvanceWallpaperItem? {
+        return downloadingWallpaper
+    }
+
+
+    private fun selectAdvanceWallpaper(wallpaperId: String, rollback: Boolean) {
         if (!rollback && TextUtils.equals(wallpaperId, mLastSelectedItemId)) {
             view?.complete()
             return
@@ -107,15 +181,17 @@ class AdvanceSettingPresenter
         getAdvanceWallpapers.dispose()
         loadAdvanceWallpaper.dispose()
         selectAdvanceWallpaper.dispose()
+        downloadAdvanceWallpaper.dispose()
+        downloadingWallpaper = null
         view = null
     }
 
     private inner class WallpapersObserver : DefaultObserver<List<AdvanceWallpaper>>() {
-        override fun onNext(wallpapers: List<AdvanceWallpaper>) {
-            if (wallpapers.isEmpty()) {
+        override fun onNext(needDownload: List<AdvanceWallpaper>) {
+            if (needDownload.isEmpty()) {
                 view?.showEmpty()
             } else {
-                view?.renderWallpapers(advanceWallpaperItemMapper.transformList(wallpapers))
+                view?.renderWallpapers(advanceWallpaperItemMapper.transformList(needDownload))
             }
         }
 

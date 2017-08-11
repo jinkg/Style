@@ -20,6 +20,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    publishNonDefault true
+    productFlavors {
+        demo {
+        }
+        production {
+        }
+    }
 }
 
 dependencies {
@@ -31,7 +38,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:${KOTLIN_VERSION}"
 
     compile project(':domain')
-    provided project(path: ':data', configuration: 'productionRelease')
+    demoProvided project(path: ':data', configuration: 'demoDebug')
+    productionProvided project(path: ':data', configuration: 'productionRelease')
 
     testCompile 'junit:junit:4.12'
 }

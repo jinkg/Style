@@ -27,8 +27,8 @@ import dalvik.system.DexClassLoader
 
 class StyleClassLoader(private val context: Context,
                        private val dexPath: String,
-                       optimizedDirectory: String,
-                       librarySearchPath: String, parent: ClassLoader) : DexClassLoader(dexPath, optimizedDirectory, librarySearchPath, parent) {
+                       optimizedDirectory: String?,
+                       librarySearchPath: String?, parent: ClassLoader?) : DexClassLoader(dexPath, optimizedDirectory, librarySearchPath, parent) {
 
     override fun findLibrary(name: String): String? {
         val soName = getNativeFileName(dexPath, name)
@@ -71,7 +71,7 @@ class StyleClassLoader(private val context: Context,
                     continue
                 if (findSo && entry.name.contains("lib/" + cpuArch)
                         || !findSo && entry.name.contains("lib/armeabi/")) {
-                    val libFile = File(getNativeDir(context).getAbsolutePath()
+                    val libFile = File(getNativeDir(context).absolutePath
                             + File.separator + libName)
                     if (libFile.exists()) {
                         // check version

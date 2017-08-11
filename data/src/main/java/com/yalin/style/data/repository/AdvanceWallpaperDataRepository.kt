@@ -24,7 +24,7 @@ class AdvanceWallpaperDataRepository
 
     override fun getWallpaper(): Observable<Wallpaper> {
         return Observable.create<Wallpaper> { emitter ->
-            emitter.onNext(wallpaperMapper.mapToWallpaper(factory.create().getWallPaperEntity()))
+            emitter.onNext(wallpaperMapper.mapToWallpaper(factory.create().getWallpaperEntity()))
             emitter.onComplete()
         }
     }
@@ -88,13 +88,17 @@ class AdvanceWallpaperDataRepository
                 .map(wallpaperMapper::transformList)
     }
 
+    override fun downloadAdvanceWallpaper(wallpaperId: String): Observable<Long> {
+        return factory.createRemoteDataStore().downloadWallpaper(wallpaperId)
+    }
+
     override fun selectAdvanceWallpaper(wallpaperId: String, tempSelect: Boolean):
             Observable<Boolean> {
         return factory.create().selectWallpaper(wallpaperId, tempSelect)
     }
 
     override fun getAdvanceWallpaper(): AdvanceWallpaper {
-        return wallpaperMapper.transform(factory.create().getWallPaperEntity())
+        return wallpaperMapper.transform(factory.create().getWallpaperEntity())
     }
 
     override fun foreNow(wallpaperUri: String?): Observable<Boolean> {

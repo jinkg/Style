@@ -14,6 +14,9 @@ public class AdvanceWallpaper {
     public String iconUrl;
     public String downloadUrl;
 
+    public boolean lazyDownload;
+    public boolean needAd;
+
     public String providerName;
 
     public String storePath;

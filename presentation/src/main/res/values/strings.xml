@@ -19,6 +19,8 @@
     <string name="done">Done</string>
     <string name="confirm">Confirm</string>
     <string name="hint">Hint</string>
+    <string name="downloading">Downloading</string>
+
 
     <string name="section_choose_source">Sources</string>
     <string name="section_advanced">Advanced</string>
@@ -61,6 +63,18 @@
         <b><a href="http://www.kinglloy.com/">Visit home page</a></b>
     ]]></string>
 
+    <string name="advance_download_hint"><![CDATA[
+        This advance wallpaper component is a bit big, and you must take a minute to download it.<br><br>
+        Press download button if you are ready to download.
+    ]]></string>
+
+    <string name="advance_ad_download_hint"><![CDATA[
+        This advance wallpaper component is a bit big, and you must take a minute to download it.<br><br>
+        At the same time, This wallpaper contain a little ad, you must view a minute ad before use it.<br><br>
+        Thank you for your support for the Style developer.<br><br>
+        Press download button if you are ready to download and see ad.
+    ]]></string>
+
     <string name="share_title">Share wallpaper</string>
     <string name="share_text">My Android wallpaper today is \' %1$s \' by %2$s. #StyleWallpaper\n\n
         %3$s</string>
@@ -72,6 +86,9 @@
     <string name="advance_retry_description">There has some problem.\nYou can reload the wallpaper,\nOr you can contact the developer.</string>
 
     <string name="advance_action_msg">Hint</string>
+
+    <string name="advance_download_msg">Download</string>
+    <string name="advance_ad_download_msg">Show Ad and download</string>
 
     <string name="gallery_empty">Random camera photos</string>
     <string name="gallery_empty_subtitle">Choose specific photos instead</string>

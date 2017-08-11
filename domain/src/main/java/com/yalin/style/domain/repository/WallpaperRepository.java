@@ -36,6 +36,8 @@ public interface WallpaperRepository {
 
     Observable<List<AdvanceWallpaper>> loadAdvanceWallpapers();
 
+    Observable<Long> downloadAdvanceWallpaper(String wallpaperId);
+
     Observable<Boolean> selectAdvanceWallpaper(String wallpaperId, boolean tempSelect);
 
     AdvanceWallpaper getAdvanceWallpaper();

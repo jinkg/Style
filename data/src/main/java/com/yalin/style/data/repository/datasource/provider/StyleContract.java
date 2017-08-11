@@ -118,6 +118,16 @@ public class StyleContract {
          * Type: INTEGER
          */
         String COLUMN_NAME_SELECTED = "selected";
+
+        /**
+         * Type: INTEGER
+         */
+        String COLUMN_NAME_LAZY_DOWNLOAD = "lazy_download";
+
+        /**
+         * Type: INTEGER
+         */
+        String COLUMN_NAME_NEED_AD = "need_ad";
     }
 
     public static final Uri BASE_CONTENT_URI = Uri.parse(SCHEME + AUTHORITY);

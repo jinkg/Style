@@ -28,6 +28,9 @@ public class AdvanceWallpaperEntity {
     public String downloadUrl;
     public String providerName;
 
+    public boolean lazyDownload;
+    public boolean needAd;
+
     public String storePath;
     public String checkSum;
 
@@ -40,8 +43,8 @@ public class AdvanceWallpaperEntity {
         while (cursor != null && cursor.moveToNext()) {
             AdvanceWallpaperEntity wallpaperEntity = readEntityFromCursor(cursor);
             try {
-                // valid input stream
-                if (!new File(wallpaperEntity.storePath).exists()) {
+                if (!wallpaperEntity.lazyDownload
+                        && !new File(wallpaperEntity.storePath).exists()) {
                     throw new FileNotFoundException("Component not found.");
                 }
                 validWallpapers.add(wallpaperEntity);
@@ -78,6 +81,10 @@ public class AdvanceWallpaperEntity {
                 StyleContract.AdvanceWallpaper.COLUMN_NAME_PROVIDER_NAME));
         wallpaperEntity.isSelected = cursor.getInt(cursor.getColumnIndex(
                 StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED)) == 1;
+        wallpaperEntity.lazyDownload = cursor.getInt(cursor.getColumnIndex(
+                StyleContract.AdvanceWallpaper.COLUMN_NAME_LAZY_DOWNLOAD)) == 1;
+        wallpaperEntity.needAd = cursor.getInt(cursor.getColumnIndex(
+                StyleContract.AdvanceWallpaper.COLUMN_NAME_NEED_AD)) == 1;
 
         return wallpaperEntity;
     }

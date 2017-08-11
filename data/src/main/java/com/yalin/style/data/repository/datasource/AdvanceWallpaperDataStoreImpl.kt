@@ -13,7 +13,8 @@ import io.reactivex.Observable
  * @author jinyalin
  * @since 2017/7/28.
  */
-class AdvanceWallpaperDataStoreImpl(val context: Context)
+class AdvanceWallpaperDataStoreImpl(val context: Context,
+                                    val advanceWallpaperCache: AdvanceWallpaperCache)
     : AdvanceWallpaperDataStore {
     companion object {
         val TAG = "AdvanceDataStore"
@@ -21,7 +22,13 @@ class AdvanceWallpaperDataStoreImpl(val context: Context)
         val DEFAULT_WALLPAPER_ID = "-1"
     }
 
-    override fun getWallPaperEntity(): AdvanceWallpaperEntity {
+    @Synchronized override fun getWallpaperEntity(): AdvanceWallpaperEntity {
+        if (!advanceWallpaperCache.isDirty()) {
+            val selected = advanceWallpaperCache.getSelectedWallpaper()
+            if (selected != null) {
+                return selected
+            }
+        }
         var cursor: Cursor? = null
         var entity: AdvanceWallpaperEntity? = null
         try {
@@ -43,10 +50,11 @@ class AdvanceWallpaperDataStoreImpl(val context: Context)
     }
 
     override fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaperEntity>> {
-        return createAdvanceWallpapersFromDB()
+        return createAdvanceWallpapersFromDB().doOnNext(advanceWallpaperCache::put)
     }
 
-    override fun selectWallpaper(wallpaperId: String, tempSelect: Boolean): Observable<Boolean> {
+    override fun selectWallpaper(wallpaperId: String, tempSelect: Boolean):
+            Observable<Boolean> {
         return Observable.create { emitter ->
             val selectValue = ContentValues()
             selectValue.put(StyleContract.AdvanceWallpaper.COLUMN_NAME_SELECTED, 1)
@@ -64,8 +72,52 @@ class AdvanceWallpaperDataStoreImpl(val context: Context)
             } else {
                 emitter.onNext(false)
             }
+            synchronized(advanceWallpaperCache) {
+                if (!advanceWallpaperCache.isDirty()) {
+                    advanceWallpaperCache.selectWallpaper(wallpaperId)
+                }
+            }
+
             emitter.onComplete()
             notifyChange(context, StyleContract.AdvanceWallpaper.CONTENT_URI)
+        }
+    }
+
+    override fun downloadWallpaper(wallpaperId: String): Observable<Long> {
+        throw UnsupportedOperationException("Local data store not support download wallpaper.")
+    }
+
+    fun loadWallpaperEntity(wallpaperId: String): AdvanceWallpaperEntity {
+        var entity: AdvanceWallpaperEntity? = null
+        synchronized(advanceWallpaperCache) {
+            if (!advanceWallpaperCache.isDirty()
+                    && advanceWallpaperCache.isCached(wallpaperId)) {
+                entity = advanceWallpaperCache.getWallpaper(wallpaperId)
+            } else {
+                entity = loadWallpaperEntityFromDB(wallpaperId)
+            }
+            if (entity == null) {
+                entity = loadWallpaperEntityFromDB(wallpaperId)
+            }
+        }
+        return entity!!
+    }
+
+
+    private fun loadWallpaperEntityFromDB(wallpaperId: String): AdvanceWallpaperEntity? {
+        var cursor: Cursor? = null
+        try {
+            val contentResolver = context.contentResolver
+            cursor = contentResolver.query(StyleContract.AdvanceWallpaper
+                    .buildWallpaperUri(wallpaperId),
+                    null, null, null, null)
+            if (cursor != null && cursor.moveToFirst()) {
+                val entity = AdvanceWallpaperEntity.readEntityFromCursor(cursor)
+                return entity
+            }
+            return null
+        } finally {
+            cursor?.close()
         }
     }
 
@@ -79,9 +131,7 @@ class AdvanceWallpaperDataStoreImpl(val context: Context)
                         null, null, null, null)
                 validWallpapers.addAll(AdvanceWallpaperEntity.readCursor(cursor))
             } finally {
-                if (cursor != null) {
-                    cursor.close()
-                }
+                cursor?.close()
             }
 
             emitter.onNext(validWallpapers)

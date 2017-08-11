@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:layout_width="64dp"
+        android:layout_height="64dp" />
+
+    <com.yalin.style.view.component.ShadowDipsTextView
+        android:id="@+id/downloadProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingBottom="@dimen/advance_name_top_margin"
+        android:paddingEnd="@dimen/advance_name_margin"
+        android:paddingStart="@dimen/advance_name_margin"
+        android:paddingTop="@dimen/advance_name_top_margin"
+        android:textSize="@dimen/text_size_medium"
+        app:shadowColor="@color/shadow_color"
+        app:shadowDx="0dp"
+        app:shadowDy="1dp"
+        app:shadowRadius="3dp" />
+</LinearLayout>

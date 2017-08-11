@@ -14,4 +14,14 @@ interface AdvanceSettingView : LoadingDataView {
     fun complete()
 
     fun wallpaperSelected(wallpaperId: String)
+
+    fun showDownloadHintDialog(item: AdvanceWallpaperItem)
+
+    fun showDownloadingDialog(item: AdvanceWallpaperItem)
+
+    fun updateDownloadingProgress(downloaded: Long)
+
+    fun downloadComplete(item: AdvanceWallpaperItem)
+
+    fun showDownloadError(item: AdvanceWallpaperItem, e: Exception)
 }

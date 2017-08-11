@@ -96,7 +96,9 @@ dependencies {
     compile 'com.afollestad.material-dialogs:core:0.9.4.5'
 
     compile project(':domain')
-    compile project(':engine')
+    demoCompile project(path: ':engine', configuration: 'demoDebug')
+    productionCompile project(path: ':engine', configuration: 'productionRelease')
+    googleprodCompile project(path: ':engine', configuration: 'productionRelease')
     demoCompile project(path: ':data', configuration: 'demoDebug')
     productionCompile project(path: ':data', configuration: 'productionRelease')
     googleprodCompile project(path: ':data', configuration: 'productionRelease')

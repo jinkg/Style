@@ -20,6 +20,7 @@
     <string name="done">完成</string>
     <string name="confirm">确定</string>
     <string name="hint">提示</string>
+    <string name="downloading">下载中</string>
 
     <string name="section_choose_source">壁纸来源</string>
     <string name="section_advanced">个性化设置</string>
@@ -63,6 +64,18 @@
         <b><a href="http://www.kinglloy.com/">访问官方网站</a></b>
     ]]></string>
 
+    <string name="advance_download_hint"><![CDATA[
+        这个特效壁纸组件有点大，使用之前需要先下载<br><br>
+        如果你已经链接上WI-FI，准备好下载，请点击下面的下载按钮
+    ]]></string>
+
+    <string name="advance_ad_download_hint"><![CDATA[
+        这个特效壁纸组件有点大，使用之前需要先下载<br><br>
+        与此同时，这款壁纸包含一则小广告，在使用之前，你必须观看广告<br><br>
+        非常感谢你对Style开发者的支持<br><br>
+        点击下面的按钮开始下载，同时播放广告
+    ]]></string>
+
     <string name="share_title">分享壁纸</string>
     <string name="share_text">我今天的壁纸是 \' %1$s \' 由 %2$s 所画.  #StyleWallpaper\n\n
         %3$s</string>
@@ -74,6 +87,9 @@
     <string name="advance_retry_description">获取壁纸出现了一些问题，你可以重试获取，也可以联系开发者。</string>
 
     <string name="advance_action_msg">提示</string>
+
+    <string name="advance_download_msg">下载</string>
+    <string name="advance_ad_download_msg">观看广告并下载</string>
 
     <string name="gallery_empty">自定义壁纸</string>
     <string name="gallery_empty_subtitle">选择指定的图片充当壁纸</string>

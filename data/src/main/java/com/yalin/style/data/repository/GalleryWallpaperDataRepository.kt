@@ -56,14 +56,21 @@ constructor(val galleryWallpaperDataStoreFactory: GalleryWallpaperDataStoreFacto
     override fun getAdvanceWallpapers(): Observable<List<AdvanceWallpaper>> {
         return Observable.create<List<AdvanceWallpaper>> { emitter ->
             emitter.onError(IllegalStateException(
-                    "StyleWallpaperRepository have not gallery wallpapers."))
+                    "GalleryWallpaperDataRepository have not advance wallpapers."))
         }
     }
 
     override fun loadAdvanceWallpapers(): Observable<List<AdvanceWallpaper>> {
         return Observable.create<List<AdvanceWallpaper>> { emitter ->
             emitter.onError(IllegalStateException(
-                    "StyleWallpaperRepository have not gallery wallpapers."))
+                    "GalleryWallpaperDataRepository cannot load advance wallpapers."))
+        }
+    }
+
+    override fun downloadAdvanceWallpaper(wallpaperId: String): Observable<Long> {
+        return Observable.create<Long> { emitter ->
+            emitter.onError(IllegalStateException(
+                    "GalleryWallpaperDataRepository cannot download advance wallpapers."))
         }
     }
 
@@ -71,13 +78,13 @@ constructor(val galleryWallpaperDataStoreFactory: GalleryWallpaperDataStoreFacto
             Observable<Boolean> {
         return Observable.create<Boolean> { emitter ->
             emitter.onError(IllegalStateException(
-                    "StyleWallpaperRepository have not gallery wallpapers."))
+                    "GalleryWallpaperDataRepository cannot select advance wallpapers."))
         }
     }
 
     override fun getAdvanceWallpaper(): AdvanceWallpaper {
         throw IllegalStateException(
-                "StyleWallpaperRepository have not gallery wallpapers.")
+                "GalleryWallpaperDataRepository cannot get advance wallpapers.")
     }
 
     override fun foreNow(wallpaperUri: String): Observable<Boolean> =

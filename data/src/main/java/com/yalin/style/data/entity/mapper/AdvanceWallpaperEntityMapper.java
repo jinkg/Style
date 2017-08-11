@@ -36,6 +36,8 @@ public class AdvanceWallpaperEntityMapper {
         wallpaper.storePath = wallpaperEntity.storePath;
         wallpaper.isDefault = wallpaperEntity.isDefault;
         wallpaper.isSelected = wallpaperEntity.isSelected;
+        wallpaper.lazyDownload = wallpaperEntity.lazyDownload;
+        wallpaper.needAd = wallpaperEntity.needAd;
 
         return wallpaper;
     }

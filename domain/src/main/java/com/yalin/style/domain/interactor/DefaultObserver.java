@@ -9,7 +9,7 @@ import io.reactivex.observers.DisposableObserver;
 
 public class DefaultObserver<T> extends DisposableObserver<T> {
     @Override
-    public void onNext(T wallpapers) {
+    public void onNext(T needDownload) {
         // no-op by default.
     }
 

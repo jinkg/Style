@@ -106,7 +106,7 @@ public class StyleWallpaperDataRepository implements WallpaperRepository {
     public Observable<List<AdvanceWallpaper>> getAdvanceWallpapers() {
         return Observable.create(emitter ->
                 emitter.onError(new IllegalStateException(
-                        "StyleWallpaperRepository have not gallery wallpapers."))
+                        "StyleWallpaperRepository cannot get advance wallpapers."))
         );
     }
 
@@ -114,7 +114,15 @@ public class StyleWallpaperDataRepository implements WallpaperRepository {
     public Observable<List<AdvanceWallpaper>> loadAdvanceWallpapers() {
         return Observable.create(emitter ->
                 emitter.onError(new IllegalStateException(
-                        "StyleWallpaperRepository have not gallery wallpapers."))
+                        "StyleWallpaperRepository cannot load advance wallpapers."))
+        );
+    }
+
+    @Override
+    public Observable<Long> downloadAdvanceWallpaper(String wallpaperId) {
+        return Observable.create(emitter ->
+                emitter.onError(new IllegalStateException(
+                        "StyleWallpaperRepository cannot download advance wallpapers."))
         );
     }
 
@@ -122,13 +130,13 @@ public class StyleWallpaperDataRepository implements WallpaperRepository {
     public Observable<Boolean> selectAdvanceWallpaper(String wallpaperId, boolean tempSelect) {
         return Observable.create(emitter ->
                 emitter.onError(new IllegalStateException(
-                        "StyleWallpaperRepository have not gallery wallpapers."))
+                        "StyleWallpaperRepository cannot select advance wallpapers."))
         );
     }
 
     public AdvanceWallpaper getAdvanceWallpaper() {
         throw new IllegalStateException(
-                "StyleWallpaperRepository have not gallery wallpapers.");
+                "StyleWallpaperRepository cannot get advance wallpapers.");
     }
 
     @Override

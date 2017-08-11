@@ -9,11 +9,13 @@ import com.yalin.style.data.entity.AdvanceWallpaperEntity
 interface AdvanceWallpaperCache {
     fun put(wallpapers: List<AdvanceWallpaperEntity>)
 
-    fun getSelectedWallpaper(): AdvanceWallpaperEntity
+    fun getSelectedWallpaper(): AdvanceWallpaperEntity?
 
     fun selectWallpaper(wallpaperId: String)
 
     fun getWallpapers(): List<AdvanceWallpaperEntity>
+
+    fun getWallpaper(wallpaperId: String): AdvanceWallpaperEntity?
 
     fun evictAll()
 

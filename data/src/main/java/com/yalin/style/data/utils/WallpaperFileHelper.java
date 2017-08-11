@@ -131,7 +131,7 @@ public class WallpaperFileHelper {
         }
     }
 
-    public static void deleteOldComponent(Context context ,Set<String> excludeNames) {
+    public static void deleteOldComponent(Context context, Set<String> excludeNames) {
         File dir = getAdvanceWallpaperDir(context);
         if (!dir.exists()) {
             return;
@@ -197,5 +197,9 @@ public class WallpaperFileHelper {
 
     public static File getAdvanceWallpaperDir(Context context) {
         return new File(context.getFilesDir(), ADVANCE_WALLPAPER_FOLDER);
+    }
+
+    public static boolean isNeedDownloadAdvanceComponent(boolean lazy, String storePath) {
+        return lazy && !new File(storePath).exists();
     }
 }

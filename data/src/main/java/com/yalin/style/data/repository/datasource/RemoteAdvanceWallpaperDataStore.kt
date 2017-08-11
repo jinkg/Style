@@ -16,18 +16,23 @@ import com.yalin.style.data.repository.datasource.io.AdvanceWallpaperHandler
 import com.yalin.style.data.repository.datasource.net.RemoteAdvanceWallpaperFetcher
 import com.yalin.style.data.repository.datasource.provider.StyleContract
 import com.yalin.style.data.repository.datasource.sync.account.Account
+import com.yalin.style.domain.interactor.DefaultObserver
 import io.reactivex.Observable
 
 /**
  * @author jinyalin
  * @since 2017/7/31.
  */
-class RemoteAdvanceWallpaperDataStore(val context: Context) : AdvanceWallpaperDataStore {
+class RemoteAdvanceWallpaperDataStore(val context: Context,
+                                      val localDataStore: AdvanceWallpaperDataStoreImpl)
+    : AdvanceWallpaperDataStore {
     companion object {
         val TAG = "RemoteAdvanceWallpaper"
     }
 
-    override fun getWallPaperEntity(): AdvanceWallpaperEntity {
+    val wallpaperHandler = AdvanceWallpaperHandler(context)
+
+    override fun getWallpaperEntity(): AdvanceWallpaperEntity {
         throw UnsupportedOperationException("Remote data store not support get wallpaper.")
     }
 
@@ -86,5 +91,25 @@ class RemoteAdvanceWallpaperDataStore(val context: Context) : AdvanceWallpaperDa
 
     override fun selectWallpaper(wallpaperId: String, tempSelect: Boolean): Observable<Boolean> {
         throw UnsupportedOperationException("Remote data store not support select wallpaper.")
+    }
+
+    override fun downloadWallpaper(wallpaperId: String): Observable<Long> {
+        return Observable.create { emitter ->
+            val entity = localDataStore.loadWallpaperEntity(wallpaperId)
+            wallpaperHandler.downloadWallpaperComponent(entity, object : DefaultObserver<Long>() {
+                override fun onNext(downloadedLength: Long) {
+                    emitter.onNext(downloadedLength)
+                }
+
+                override fun onComplete() {
+                    emitter.onComplete()
+                }
+
+                override fun onError(exception: Throwable) {
+                    emitter.onError(exception)
+                }
+
+            })
+        }
     }
 }

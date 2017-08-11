@@ -17,15 +17,18 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.yalin.style.R
 import com.yalin.style.StyleApplication
+import com.yalin.style.data.log.LogUtil
+import com.yalin.style.data.utils.WallpaperFileHelper
 import com.yalin.style.model.AdvanceWallpaperItem
 import com.yalin.style.presenter.AdvanceSettingPresenter
 import com.yalin.style.util.ImageLoader
 import com.yalin.style.util.maybeAttachAd
 import com.yalin.style.view.AdvanceSettingView
+import com.yalin.style.view.component.DownloadingDialog
+import kotlinx.android.synthetic.main.activity_advance_setting.*
 import org.jetbrains.anko.toast
 import java.util.ArrayList
 import javax.inject.Inject
-import kotlinx.android.synthetic.googleprod.activity_advance_setting.*
 
 
 /**
@@ -34,6 +37,7 @@ import kotlinx.android.synthetic.googleprod.activity_advance_setting.*
  */
 class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     companion object {
+        val TAG = "AdvanceSettingActivity"
         val LOAD_STATE = "load_state"
 
         val LOAD_STATE_NORMAL = 0
@@ -53,6 +57,8 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     private var placeHolderDrawable: ColorDrawable? = null
     private var mItemSize = 10
 
+    private var downloadDialog: DownloadingDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         StyleApplication.instance.applicationComponent.inject(this)
@@ -69,6 +75,7 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
         if (savedInstanceState != null) {
             loadState = savedInstanceState.getInt(LOAD_STATE)
+            presenter.onRestoreInstanceState(savedInstanceState)
         }
 
         handleState()
@@ -142,10 +149,13 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
             insets
         }
+
+        downloadDialog = DownloadingDialog(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(LOAD_STATE, loadState)
+        presenter.onSaveInstanceState(outState)
         super.onSaveInstanceState(outState)
     }
 
@@ -249,8 +259,54 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
         advanceWallpaperAdapter.notifyDataSetChanged()
     }
 
+    override fun showDownloadHintDialog(item: AdvanceWallpaperItem) {
+        val needAd = item.needAd
+        val downloadCallback =
+                MaterialDialog.SingleButtonCallback { _, _ -> presenter.requestDownload(item) }
+        val adCallback = MaterialDialog.SingleButtonCallback { dialog, which ->
+            downloadCallback.onClick(dialog, which)
+            toast("show ad")
+        }
+        val dialogBuilder = MaterialDialog.Builder(this)
+                .iconRes(R.drawable.advance_wallpaper_msg)
+                .title(R.string.hint)
+                .content(if (needAd)
+                    Html.fromHtml(getString(R.string.advance_ad_download_hint)) else
+                    Html.fromHtml(getString(R.string.advance_download_hint)))
+                .positiveText(if (needAd)
+                    R.string.advance_ad_download_msg else R.string.advance_download_msg)
+                .onPositive(if (needAd) adCallback else downloadCallback)
+
+        dialogBuilder.build().show()
+    }
+
+    override fun showDownloadingDialog(item: AdvanceWallpaperItem) {
+        LogUtil.D(TAG, "showDownloadingDialog ${item.name}")
+        downloadDialog!!.show()
+    }
+
+    override fun updateDownloadingProgress(downloaded: Long) {
+        LogUtil.D(TAG, "updateDownloadingProgress $downloaded")
+        downloadDialog!!.updateProgress(downloaded)
+    }
+
+    override fun downloadComplete(item: AdvanceWallpaperItem) {
+        val position = wallpapers.indices.firstOrNull {
+            TextUtils.equals(wallpapers[it].wallpaperId, item.wallpaperId)
+        } ?: -1
+        if (position >= 0) {
+            advanceWallpaperAdapter.notifyItemChanged(position)
+        }
+        downloadDialog!!.dismiss()
+    }
+
+    override fun showDownloadError(item: AdvanceWallpaperItem, e: Exception) {
+
+    }
+
     class AdvanceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var checkedOverlayView: View = itemView.findViewById(R.id.checked_overlay)
+        var downloadOverlayView: View = itemView.findViewById(R.id.download_overlay)
         var thumbnail: ImageView = itemView.findViewById(R.id.thumbnail) as ImageView
         var tvName: TextView = itemView.findViewById(R.id.tvName) as TextView
     }
@@ -271,6 +327,14 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
             } else {
                 holder.checkedOverlayView.visibility = View.GONE
             }
+            val downloadingItem = presenter.getDownloadingItem()
+            if (WallpaperFileHelper.isNeedDownloadAdvanceComponent(item.lazyDownload,
+                    item.storePath) || (downloadingItem != null
+                    && TextUtils.equals(downloadingItem.wallpaperId, item.wallpaperId))) {
+                holder.downloadOverlayView.visibility = View.VISIBLE
+            } else {
+                holder.downloadOverlayView.visibility = View.GONE
+            }
 
             holder.tvName.text = item.name
         }
@@ -286,7 +350,7 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
             val vh = AdvanceViewHolder(view)
             view.setOnClickListener {
                 val item = wallpapers[vh.adapterPosition]
-                presenter.selectAdvanceWallpaper(item.wallpaperId, false)
+                presenter.selectAdvanceWallpaper(item)
             }
 
             return vh

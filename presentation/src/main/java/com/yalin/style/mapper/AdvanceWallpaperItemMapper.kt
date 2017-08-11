@@ -25,6 +25,8 @@ class AdvanceWallpaperItemMapper @Inject constructor() {
         wallpaperItem.providerName = wallpaper.providerName
         wallpaperItem.storePath = wallpaper.storePath
         wallpaperItem.isSelected = wallpaper.isSelected
+        wallpaperItem.lazyDownload = wallpaper.lazyDownload
+        wallpaperItem.needAd = wallpaper.needAd
         return wallpaperItem
     }
 

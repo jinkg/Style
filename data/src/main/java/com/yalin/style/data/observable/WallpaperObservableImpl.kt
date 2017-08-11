@@ -7,6 +7,7 @@ import android.os.Handler
 import android.text.TextUtils
 import com.yalin.style.data.cache.SourcesCache
 import com.yalin.style.data.log.LogUtil
+import com.yalin.style.data.repository.datasource.AdvanceWallpaperDataStoreFactory
 import com.yalin.style.data.repository.datasource.StyleWallpaperDataStoreFactory
 import com.yalin.style.data.repository.datasource.provider.StyleContract
 import com.yalin.style.domain.interactor.DefaultObserver
@@ -28,6 +29,7 @@ class WallpaperObservableImpl @Inject
 constructor(val context: Context,
             val sourcesCache: SourcesCache,
             val styleWallpaperDataStoreFactory: StyleWallpaperDataStoreFactory,
+            val advanceWallpaperDataStoreFactory: AdvanceWallpaperDataStoreFactory,
             val sourcesObservable: SourcesObservable) :
         WallpaperObservable {
 
@@ -53,6 +55,7 @@ constructor(val context: Context,
                 notifyObserver()
             }
             styleWallpaperDataStoreFactory.onDataRefresh()
+            advanceWallpaperDataStoreFactory.onDataRefresh()
         }
     }
 
