@@ -31,7 +31,7 @@ class GDXWallpaperServiceProxy(host: Context) : AndroidLiveWallpaperService() {
         return GDXActiveEngine()
     }
 
-    inner class GDXActiveEngine : AndroidLiveWallpaperService.AndroidWallpaperEngine() {
+    inner class GDXActiveEngine : AndroidWallpaperEngine() {
         private var mWallpaperActivate = false
 
         private var mEngineUnlockReceiver: BroadcastReceiver? = null

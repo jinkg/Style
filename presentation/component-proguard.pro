@@ -14,6 +14,12 @@
 -keep public class com.yalin.style.engine.WallpaperServiceProxy$ActiveEngine{
     *;
 }
+-keep public class com.yalin.style.engine.GDXWallpaperServiceProxy{
+    *;
+}
+-keep public class com.yalin.style.engine.GDXWallpaperServiceProxy$GDXActiveEngine{
+    *;
+}
 -keep interface com.yalin.style.engine.IProvider{
     *;
 }
