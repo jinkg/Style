@@ -65,7 +65,11 @@ android {
             buildConfigField("boolean", "DEMO_MODE", "false")
         }
     }
-
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {

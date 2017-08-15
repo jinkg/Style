@@ -36,6 +36,7 @@ dependencies {
     })
     compile "com.android.support:appcompat-v7:${SUPPORT_LIBRARY_VERSION}"
     compile "org.jetbrains.kotlin:kotlin-stdlib:${KOTLIN_VERSION}"
+    compile "com.badlogicgames.gdx:gdx-backend-android:$GDX_VERSION"
 
     compile project(':domain')
     demoProvided project(path: ':data', configuration: 'demoDebug')
