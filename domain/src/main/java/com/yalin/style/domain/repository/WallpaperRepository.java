@@ -42,6 +42,8 @@ public interface WallpaperRepository {
 
     AdvanceWallpaper getAdvanceWallpaper();
 
+    Observable<Boolean> readAdvanceAd(String wallpaperId);
+
     Observable<Boolean> foreNow(String wallpaperUri);
 
     Observable<Boolean> setGalleryUpdateInterval(int intervalMin);

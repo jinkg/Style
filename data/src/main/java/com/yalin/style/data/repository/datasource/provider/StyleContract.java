@@ -237,6 +237,5 @@ public class StyleContract {
         public static String getWallpaperId(Uri uri) {
             return uri.getPathSegments().get(1);
         }
-
     }
 }

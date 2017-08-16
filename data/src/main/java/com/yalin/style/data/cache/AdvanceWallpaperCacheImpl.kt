@@ -47,6 +47,12 @@ class AdvanceWallpaperCacheImpl @Inject constructor() : AdvanceWallpaperCache {
         return wallpapers!!.firstOrNull { TextUtils.equals(wallpaperId, it.wallpaperId) }
     }
 
+    override fun readAd(wallpaperId: String) {
+        if (!isCached(wallpaperId)) {
+            getWallpaper(wallpaperId)?.needAd = false
+        }
+    }
+
     @Synchronized override fun evictAll() {
         wallpapers = null
     }

@@ -103,6 +103,20 @@ class AdvanceWallpaperDataStoreImpl(val context: Context,
         return entity!!
     }
 
+    override fun readAd(wallpaperId: String): Observable<Boolean> {
+        return Observable.create { emitter ->
+            if (!advanceWallpaperCache.isCached(wallpaperId)) {
+                advanceWallpaperCache.readAd(wallpaperId)
+            }
+
+            val uri = StyleContract.AdvanceWallpaper.buildWallpaperUri(wallpaperId)
+            val contentValues = ContentValues()
+            contentValues.put(StyleContract.AdvanceWallpaper.COLUMN_NAME_NEED_AD, 0)
+            context.contentResolver.update(uri, contentValues, null, null)
+            emitter.onNext(true)
+            emitter.onComplete()
+        }
+    }
 
     private fun loadWallpaperEntityFromDB(wallpaperId: String): AdvanceWallpaperEntity? {
         var cursor: Cursor? = null

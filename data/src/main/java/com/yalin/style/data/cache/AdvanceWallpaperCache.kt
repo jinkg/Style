@@ -17,6 +17,8 @@ interface AdvanceWallpaperCache {
 
     fun getWallpaper(wallpaperId: String): AdvanceWallpaperEntity?
 
+    fun readAd(wallpaperId: String)
+
     fun evictAll()
 
     fun isCached(wallpaperId: String): Boolean

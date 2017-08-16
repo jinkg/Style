@@ -140,6 +140,12 @@ public class StyleWallpaperDataRepository implements WallpaperRepository {
     }
 
     @Override
+    public Observable<Boolean> readAdvanceAd(String wallpaperId) {
+        throw new IllegalStateException(
+                "StyleWallpaperRepository cannot read advance ad.");
+    }
+
+    @Override
     public Observable<Boolean> foreNow(String wallpaperUri) {
         return Observable.create(emitter ->
                 emitter.onError(new IllegalStateException(

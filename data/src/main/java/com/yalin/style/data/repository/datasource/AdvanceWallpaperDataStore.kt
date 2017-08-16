@@ -16,4 +16,6 @@ interface AdvanceWallpaperDataStore {
     fun selectWallpaper(wallpaperId: String, tempSelect: Boolean): Observable<Boolean>
 
     fun downloadWallpaper(wallpaperId: String): Observable<Long>
+
+    fun readAd(wallpaperId: String): Observable<Boolean>
 }

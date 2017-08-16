@@ -87,6 +87,11 @@ constructor(val galleryWallpaperDataStoreFactory: GalleryWallpaperDataStoreFacto
                 "GalleryWallpaperDataRepository cannot get advance wallpapers.")
     }
 
+    override fun readAdvanceAd(wallpaperId: String?): Observable<Boolean> {
+        throw IllegalStateException(
+                "GalleryWallpaperDataRepository cannot read advance ad.")
+    }
+
     override fun foreNow(wallpaperUri: String): Observable<Boolean> =
             galleryWallpaperDataStoreFactory.create().forceNow(wallpaperUri)
 

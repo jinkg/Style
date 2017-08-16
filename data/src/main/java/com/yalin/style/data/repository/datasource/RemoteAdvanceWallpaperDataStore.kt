@@ -112,4 +112,9 @@ class RemoteAdvanceWallpaperDataStore(val context: Context,
             })
         }
     }
+
+    override fun readAd(wallpaperId: String): Observable<Boolean> {
+        throw UnsupportedOperationException("Remote data store not support read wallpaper ad.")
+
+    }
 }

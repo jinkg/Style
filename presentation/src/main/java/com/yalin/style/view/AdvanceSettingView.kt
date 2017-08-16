@@ -24,4 +24,8 @@ interface AdvanceSettingView : LoadingDataView {
     fun downloadComplete(item: AdvanceWallpaperItem)
 
     fun showDownloadError(item: AdvanceWallpaperItem, e: Exception)
+
+    fun showAd(item: AdvanceWallpaperItem)
+
+    fun adViewed(item: AdvanceWallpaperItem)
 }

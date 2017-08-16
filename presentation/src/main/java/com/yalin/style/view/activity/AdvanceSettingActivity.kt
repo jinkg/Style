@@ -13,8 +13,10 @@ import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
+import com.google.android.gms.ads.AdListener
 import com.yalin.style.R
 import com.yalin.style.StyleApplication
 import com.yalin.style.analytics.Analytics
@@ -25,6 +27,8 @@ import com.yalin.style.model.AdvanceWallpaperItem
 import com.yalin.style.presenter.AdvanceSettingPresenter
 import com.yalin.style.util.ImageLoader
 import com.yalin.style.util.maybeAttachAd
+import com.yalin.style.util.maybeAttachInterstitialAd
+import com.yalin.style.util.maybeShowInterstitialAd
 import com.yalin.style.view.AdvanceSettingView
 import com.yalin.style.view.component.DownloadingDialog
 import kotlinx.android.synthetic.main.activity_advance_setting.*
@@ -61,6 +65,39 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
     private var downloadDialog: DownloadingDialog? = null
 
+    private val insertAdListener = object : AdListener() {
+        var currentAdItem: AdvanceWallpaperItem? = null
+
+        override fun onAdLeftApplication() {
+            super.onAdLeftApplication()
+            Toast.makeText(this@AdvanceSettingActivity, "onAdLeftApplication ", Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onAdFailedToLoad(p0: Int) {
+            super.onAdFailedToLoad(p0)
+            Toast.makeText(this@AdvanceSettingActivity, "onAdFailedToLoad " + p0, Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onAdClosed() {
+            super.onAdClosed()
+            if (currentAdItem != null) {
+                presenter.adViewed(currentAdItem!!)
+                currentAdItem = null
+            }
+            Toast.makeText(this@AdvanceSettingActivity, "onAdClosed ", Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onAdOpened() {
+            super.onAdOpened()
+            Toast.makeText(this@AdvanceSettingActivity, "onAdOpened ", Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onAdLoaded() {
+            super.onAdLoaded()
+            Toast.makeText(this@AdvanceSettingActivity, "onAdLoaded ", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         StyleApplication.instance.applicationComponent.inject(this)
@@ -83,6 +120,7 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
         handleState()
 
         maybeAttachAd(this)
+        maybeAttachInterstitialAd(this, insertAdListener)
     }
 
     private fun handleState() {
@@ -277,7 +315,9 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
                 }
         val adCallback = MaterialDialog.SingleButtonCallback { dialog, which ->
             downloadCallback.onClick(dialog, which)
-            toast("show ad")
+            if (maybeShowInterstitialAd()) {
+                insertAdListener.currentAdItem = item
+            }
         }
         val dialogBuilder = MaterialDialog.Builder(this)
                 .iconRes(R.drawable.advance_wallpaper_msg)
@@ -314,6 +354,21 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
     override fun showDownloadError(item: AdvanceWallpaperItem, e: Exception) {
 
+    }
+
+    override fun showAd(item: AdvanceWallpaperItem) {
+        if (maybeShowInterstitialAd()) {
+            insertAdListener.currentAdItem = item
+        } else {
+            presenter.adLoadFailed(item)
+        }
+    }
+
+    override fun adViewed(item: AdvanceWallpaperItem) {
+        val position = wallpapers.indices.firstOrNull {
+            TextUtils.equals(wallpapers[it].wallpaperId, item.wallpaperId)
+        } ?: -1
+        wallpapers[position].needAd = false
     }
 
     class AdvanceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

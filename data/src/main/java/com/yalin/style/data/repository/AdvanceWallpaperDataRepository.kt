@@ -101,6 +101,10 @@ class AdvanceWallpaperDataRepository
         return wallpaperMapper.transform(factory.create().getWallpaperEntity())
     }
 
+    override fun readAdvanceAd(wallpaperId: String): Observable<Boolean> {
+        return factory.create().readAd(wallpaperId)
+    }
+
     override fun foreNow(wallpaperUri: String?): Observable<Boolean> {
         return Observable.create<Boolean> { emitter ->
             emitter.onError(IllegalStateException(

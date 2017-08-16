@@ -26,7 +26,8 @@ class AdvanceSettingPresenter
                     val selectAdvanceWallpaper: SelectAdvanceWallpaper,
                     val getSelectedAdvanceWallpaper: GetSelectedAdvanceWallpaper,
                     val advanceWallpaperItemMapper: AdvanceWallpaperItemMapper,
-                    val downloadAdvanceWallpaper: DownloadAdvanceWallpaper)
+                    val downloadAdvanceWallpaper: DownloadAdvanceWallpaper,
+                    val readAdvanceAd: ReadAdvanceAd)
     : Presenter {
 
     companion object {
@@ -83,6 +84,8 @@ class AdvanceSettingPresenter
                 item.storePath) || (downloadingWallpaper != null
                 && TextUtils.equals(downloadingWallpaper!!.wallpaperId, item.wallpaperId))) {
             view?.showDownloadHintDialog(item)
+        } else if (item.needAd) {
+            view?.showAd(item)
         } else {
             selectAdvanceWallpaper(item.wallpaperId, false)
         }
@@ -110,6 +113,21 @@ class AdvanceSettingPresenter
             }
         }, DownloadAdvanceWallpaper.Params.download(item.wallpaperId))
     }
+
+    fun adViewed(item: AdvanceWallpaperItem) {
+        readAdvanceAd.execute(object : DefaultObserver<Boolean>() {
+            override fun onNext(success: Boolean) {
+                if (success) {
+                    view?.adViewed(item)
+                }
+            }
+        }, ReadAdvanceAd.Params.read(item.wallpaperId))
+    }
+
+    fun adLoadFailed(item: AdvanceWallpaperItem) {
+        view?.adViewed(item)
+    }
+
 
     fun onSaveInstanceState(outState: Bundle) {
         outState.putInt(DOWNLOAD_STATE, downloadState)
