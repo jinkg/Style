@@ -1,8 +1,10 @@
 package com.yalin.style
 
-import android.app.Application
 //import com.facebook.stetho.Stetho
 
+import android.content.Context
+import android.support.multidex.MultiDex
+import android.support.multidex.MultiDexApplication
 import com.tencent.bugly.crashreport.CrashReport
 import com.yalin.style.analytics.Analytics
 import com.yalin.style.data.log.LogUtil
@@ -16,7 +18,7 @@ import com.yalin.style.extensions.DelegatesExt
  * *
  * @since 2017/4/18.
  */
-class StyleApplication : Application() {
+class StyleApplication : MultiDexApplication() {
 
     companion object {
         private val TAG = "StyleApplication"
@@ -25,6 +27,11 @@ class StyleApplication : Application() {
     }
 
     val applicationComponent: ApplicationComponent by lazy { initializeInjector() }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
 
     override fun onCreate() {
         super.onCreate()

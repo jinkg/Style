@@ -28,10 +28,16 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        multiDexEnabled true
+
         buildConfigField("String", "BUGLY_APP_ID", "\"${buglyAppId}\"")
         buildConfigField("String", "FLURRY_API_KEY", "\"${flurryApiKey}\"")
 
         resValue("string", "app_name_ext", "${APP_NAME}")
+
+        ndk {
+            abiFilters 'x86', 'armeabi', 'armeabi-v7a'
+        }
     }
     signingConfigs {
         release {
@@ -65,10 +71,8 @@ android {
             buildConfigField("boolean", "DEMO_MODE", "false")
         }
     }
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 }
 
@@ -108,6 +112,8 @@ dependencies {
     googleprodCompile project(path: ':data', configuration: 'productionRelease')
 
     demoCompile 'com.facebook.stetho:stetho:1.5.0'
+
+    compile 'com.android.support:multidex:1.0.1'
 
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

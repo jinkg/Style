@@ -18,10 +18,11 @@ import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService
  * @since 2017/7/28.
  */
 
-class GDXWallpaperServiceProxy(host: Context) : AndroidLiveWallpaperService() {
+open class GDXWallpaperServiceProxy(host: Context) : AndroidLiveWallpaperService() {
     private val activateCallback: WallpaperActiveCallback?
 
     init {
+        @Suppress("LeakingThis")
         attachBaseContext(host)
 
         activateCallback = if (host is WallpaperActiveCallback) host else null
