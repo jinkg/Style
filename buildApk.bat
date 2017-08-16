@@ -9,7 +9,7 @@ call gradlew assembleProductionRelease -Dchannel=vivo
 call gradlew assembleProductionRelease -Dchannel=flyme
 call gradlew assembleProductionRelease -Dchannel=wandoujia
 call gradlew assembleProductionRelease -Dchannel=baidu -Dapp_name=Style艺术壁纸
-call gradlew assembleGoogleprodRelease -Dchannel=google
+call gradlew assembleProductionRelease -Dchannel=google
 call gradlew assembleProductionRelease -Dchannel=huawei -Dapp_name=Style艺术壁纸
 
 echo Build Apk Complete

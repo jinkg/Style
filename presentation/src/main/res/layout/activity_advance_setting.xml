@@ -34,6 +34,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        app:adSize="BANNER"
+        app:adUnitId="@string/advance_banner_ad_unit_id" />
+
     <LinearLayout
         android:id="@android:id/empty"
         android:layout_width="wrap_content"

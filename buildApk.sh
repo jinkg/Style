@@ -9,7 +9,7 @@ echo "Start Build Apk"
 ./gradlew assembleProductionRelease -Dchannel=flyme
 ./gradlew assembleProductionRelease -Dchannel=wandoujia
 ./gradlew assembleProductionRelease -Dchannel=baidu -Dapp_name=Style艺术壁纸
-./gradlew assembleGoogleprodRelease -Dchannel=google
+./gradlew assembleProductionRelease -Dchannel=google
 ./gradlew assembleProductionRelease -Dchannel=huawei -Dapp_name=Style艺术壁纸
 
 echo "Build Apk Complete"

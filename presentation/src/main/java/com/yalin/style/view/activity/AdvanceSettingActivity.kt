@@ -17,6 +17,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.yalin.style.R
 import com.yalin.style.StyleApplication
+import com.yalin.style.analytics.Analytics
+import com.yalin.style.analytics.Event
 import com.yalin.style.data.log.LogUtil
 import com.yalin.style.data.utils.WallpaperFileHelper
 import com.yalin.style.model.AdvanceWallpaperItem
@@ -101,8 +103,14 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
         val gridLayoutManager = GridLayoutManager(this, 1)
         wallpaperList.layoutManager = gridLayoutManager
 
-        btnLoadAdvanceWallpaper.setOnClickListener { presenter.loadAdvanceWallpaper() }
-        btnRetry.setOnClickListener { presenter.loadAdvanceWallpaper() }
+        btnLoadAdvanceWallpaper.setOnClickListener {
+            presenter.loadAdvanceWallpaper()
+            Analytics.logEvent(this@AdvanceSettingActivity, Event.LOAD_ADVANCES)
+        }
+        btnRetry.setOnClickListener {
+            presenter.loadAdvanceWallpaper()
+            Analytics.logEvent(this@AdvanceSettingActivity, Event.LOAD_ADVANCES)
+        }
 
         wallpaperList.viewTreeObserver
                 .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -262,7 +270,11 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     override fun showDownloadHintDialog(item: AdvanceWallpaperItem) {
         val needAd = item.needAd
         val downloadCallback =
-                MaterialDialog.SingleButtonCallback { _, _ -> presenter.requestDownload(item) }
+                MaterialDialog.SingleButtonCallback { _, _ ->
+                    presenter.requestDownload(item)
+                    Analytics.logEvent(this@AdvanceSettingActivity,
+                            Event.DOWNLOAD_COMPONENT, item.name)
+                }
         val adCallback = MaterialDialog.SingleButtonCallback { dialog, which ->
             downloadCallback.onClick(dialog, which)
             toast("show ad")

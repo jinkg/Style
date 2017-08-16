@@ -37,4 +37,7 @@ object Event {
     val SHORTCUTS_SETTINGS = "shortcuts_settings"
     val SHORTCUTS_ADVANCE_SETTINGS = "shortcuts_advance_settings"
     val SHORTCUTS_ABOUT = "shortcuts_about"
+
+    val LOAD_ADVANCES = "load_advance_wallpapers"
+    val DOWNLOAD_COMPONENT = "download_component"
 }
