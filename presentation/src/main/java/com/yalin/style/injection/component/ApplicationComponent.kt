@@ -1,6 +1,7 @@
 package com.yalin.style.injection.component
 
 import android.content.Context
+import com.yalin.style.StyleApplication
 import com.yalin.style.StyleWallpaperService
 import com.yalin.style.StyleWallpaperServiceMirror
 
@@ -15,6 +16,7 @@ import com.yalin.style.engine.StyleWallpaperProxy
 import com.yalin.style.injection.modules.ApplicationModule
 import com.yalin.style.view.activity.AdvanceSettingActivity
 import com.yalin.style.view.activity.GallerySettingActivity
+import com.yalin.style.view.activity.StyleActivity
 import com.yalin.style.view.fragment.StyleRenderFragment
 
 import javax.inject.Singleton
@@ -29,6 +31,9 @@ import dagger.Component
 @Singleton
 @Component(modules = arrayOf(ApplicationModule::class))
 interface ApplicationComponent {
+    fun inject(styleApplication: StyleApplication)
+    fun inject(styleActivity: StyleActivity)
+
     fun inject(styleStyleWallpaperEngine: StyleWallpaperProxy.StyleWallpaperEngine)
 
     fun inject(styleView: StyleRenderFragment.StyleView)

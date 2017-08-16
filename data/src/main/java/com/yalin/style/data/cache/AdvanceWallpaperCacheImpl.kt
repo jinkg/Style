@@ -48,7 +48,7 @@ class AdvanceWallpaperCacheImpl @Inject constructor() : AdvanceWallpaperCache {
     }
 
     override fun readAd(wallpaperId: String) {
-        if (!isCached(wallpaperId)) {
+        if (isCached(wallpaperId)) {
             getWallpaper(wallpaperId)?.needAd = false
         }
     }

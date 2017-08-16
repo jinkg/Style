@@ -1,6 +1,8 @@
 package com.yalin.style.data.repository
 
+import android.content.Context
 import com.yalin.style.data.entity.mapper.AdvanceWallpaperEntityMapper
+import com.yalin.style.data.extensions.DelegateExt
 import com.yalin.style.data.repository.datasource.AdvanceWallpaperDataStoreFactory
 import com.yalin.style.domain.AdvanceWallpaper
 import com.yalin.style.domain.GalleryWallpaper
@@ -17,10 +19,13 @@ import javax.inject.Singleton
  */
 @Singleton
 class AdvanceWallpaperDataRepository
-@Inject constructor(val factory: AdvanceWallpaperDataStoreFactory,
+@Inject constructor(val context: Context,
+                    val factory: AdvanceWallpaperDataStoreFactory,
                     val wallpaperMapper: AdvanceWallpaperEntityMapper,
                     val styleRepository: StyleWallpaperDataRepository)
     : WallpaperRepository {
+    var needRollback: Boolean by DelegateExt.preferences(context, "is_need_rollback",
+            false)
 
     override fun getWallpaper(): Observable<Wallpaper> {
         return Observable.create<Wallpaper> { emitter ->
@@ -126,4 +131,13 @@ class AdvanceWallpaperDataRepository
         }
     }
 
+    fun markRollback() {
+        needRollback = true
+    }
+
+    fun maybeRollback() {
+        if (needRollback) {
+            factory.create().rollback()
+        }
+    }
 }

@@ -14,11 +14,13 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
 import com.yalin.style.R
+import com.yalin.style.StyleApplication
 import com.yalin.style.StyleWallpaperService
 import com.yalin.style.analytics.Analytics
 import com.yalin.style.analytics.Event
 import com.yalin.style.data.BuildConfig
 import com.yalin.style.data.log.LogUtil
+import com.yalin.style.data.repository.AdvanceWallpaperDataRepository
 import com.yalin.style.event.MainContainerInsetsChangedEvent
 import com.yalin.style.event.SeenTutorialEvent
 import com.yalin.style.event.WallpaperActivateEvent
@@ -39,6 +41,7 @@ import kotlinx.android.synthetic.main.layout_include_active.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.jetbrains.anko.toast
+import javax.inject.Inject
 
 /**
  * @author jinyalin
@@ -78,9 +81,15 @@ class StyleActivity : BaseActivity(), HasComponent<WallpaperComponent>,
 
     private var startLogAnim: Runnable? = null
 
+    @Inject
+    lateinit var advanceWallpaperRepository: AdvanceWallpaperDataRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        StyleApplication.instance.applicationComponent.inject(this)
+        advanceWallpaperRepository.maybeRollback()
 
         Analytics.setUserProperty(this, "device_type", "Android")
         Analytics.onStartSession(this)

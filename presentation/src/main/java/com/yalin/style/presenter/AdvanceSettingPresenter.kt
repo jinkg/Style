@@ -55,6 +55,7 @@ class AdvanceSettingPresenter
     }
 
     fun initialize() {
+        view?.showLoading()
         getAdvanceWallpapers.execute(wallpaperObserver, null)
         mLastSelectedItemId = getSelectedAdvanceWallpaper.selected.wallpaperId
         EventBus.getDefault().register(this)
@@ -122,10 +123,6 @@ class AdvanceSettingPresenter
                 }
             }
         }, ReadAdvanceAd.Params.read(item.wallpaperId))
-    }
-
-    fun adLoadFailed(item: AdvanceWallpaperItem) {
-        view?.adViewed(item)
     }
 
 

@@ -117,4 +117,8 @@ class RemoteAdvanceWallpaperDataStore(val context: Context,
         throw UnsupportedOperationException("Remote data store not support read wallpaper ad.")
 
     }
+
+    override fun rollback() {
+        // do nothing
+    }
 }

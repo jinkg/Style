@@ -8,10 +8,12 @@ import android.support.multidex.MultiDexApplication
 import com.tencent.bugly.crashreport.CrashReport
 import com.yalin.style.analytics.Analytics
 import com.yalin.style.data.log.LogUtil
+import com.yalin.style.data.repository.AdvanceWallpaperDataRepository
 import com.yalin.style.injection.component.ApplicationComponent
 import com.yalin.style.injection.component.DaggerApplicationComponent
 import com.yalin.style.injection.modules.ApplicationModule
 import com.yalin.style.extensions.DelegatesExt
+import javax.inject.Inject
 
 /**
  * @author jinyalin
@@ -28,6 +30,9 @@ class StyleApplication : MultiDexApplication() {
 
     val applicationComponent: ApplicationComponent by lazy { initializeInjector() }
 
+    @Inject
+    lateinit var advanceWallpaperRepository: AdvanceWallpaperDataRepository
+
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
         MultiDex.install(this)
@@ -36,6 +41,8 @@ class StyleApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+
+        applicationComponent.inject(this)
 
         resetExceptionHandler()
 
@@ -63,6 +70,7 @@ class StyleApplication : MultiDexApplication() {
     private fun resetExceptionHandler() {
         val exceptionHandler = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { t, e ->
+            advanceWallpaperRepository.markRollback()
             LogUtil.F(TAG, "exception", e)
             exceptionHandler.uncaughtException(t, e)
         }

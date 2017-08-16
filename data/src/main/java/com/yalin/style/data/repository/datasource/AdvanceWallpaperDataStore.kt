@@ -18,4 +18,6 @@ interface AdvanceWallpaperDataStore {
     fun downloadWallpaper(wallpaperId: String): Observable<Long>
 
     fun readAd(wallpaperId: String): Observable<Boolean>
+
+    fun rollback()
 }

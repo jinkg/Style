@@ -70,12 +70,12 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
         override fun onAdLeftApplication() {
             super.onAdLeftApplication()
-            Toast.makeText(this@AdvanceSettingActivity, "onAdLeftApplication ", Toast.LENGTH_SHORT).show()
         }
 
         override fun onAdFailedToLoad(p0: Int) {
             super.onAdFailedToLoad(p0)
-            Toast.makeText(this@AdvanceSettingActivity, "onAdFailedToLoad " + p0, Toast.LENGTH_SHORT).show()
+            adLoaded = true
+            maybeShowWallpaper()
         }
 
         override fun onAdClosed() {
@@ -84,19 +84,21 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
                 presenter.adViewed(currentAdItem!!)
                 currentAdItem = null
             }
-            Toast.makeText(this@AdvanceSettingActivity, "onAdClosed ", Toast.LENGTH_SHORT).show()
         }
 
         override fun onAdOpened() {
             super.onAdOpened()
-            Toast.makeText(this@AdvanceSettingActivity, "onAdOpened ", Toast.LENGTH_SHORT).show()
         }
 
         override fun onAdLoaded() {
             super.onAdLoaded()
-            Toast.makeText(this@AdvanceSettingActivity, "onAdLoaded ", Toast.LENGTH_SHORT).show()
+            adLoaded = true
+            maybeShowWallpaper()
         }
     }
+
+    private var adLoaded = false
+    private var wallpaperLoaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -245,12 +247,21 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
 
         this.wallpapers.clear()
         this.wallpapers.addAll(wallpapers)
+        wallpaperLoaded = true
+        maybeShowWallpaper()
+    }
 
-        wallpaperList.visibility = View.VISIBLE
-        empty.visibility = View.GONE
-        loading.visibility = View.GONE
-        retry.visibility = View.GONE
-        advanceWallpaperAdapter.notifyDataSetChanged()
+    private fun maybeShowWallpaper() {
+        if (wallpaperList.visibility == View.VISIBLE) {
+            return
+        }
+        if (adLoaded && wallpaperLoaded) {
+            wallpaperList.visibility = View.VISIBLE
+            empty.visibility = View.GONE
+            loading.visibility = View.GONE
+            retry.visibility = View.GONE
+            advanceWallpaperAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun showLoading() {
@@ -315,9 +326,7 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
                 }
         val adCallback = MaterialDialog.SingleButtonCallback { dialog, which ->
             downloadCallback.onClick(dialog, which)
-            if (maybeShowInterstitialAd()) {
-                insertAdListener.currentAdItem = item
-            }
+            showAd(item)
         }
         val dialogBuilder = MaterialDialog.Builder(this)
                 .iconRes(R.drawable.advance_wallpaper_msg)
@@ -360,7 +369,7 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
         if (maybeShowInterstitialAd()) {
             insertAdListener.currentAdItem = item
         } else {
-            presenter.adLoadFailed(item)
+            adViewed(item)
         }
     }
 
@@ -368,7 +377,9 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
         val position = wallpapers.indices.firstOrNull {
             TextUtils.equals(wallpapers[it].wallpaperId, item.wallpaperId)
         } ?: -1
-        wallpapers[position].needAd = false
+        if (position >= 0) {
+            wallpapers[position].needAd = false
+        }
     }
 
     class AdvanceViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
