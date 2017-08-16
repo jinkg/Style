@@ -20,7 +20,7 @@
     <string name="done">完成</string>
     <string name="confirm">确定</string>
     <string name="hint">提示</string>
-    <string name="downloading">下载中</string>
+    <string name="downloading">下载中，请稍后</string>
 
     <string name="section_choose_source">壁纸来源</string>
     <string name="section_advanced">个性化设置</string>
@@ -65,12 +65,12 @@
     ]]></string>
 
     <string name="advance_download_hint"><![CDATA[
-        这个特效壁纸组件有点大，使用之前需要先下载<br><br>
+        使用之前这款壁纸之前需要先下载（几百KB或几MB）<br><br>
         如果你已经链接上WI-FI，准备好下载，请点击下面的下载按钮
     ]]></string>
 
     <string name="advance_ad_download_hint"><![CDATA[
-        这个特效壁纸组件有点大，使用之前需要先下载<br><br>
+        使用之前这款壁纸之前需要先下载（几百KB或几MB）<br><br>
         与此同时，这款壁纸包含一则小广告，在使用之前，你必须观看广告<br><br>
         非常感谢你对Style开发者的支持<br><br>
         点击下面的按钮开始下载，同时播放广告

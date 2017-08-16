@@ -48,6 +48,6 @@ class DownloadingDialog constructor(context: Context) {
         if (progress < C * C) {
             return "${progress / C} KB"
         }
-        return "${progress / (C * C)} MB"
+        return "%2f MB".format(progress / (C * C).toFloat())
     }
 }

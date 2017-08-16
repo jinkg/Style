@@ -53,7 +53,7 @@
         android:id="@+id/download_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#afff"
+        android:background="#3fff"
         android:visibility="gone">
 
         <ImageView

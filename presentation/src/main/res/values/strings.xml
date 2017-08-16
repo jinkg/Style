@@ -64,12 +64,12 @@
     ]]></string>
 
     <string name="advance_download_hint"><![CDATA[
-        This advance wallpaper component is a bit big, and you must take a minute to download it.<br><br>
+        This advance wallpaper component is a bit big, and you must take a minute to download it(several hundred KB or several MB).<br><br>
         Press download button if you are ready to download.
     ]]></string>
 
     <string name="advance_ad_download_hint"><![CDATA[
-        This advance wallpaper component is a bit big, and you must take a minute to download it.<br><br>
+        This advance wallpaper component is a bit big, and you must take a minute to download it(several hundred KB or several MB).<br><br>
         At the same time, This wallpaper contain a little ad, you must view a minute ad before use it.<br><br>
         Thank you for your support for the Style developer.<br><br>
         Press download button if you are ready to download and see ad.
