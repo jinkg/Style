@@ -86,11 +86,10 @@
         android:padding="32dp"
         android:visibility="gone">
 
-        <com.yalin.style.view.component.CircleProgressView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_gravity="center"
-            app:progress_borderWidth="4dp" />
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
     </LinearLayout>
 
