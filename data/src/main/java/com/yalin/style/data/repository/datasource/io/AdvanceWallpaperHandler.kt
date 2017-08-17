@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.yalin.style.data.SyncConfig
 import com.yalin.style.data.entity.AdvanceWallpaperEntity
+import com.yalin.style.data.exception.NetworkConnectionException
 import com.yalin.style.data.exception.RemoteServerException
 import com.yalin.style.data.log.LogUtil
 import com.yalin.style.data.repository.datasource.provider.StyleContract
@@ -182,16 +183,26 @@ class AdvanceWallpaperHandler(context: Context) : JSONHandler(context) {
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
-                observer?.onError(RemoteServerException())
+                observer?.onError(NetworkConnectionException())
                 LogUtil.E(TAG, "Download wallpaper component" + wallpaper.name + " failed.", e)
                 return false
             } finally {
+                ensureChecksum(outputFile, wallpaper.checkSum)
                 try {
                     os?.close()
                     _is?.close()
                 } catch (e: IOException) {
                     // ignore
                 }
+            }
+        }
+    }
+
+    private fun ensureChecksum(file: File, checkSum: String) {
+        if (file.exists()) {
+            if (!WallpaperFileHelper.ensureChecksumValid(mContext,
+                    checkSum, file.absolutePath)) {
+                file.delete()
             }
         }
     }

@@ -35,6 +35,7 @@
     <string name="exception_message_no_connection">There is no internet connection</string>
     <string name="exception_message_resync">Sync is processing</string>
     <string name="exception_message_remote_service">Remote service not available</string>
+    <string name="exception_message_download">Download error</string>
 
     <string name="tutorial_main">Open the Style app to see your wallpaper</string>
     <string name="tutorial_subtitle">Double touch the blurred wallpaper on your home screen to temporarily focus

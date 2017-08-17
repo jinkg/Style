@@ -13,7 +13,6 @@ import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.bumptech.glide.Glide
 import com.google.android.gms.ads.AdListener
@@ -23,6 +22,7 @@ import com.yalin.style.analytics.Analytics
 import com.yalin.style.analytics.Event
 import com.yalin.style.data.log.LogUtil
 import com.yalin.style.data.utils.WallpaperFileHelper
+import com.yalin.style.exception.ErrorMessageFactory
 import com.yalin.style.model.AdvanceWallpaperItem
 import com.yalin.style.presenter.AdvanceSettingPresenter
 import com.yalin.style.util.ImageLoader
@@ -362,7 +362,8 @@ class AdvanceSettingActivity : BaseActivity(), AdvanceSettingView {
     }
 
     override fun showDownloadError(item: AdvanceWallpaperItem, e: Exception) {
-
+        downloadDialog!!.dismiss()
+        showError(ErrorMessageFactory.create(this, e))
     }
 
     override fun showAd(item: AdvanceWallpaperItem) {
