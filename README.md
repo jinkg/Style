@@ -10,7 +10,7 @@ For developer
 
 Style offers a sdk that allows you to build your own live wallpaper.
 
-**[Develop Doc](https://github.com/jinkg/style-develop-sdk)**&nbsp;&nbsp;•&nbsp;&nbsp;**[For many examples](https://github.com/jinkg/style-sdk)**
+**[Develop Doc](https://github.com/jinkg/style-develop-sdk)**&nbsp;&nbsp;•&nbsp;&nbsp;**[For more examples](https://github.com/jinkg/style-sdk)**
 
 ![bezier](https://github.com/jinkg/Screenshots/blob/master/Style/bezier.gif)
 ![boids](https://github.com/jinkg/Screenshots/blob/master/Style/boids.gif)
