@@ -1,3 +1,5 @@
+# Deprecated, Not maintain anymore.
+
 # Style Live Wallpaper
 
 A live wallpaper project for Android
